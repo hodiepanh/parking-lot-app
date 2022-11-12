@@ -1,0 +1,37 @@
+.view {
+    width: 100vw;
+    height: 60vh;
+}
+.button-wrapper {
+    display: flex;
+    justify-content: center;
+    
+}
+.button-footer {
+    display: flex;
+    justify-content: space-around;
+    padding: 20px;
+}
+
+.image-editor {
+    display: flex;
+    flex-direction:column;
+    padding: 0 10px;
+}
+
+.image {
+    margin-bottom: 10px;
+    background: url("../assets/Parking Lots/Sample lot/lmTst_0.jpg");
+    background-size: 600px 400px;
+
+}
+.data-list {
+    width: 30vw;
+}
+
+.layout {
+    display: flex;
+    justify-content: space-around;
+    /* align-items: center;
+    flex-direction: column; */
+}

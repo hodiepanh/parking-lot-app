@@ -1,0 +1,8 @@
+.button-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.debug-list {
+    padding:0 20px;
+}

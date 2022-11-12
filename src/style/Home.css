@@ -1,0 +1,11 @@
+.button-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.popup-form {
+    width: 50vw;
+    height: 50vh;
+    background-color: darkgray;
+
+}
