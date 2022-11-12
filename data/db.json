@@ -1,0 +1,32 @@
+{
+  "parkinglots": [
+    {
+      "id": 0,
+      "title": "Parking Lot A"
+    },
+    {
+      "id": 1,
+      "title": "Parking Lot B"
+    },
+    {
+      "id": 2,
+      "title": "Parking Lot C"
+    },
+    {
+      "id": 3,
+      "title": "Parking Lot D"
+    },
+    {
+      "title": "sskdhks",
+      "id": 4
+    },
+    {
+      "title": "ghjfj",
+      "id": 5
+    },
+    {
+      "title": "new parking lot",
+      "id": 6
+    }
+  ]
+}
