@@ -17,9 +17,14 @@ export const parkingApi = {
   searchParkingLot: (searchLot) => {
     return axios.get(`${url}?title_like=${searchLot}`);
   },
-  editParkingLot: (id, data) => {
+  editLandmark: (id, data) => {
     return axios.patch(`${url}/${id}`, {
-      title: data,
+      landmark: data,
+    });
+  },
+  editParkingSlot: (id, data) => {
+    return axios.patch(`${url}/${id}`, {
+      slot: data,
     });
   },
 };

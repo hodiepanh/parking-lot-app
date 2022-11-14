@@ -23,7 +23,7 @@ function App() {
             <Route exact path="/reference">
               <Reference />
             </Route>
-            <Route exact path="/calib">
+            <Route exact path="/calib/:id">
               <Calib />
             </Route>
             <Route exact path="/result">

@@ -10,16 +10,23 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
 import "../style/Calib.css";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import default_image from "../assets/default_image.png";
 import test_image from "../assets/Parking Lots/Sample lot/lmTst_0.jpg";
 import { useSelector, useDispatch } from "react-redux";
-import { setReferenceImage } from "../redux/parkingLots";
+import {
+  editLandmarkRex,
+  editSlotRex,
+  searchParkingLotRex,
+  setReferenceImage,
+} from "../redux/parkingLots";
+import DrawMode from "../components/ultilites/DrawMode";
 
 function Calib() {
   const [reference, setReference] = useState(false);
   const [drawing, setDrawing] = useState(false);
   const [image, setImage] = useState([]);
+  const [mode, setMode] = useState("");
 
   const [rect, setRect] = useState([]);
   const canvasRef = useRef(null);
@@ -30,9 +37,11 @@ function Calib() {
   const startX = useRef(null);
   const startY = useRef(null);
 
-  const [dataList, setDataList] = useState([]);
+  const [landmarkList, setLandmarkList] = useState([]);
+  const [parkingslotList, setParkingSlotList] = useState([]);
 
   const history = useHistory();
+  const { id } = useParams();
   const standardImage = useSelector(
     (state) => state.parkingReducer.standardImage
   );
@@ -43,10 +52,6 @@ function Calib() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const img = new Image(); // Create new img element
-    img.src =
-      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&w=350&dpr=2"; // Set source path
-
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
     contextRef.current = context;
@@ -62,7 +67,8 @@ function Calib() {
     //   context.drawImage(img, 0, 0);
     // };
     //console.log(canvasOffset);
-  });
+    //console.log(mode);
+  }, [mode]);
 
   //useEffect if want to clear temp cache
 
@@ -145,17 +151,31 @@ function Calib() {
       rectWidth,
       rectHeight
     );
+    if (mode == "landmark") {
+      setLandmarkList((prevState) => [
+        ...prevState,
+        {
+          id: landmarkList.length,
+          x1: Math.round(startX.current),
+          y1: Math.round(startY.current),
+          x2: Math.round(startX.current + rectWidth),
+          y2: Math.round(startY.current + rectHeight),
+        },
+      ]);
+    }
+    if (mode == "slot") {
+      setParkingSlotList((prevState) => [
+        ...prevState,
+        {
+          id: parkingslotList.length,
+          x1: Math.round(startX.current),
+          y1: Math.round(startY.current),
+          x2: Math.round(startX.current + rectWidth),
+          y2: Math.round(startY.current + rectHeight),
+        },
+      ]);
+    }
 
-    setDataList((prevState) => [
-      ...prevState,
-      {
-        id: dataList.length,
-        x1: Math.round(startX.current),
-        y1: Math.round(startY.current),
-        x2: Math.round(startX.current + rectWidth),
-        y2: Math.round(startY.current + rectHeight),
-      },
-    ]);
     setDrawing(false);
   };
 
@@ -169,10 +189,10 @@ function Calib() {
     //window.location.reload(false);
   };
 
-  const removeData = (index) => {
-    const removeRect = dataList.filter((item) => item.id == index);
-    const newList = dataList.filter((item) => item.id !== index);
-    setDataList(newList);
+  const removeLandmarkData = (index) => {
+    const removeRect = landmarkList.filter((item) => item.id == index);
+    const newList = landmarkList.filter((item) => item.id !== index);
+    setLandmarkList(newList);
     //console.log(removeRect[0].x1);
 
     contextRef.current.clearRect(
@@ -183,7 +203,21 @@ function Calib() {
     );
   };
 
-  const dataMap = dataList.map((data) => (
+  const removeSlotData = (index) => {
+    const removeRect = parkingslotList.filter((item) => item.id == index);
+    const newList = parkingslotList.filter((item) => item.id !== index);
+    setParkingSlotList(newList);
+    //console.log(removeRect[0].x1);
+
+    contextRef.current.clearRect(
+      removeRect[0].x1 - 1,
+      removeRect[0].y1 - 1,
+      removeRect[0].x2 - removeRect[0].x1 + 2,
+      removeRect[0].y2 - removeRect[0].y1 + 2
+    );
+  };
+
+  const landmarkMap = landmarkList.map((data) => (
     <ListItem key={data.id} disablePadding>
       <ListItemButton>
         <ListItemText
@@ -191,7 +225,7 @@ function Calib() {
         />
         <Button
           onClick={() => {
-            removeData(data.id);
+            removeLandmarkData(data.id);
           }}
         >
           Clear
@@ -200,9 +234,40 @@ function Calib() {
     </ListItem>
   ));
 
+  const parkingslotMap = parkingslotList.map((data) => (
+    <ListItem key={data.id} disablePadding>
+      <ListItemButton>
+        <ListItemText
+          primary={`${data.x1}, ${data.y1}, ${data.x2}, ${data.y2}`}
+        />
+        <Button
+          onClick={() => {
+            removeSlotData(data.id);
+          }}
+        >
+          Clear
+        </Button>
+      </ListItemButton>
+    </ListItem>
+  ));
+
+  const saveLandmark = () => {
+    //console.log(id);
+    //console.log(landmarkList);
+    dispatch(editLandmarkRex({ id, landmarkList }));
+  };
+
+  const saveSlot = () => {
+    //console.log(id);
+    //console.log(landmarkList);
+    dispatch(editSlotRex({ id, parkingslotList }));
+  };
+
   return (
     <div className="view">
       <h1>DEFINE PARKING LOT</h1>
+      {/* <h2>{id}</h2> */}
+      <DrawMode mode={mode} setMode={setMode} />
       <div className="button-wrapper">
         <Stack spacing={2} direction="column">
           <Button
@@ -222,7 +287,9 @@ function Calib() {
           {/* {file.name} */}
           {/* <strong>Uploaded Files:</strong>{" "}
             {file.map((x) => x.name).join(", ")} */}
-          <Button variant="contained">Cam Capture</Button>
+          <Button variant="contained" onClick={() => {}}>
+            Cam Capture
+          </Button>
         </Stack>
       </div>
       <div className="layout">
@@ -252,8 +319,12 @@ function Calib() {
           ></canvas>
           <div>
             <Stack spacing={2} direction="row">
-              <Button variant="contained">Save to Landmark</Button>
-              <Button variant="contained">Save to Parking Slots</Button>
+              <Button variant="contained" onClick={saveLandmark}>
+                Save to Landmark
+              </Button>
+              <Button variant="contained" onClick={saveSlot}>
+                Save to Parking Slots
+              </Button>
               <Button variant="contained">Save Rol</Button>
             </Stack>
           </div>
@@ -272,11 +343,21 @@ function Calib() {
               <List
                 sx={{
                   width: "100%",
-                  height: 200,
+                  height: 100,
                   overflowY: "scroll",
                 }}
               >
-                {dataMap}
+                {landmarkMap}
+              </List>
+              <Divider />
+              <List
+                sx={{
+                  width: "100%",
+                  height: 100,
+                  overflowY: "scroll",
+                }}
+              >
+                {parkingslotMap}
               </List>
             </nav>
             <ButtonGroup variant="outlined" aria-label="outlined button group">

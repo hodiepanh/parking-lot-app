@@ -5,9 +5,11 @@ import "../style/Home.css";
 import { useHistory } from "react-router-dom";
 import MenuItem from "@mui/material/MenuItem";
 import { useSelector, useDispatch } from "react-redux";
-import { addParkingLot } from "../redux/parkingLots";
+import { addParkingLot, getParkingLotRex } from "../redux/parkingLots";
 import DefineDialog from "../components/ultilites/DefineDialog";
 import AutoOrAdjustDialog from "../components/ultilites/AutoOrAdjustDialog";
+import listReactFiles from "list-react-files";
+import AvailableLotsList from "../components/ultilites/AvailableLotsList";
 
 function Home() {
   const [openDefine, setOpenDefine] = React.useState(false);
@@ -16,6 +18,7 @@ function Home() {
 
   const history = useHistory();
   const parkingList = useSelector((state) => state.parkingReducer.value);
+  const [lotsList, setLotsList] = useState(parkingList);
   const dispatch = useDispatch();
 
   const handleCloseDefine = () => {
@@ -46,35 +49,45 @@ function Home() {
     window.location.reload(false);
   };
 
+  const test = () => {};
+
   useEffect(() => {
     //console.log(parkingList);
     //dispatch(getParkingLot());
-  });
+    dispatch(getParkingLotRex())
+      .unwrap()
+      .then((res) => {
+        setLotsList(res);
+        //console.log(res);
+      });
+  }, [parkingList]);
 
   return (
     <div>
       <h1>WELCOME TO IMAGE CALIBRATION</h1>
       <h2>Select Functions</h2>
+      {/* <Button onClick={test}>Test</Button> */}
       <div className="button-wrapper">
         <Stack spacing={2} direction="column">
           <Button onClick={handleToggleDefine} variant="contained">
             Define New Parking Lot
           </Button>
-          <Button onClick={handleToggleAuto} variant="contained">
+          {/* <Button onClick={handleToggleAuto} variant="contained">
             Process Parking Lot Auto
           </Button>
           <Button onClick={handleToggleAdjust} variant="contained">
             Adjust Parking Lot
-          </Button>
+          </Button> */}
+          <AvailableLotsList lotsList={lotsList} setLotsList={setLotsList} />
         </Stack>
       </div>
       <DefineDialog open={openDefine} setOpen={setOpenDefine} />
-      <AutoOrAdjustDialog open={openAuto} setOpen={setOpenAuto} mode="auto" />
+      {/* <AutoOrAdjustDialog open={openAuto} setOpen={setOpenAuto} mode="auto" />
       <AutoOrAdjustDialog
         open={openAdjust}
         setOpen={setOpenAdjust}
         mode="adjust"
-      />
+      /> */}
     </div>
   );
 }

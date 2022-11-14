@@ -31,6 +31,51 @@ export const addParkingLotRex = createAsyncThunk(
   }
 );
 
+export const deleteParkingLotRex = createAsyncThunk(
+  "parkinglots/delete",
+  async (index) => {
+    const resp = await parkingApi.deleteParkingLot(index);
+    const dataOb = { data: resp.data, id: index };
+    return dataOb;
+  }
+);
+
+export const searchParkingLotRex = createAsyncThunk(
+  "parkinglots/search",
+  async (searchValue) => {
+    const resp = await parkingApi.searchParkingLot(searchValue);
+    const data = resp.data;
+    console.log(data);
+    return data;
+  }
+);
+
+export const editLandmarkRex = createAsyncThunk(
+  "parkinglots/edit",
+  async (editData) => {
+    //console.log(editData);
+    const id = editData.id;
+    const edit_data = editData.landmarkList;
+    const resp = await parkingApi.editLandmark(id, edit_data);
+    const data = resp.data;
+    //console.log(data);
+    return data;
+  }
+);
+
+export const editSlotRex = createAsyncThunk(
+  "parkinglots/edit",
+  async (editData) => {
+    //console.log(editData);
+    const id = editData.id;
+    const edit_data = editData.parkingslotList;
+    const resp = await parkingApi.editParkingSlot(id, edit_data);
+    const data = resp.data;
+    //console.log(data);
+    return data;
+  }
+);
+
 export const parkingSlice = createSlice({
   name: "parking",
   initialState,
@@ -63,6 +108,25 @@ export const parkingSlice = createSlice({
       //const newLot = { id: state.value.length(), title: action.payload };
       state.value = [...state.value, action.payload];
     },
+    [deleteParkingLotRex.fulfilled]: (state, action) => {
+      const index = action.payload.id;
+      const delItems = state.value.filter((items) => items.id !== index);
+      state.value = [...delItems];
+      state.loading = false;
+    },
+    [editLandmarkRex.fullfilled]: (state, action) => {
+      console.log(action.payload);
+      // let id = Number(action.payload.id);
+      // state.value[id].title = action.payload.title;
+      // state.loading = false;
+    },
+    [editSlotRex.fullfilled]: (state, action) => {
+      console.log(action.payload);
+      // let id = Number(action.payload.id);
+      // state.value[id].title = action.payload.title;
+      // state.loading = false;
+    },
+    [searchParkingLotRex.fulfilled]: () => {},
   },
 });
 

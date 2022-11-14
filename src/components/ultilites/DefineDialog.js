@@ -47,7 +47,7 @@ export default function DefineDialog({ open, setOpen }) {
       .unwrap()
       .then((res) => {
         //dispatch(addParkingLot(res));
-        console.log(res);
+        //console.log(res);
       });
     // parkingApi.addParkingLot(name);
     setDefinedStatus("success");

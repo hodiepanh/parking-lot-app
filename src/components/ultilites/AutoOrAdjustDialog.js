@@ -55,6 +55,10 @@ export default function AutoOrAdjustDialog({ open, setOpen }) {
     setChosenLot(event.target.value);
   };
 
+  const toCalib = (name) => {
+    history.push(`/calib/${name}`);
+  };
+
   return (
     <div>
       <Dialog open={open} onClose={handleClose}>
@@ -79,7 +83,7 @@ export default function AutoOrAdjustDialog({ open, setOpen }) {
           <Button onClick={handleClose}>Cancel</Button>
           <Button
             onClick={() => {
-              console.log(chosenLot);
+              toCalib(chosenLot);
             }}
           >
             Next
