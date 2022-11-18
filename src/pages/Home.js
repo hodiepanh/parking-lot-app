@@ -7,8 +7,6 @@ import MenuItem from "@mui/material/MenuItem";
 import { useSelector, useDispatch } from "react-redux";
 import { addParkingLot, getParkingLotRex } from "../redux/parkingLots";
 import DefineDialog from "../components/ultilites/DefineDialog";
-import AutoOrAdjustDialog from "../components/ultilites/AutoOrAdjustDialog";
-import listReactFiles from "list-react-files";
 import AvailableLotsList from "../components/ultilites/AvailableLotsList";
 
 function Home() {
@@ -18,49 +16,23 @@ function Home() {
 
   const history = useHistory();
   const parkingList = useSelector((state) => state.parkingReducer.value);
-  const [lotsList, setLotsList] = useState(parkingList);
+  const [lotsList, setLotsList] = useState([]);
   const dispatch = useDispatch();
 
-  const handleCloseDefine = () => {
-    setOpenDefine(false);
-    //console.log(defineName);
-  };
   const handleToggleDefine = () => {
     setOpenDefine(!openDefine);
-  };
-  const handleCloseAuto = () => {
-    setOpenAuto(false);
-  };
-  const handleToggleAuto = () => {
-    setOpenAuto(!openAuto);
-  };
-  const handleCloseAdjust = () => {
-    setOpenAdjust(false);
-  };
-  const handleToggleAdjust = () => {
-    setOpenAdjust(!openAdjust);
-  };
-  const toReference = () => {
-    history.push("calib");
-    window.location.reload(false);
-  };
-  const toResult = () => {
-    history.push("result");
-    window.location.reload(false);
   };
 
   const test = () => {};
 
   useEffect(() => {
-    //console.log(parkingList);
-    //dispatch(getParkingLot());
     dispatch(getParkingLotRex())
       .unwrap()
       .then((res) => {
         setLotsList(res);
         //console.log(res);
       });
-  }, [parkingList]);
+  }, []);
 
   return (
     <div>
@@ -72,22 +44,15 @@ function Home() {
           <Button onClick={handleToggleDefine} variant="contained">
             Define New Parking Lot
           </Button>
-          {/* <Button onClick={handleToggleAuto} variant="contained">
-            Process Parking Lot Auto
-          </Button>
-          <Button onClick={handleToggleAdjust} variant="contained">
-            Adjust Parking Lot
-          </Button> */}
           <AvailableLotsList lotsList={lotsList} setLotsList={setLotsList} />
         </Stack>
       </div>
-      <DefineDialog open={openDefine} setOpen={setOpenDefine} />
-      {/* <AutoOrAdjustDialog open={openAuto} setOpen={setOpenAuto} mode="auto" />
-      <AutoOrAdjustDialog
-        open={openAdjust}
-        setOpen={setOpenAdjust}
-        mode="adjust"
-      /> */}
+      <DefineDialog
+        open={openDefine}
+        setOpen={setOpenDefine}
+        lotsList={lotsList}
+        setLotsList={setLotsList}
+      />
     </div>
   );
 }

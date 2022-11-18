@@ -100,8 +100,8 @@ export const parkingSlice = createSlice({
     },
   },
   extraReducers: {
-    [getParkingLotRex.fulfilled]: (state, action) => {
-      state.value = action.payload;
+    [getParkingLotRex.fulfilled]: (state) => {
+      //state.value = action.payload;
       //console.log(state.value);
     },
     [addParkingLotRex.fulfilled]: (state, action) => {
@@ -112,6 +112,7 @@ export const parkingSlice = createSlice({
       const index = action.payload.id;
       const delItems = state.value.filter((items) => items.id !== index);
       state.value = [...delItems];
+      //onsole.log(state.value);
       state.loading = false;
     },
     [editLandmarkRex.fullfilled]: (state, action) => {

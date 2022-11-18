@@ -32,7 +32,7 @@ function Notification({ severity, open, setOpen }) {
             severity={severity}
             sx={{ width: "100%" }}
           >
-            This is a success message!
+            {severity}
           </Alert>
         </Snackbar>
         {/* <Alert severity="error">This is an error message!</Alert>

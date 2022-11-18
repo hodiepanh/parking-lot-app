@@ -6,48 +6,44 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import Button from "@mui/material/Button";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  deleteParkingLotRex,
-  getParkingLotRex,
-  setParkingLot,
-} from "../../redux/parkingLots";
+import { deleteParkingLotRex, getParkingLot } from "../../redux/parkingLots";
 import { useHistory } from "react-router-dom";
+import IconButton from "@mui/material/IconButton";
+import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
+import AutoModeRoundedIcon from "@mui/icons-material/AutoModeRounded";
+import TuneRoundedIcon from "@mui/icons-material/TuneRounded";
+import Tooltip from "@mui/material/Tooltip";
+import AlertDialog from "./AlertDialog";
 
 function AvailableLotsList({ lotsList, setLotsList }) {
-  const [selectedIndex, setSelectedIndex] = React.useState(1);
-  //const parkingList = useSelector((state) => state.parkingReducer.value);
+  const parkingList = useSelector((state) => state.parkingReducer.value);
   const dispatch = useDispatch();
   const history = useHistory();
-  //const [lotsList, setLotsList] = useState([]);
-  const handleListItemClick = (event, index) => {
-    setSelectedIndex(index);
+  const [openAlert, setOpenAlert] = useState(false);
+  const [answerAlert, setAnswerAlert] = useState(false);
+
+  const handleAnswerAlert = () => {
+    setAnswerAlert(true);
+    setOpenAlert(false);
   };
-  //   useEffect(() => {
-  //     // parkingApi.getParkingLot().then((res) => {
-  //     //   setParkingListdb(res.data);
-  //     //   dispatch(setParkingLot(res.data));
-  //     // });
-  //     dispatch(getParkingLotRex())
-  //       .unwrap()
-  //       .then((res) => {
-  //         setLotsList(res);
-  //         //console.log(res);
-  //       });
-  //   }, [parkingList]);
 
   const removeLot = (index) => {
+    //setOpenAlert(true);
     //console.log(index);
     const newList = lotsList.filter((item) => item.id !== index);
     setLotsList(newList);
     dispatch(deleteParkingLotRex(index));
   };
 
-  const runAuto = (data) => {
-    console.log(data.title);
+  useEffect(() => {
+    //dispatch(getParkingLot());
+    //console.log(lotsList);
+  }, [lotsList]);
+
+  const runAuto = () => {
     history.push("/result");
   };
   const adjust = (data) => {
-    console.log(data.title);
     history.push(`/calib/${data.id}`);
   };
 
@@ -55,27 +51,62 @@ function AvailableLotsList({ lotsList, setLotsList }) {
     <ListItem key={data.id} disablePadding>
       <ListItemButton>
         <ListItemText primary={data.title} />
-        <Button
+        <div>
+          <Tooltip title="Run Auto">
+            <IconButton onClick={runAuto}>
+              <AutoModeRoundedIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Adjust">
+            <IconButton
+              onClick={() => {
+                adjust(data);
+              }}
+            >
+              <TuneRoundedIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Delete">
+            <IconButton
+              onClick={() => {
+                removeLot(data.id);
+              }}
+              aria-label="delete"
+            >
+              <DeleteOutlineRoundedIcon />
+            </IconButton>
+          </Tooltip>
+          <AlertDialog
+            open={openAlert}
+            setOpen={setOpenAlert}
+            handleAnswer={handleAnswerAlert}
+            //answer={answerAlert}
+            //setAnswer={setAnswerAlert}
+          />
+        </div>
+        {/* <Button
+          onClick={() => {
+            console.log(answerAlert);
+          }}
+        >
+          Test
+        </Button> */}
+
+        {/* <Button
           onClick={() => {
             removeLot(data.id);
           }}
         >
           Clear
         </Button>
-        <Button
-          onClick={() => {
-            runAuto(data);
-          }}
-        >
-          Run Auto
-        </Button>
+        <Button onClick={runAuto}>Run Auto</Button>
         <Button
           onClick={() => {
             adjust(data);
           }}
         >
           Adjust
-        </Button>
+        </Button> */}
       </ListItemButton>
     </ListItem>
   ));

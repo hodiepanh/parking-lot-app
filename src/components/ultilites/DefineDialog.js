@@ -8,26 +8,34 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { TextField } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { addParkingLot, addParkingLotRex } from "../../redux/parkingLots";
+import {
+  addParkingLotRex,
+  getParkingLot,
+  getParkingLotRex,
+  setParkingLot,
+} from "../../redux/parkingLots";
 import Notification from "./Notification";
-import axios from "axios";
-import { parkingApi } from "../../api/parkingDataApi";
 
-export default function DefineDialog({ open, setOpen }) {
-  //const [open, setOpen] = React.useState(openDefine);
+export default function DefineDialog({ open, setOpen, lotsList, setLotsList }) {
   const [defineName, setDefineName] = useState("");
   const [definedStatus, setDefinedStatus] = useState("");
   const [openNoti, setOpenNoti] = useState(false);
+  const [titleList, setTitleList] = useState([]);
 
   const history = useHistory();
-  //const parkingList = useSelector((state) => state.parkingReducer.value);
+  const parkingList = useSelector((state) => state.parkingReducer.value);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // axios.get("http://localhost:3001/parkinglots").then((res) => {
-    //   console.log(res.data);
-    // });
-  });
+    //console.log(lotsList);
+    // dispatch(getParkingLotRex())
+    //   .unwrap()
+    //   .then((res) => {
+    //     for (let i = 0; i < res.length; i++) {
+    //       titleList.push(res[i].title);
+    //     }
+    //   });
+  }, []);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -37,22 +45,30 @@ export default function DefineDialog({ open, setOpen }) {
     setOpen(false);
   };
 
-  const toReference = () => {
-    // history.push("reference");
-    //window.location.reload(false);
-  };
-
   const addParkingLot = (name) => {
-    dispatch(addParkingLotRex(name))
-      .unwrap()
-      .then((res) => {
-        //dispatch(addParkingLot(res));
-        //console.log(res);
-      });
-    // parkingApi.addParkingLot(name);
-    setDefinedStatus("success");
+    for (let i = 0; i < lotsList.length; i++) {
+      titleList.push(lotsList[i].title);
+    }
+    //console.log(titleList);
+    if (name != "") {
+      if (titleList.includes(name)) {
+        setDefinedStatus("error");
+      } else {
+        dispatch(addParkingLotRex(name))
+          .unwrap()
+          .then((res) => {
+            lotsList.push(res);
+          });
+        setDefinedStatus("success");
+
+        //load new parking lot
+        //window.location.reload(false);
+      }
+    } else {
+      setDefinedStatus("warning");
+    }
     setOpenNoti(true);
-    // toReference();
+    //console.log(lotsList);
   };
 
   return (
@@ -75,15 +91,7 @@ export default function DefineDialog({ open, setOpen }) {
           />
         </DialogContent>
         <DialogActions>
-          <Button
-            onClick={() => {
-              //console.log(parkingList);
-              //dispatch(addParkingLot(defineName));
-              handleClose();
-            }}
-          >
-            Cancel
-          </Button>
+          <Button onClick={handleClose}>Cancel</Button>
           <Button
             onClick={() => {
               addParkingLot(defineName);
