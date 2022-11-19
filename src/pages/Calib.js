@@ -252,12 +252,25 @@ function Calib() {
   ));
 
   const saveLandmark = () => {
+    console.log(mode);
     //console.log(id);
     //console.log(landmarkList);
     dispatch(editLandmarkRex({ id, landmarkList }));
   };
 
+  const saveData = () => {
+    // if (mode == "landmark") {
+    //   dispatch(editLandmarkRex({ id, landmarkList }));
+    // }
+    // if (mode == "slot") {
+    //   dispatch(editSlotRex({ id, parkingslotList }));
+    // }
+    dispatch(editLandmarkRex({ id, landmarkList }));
+    dispatch(editSlotRex({ id, parkingslotList }));
+  };
+
   const saveSlot = () => {
+    console.log(mode);
     //console.log(id);
     //console.log(landmarkList);
     dispatch(editSlotRex({ id, parkingslotList }));
@@ -267,31 +280,6 @@ function Calib() {
     <div className="view">
       <h1>DEFINE PARKING LOT</h1>
       {/* <h2>{id}</h2> */}
-      <DrawMode mode={mode} setMode={setMode} />
-      <div className="button-wrapper">
-        <Stack spacing={2} direction="column">
-          <Button
-            variant="contained"
-            onClick={() => {
-              inputFile.current.click();
-            }}
-          >
-            Browse
-          </Button>
-          <input
-            type="file"
-            onChange={handleChange}
-            ref={inputFile}
-            style={{ display: "none" }}
-          />
-          {/* {file.name} */}
-          {/* <strong>Uploaded Files:</strong>{" "}
-            {file.map((x) => x.name).join(", ")} */}
-          <Button variant="contained" onClick={() => {}}>
-            Cam Capture
-          </Button>
-        </Stack>
-      </div>
       <div className="layout">
         <div className="image-editor">
           {/* <Box
@@ -317,7 +305,7 @@ function Calib() {
             onMouseMove={trackRect}
             onMouseUp={endRect}
           ></canvas>
-          <div>
+          {/* <div>
             <Stack spacing={2} direction="row">
               <Button variant="contained" onClick={saveLandmark}>
                 Save to Landmark
@@ -325,9 +313,11 @@ function Calib() {
               <Button variant="contained" onClick={saveSlot}>
                 Save to Parking Slots
               </Button>
-              <Button variant="contained">Save Rol</Button>
+              <Button variant="contained" onClick={saveData}>
+                Save
+              </Button>
             </Stack>
-          </div>
+          </div> */}
         </div>
 
         <div className="data-list">
@@ -360,18 +350,39 @@ function Calib() {
                 {parkingslotMap}
               </List>
             </nav>
-            <ButtonGroup variant="outlined" aria-label="outlined button group">
+            {/* <ButtonGroup variant="outlined" aria-label="outlined button group">
               <Button>Undo</Button>
               <Button>Redo</Button>
               <Button>Reset</Button>
-            </ButtonGroup>
+            </ButtonGroup> */}
+            <DrawMode mode={mode} setMode={setMode} />
             <div className="button-wrapper">
               <Stack spacing={2} direction="row">
-                <Button onClick={back} variant="text">
+                {/* <Button onClick={back} variant="text">
                   Back
-                </Button>
+                </Button> */}
                 <Button onClick={toResult} variant="text">
                   Next
+                </Button>
+                <Button variant="contained" onClick={saveData}>
+                  Save
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    inputFile.current.click();
+                  }}
+                >
+                  Browse
+                </Button>
+                <input
+                  type="file"
+                  onChange={handleChange}
+                  ref={inputFile}
+                  style={{ display: "none" }}
+                />
+                <Button variant="contained" onClick={() => {}}>
+                  Cam
                 </Button>
               </Stack>
             </div>

@@ -1,22 +1,41 @@
 {
   "parkinglots": [
     {
-      "title": "Parking Lot B",
-      "id": 2,
-      "landmark": [],
-      "slot": [],
-      "standard": ""
-    },
-    {
-      "title": "Parking Lot C",
-      "id": 3,
-      "landmark": [],
-      "slot": [],
-      "standard": ""
-    },
-    {
       "title": "Parking Lot A",
-      "id": 4
+      "id": 1
+    },
+    {
+      "title": "Parking Lot B",
+      "id": 2
+    },
+    {
+      "title": "Parking Lot D",
+      "id": 3,
+      "landmark": [
+        {
+          "id": 2,
+          "x1": 281,
+          "y1": 75,
+          "x2": 324,
+          "y2": 111
+        }
+      ],
+      "slot": [
+        {
+          "id": 1,
+          "x1": 175,
+          "y1": 309,
+          "x2": 222,
+          "y2": 348
+        },
+        {
+          "id": 3,
+          "x1": 326,
+          "y1": 286,
+          "x2": 383,
+          "y2": 325
+        }
+      ]
     }
   ]
 }

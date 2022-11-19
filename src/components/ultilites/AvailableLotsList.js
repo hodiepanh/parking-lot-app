@@ -14,6 +14,7 @@ import AutoModeRoundedIcon from "@mui/icons-material/AutoModeRounded";
 import TuneRoundedIcon from "@mui/icons-material/TuneRounded";
 import Tooltip from "@mui/material/Tooltip";
 import AlertDialog from "./AlertDialog";
+import { SettingsPowerRounded } from "@mui/icons-material";
 
 function AvailableLotsList({ lotsList, setLotsList }) {
   const parkingList = useSelector((state) => state.parkingReducer.value);
@@ -69,7 +70,7 @@ function AvailableLotsList({ lotsList, setLotsList }) {
           <Tooltip title="Delete">
             <IconButton
               onClick={() => {
-                removeLot(data.id);
+                setOpenAlert(true);
               }}
               aria-label="delete"
             >
@@ -79,7 +80,10 @@ function AvailableLotsList({ lotsList, setLotsList }) {
           <AlertDialog
             open={openAlert}
             setOpen={setOpenAlert}
-            handleAnswer={handleAnswerAlert}
+            handleAnswer={() => {
+              removeLot(data.id);
+              setOpenAlert(false);
+            }}
             //answer={answerAlert}
             //setAnswer={setAnswerAlert}
           />

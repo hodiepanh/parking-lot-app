@@ -6,7 +6,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-function AlertDialog({ open, setOpen, handleAnswer, answer, setAnswer }) {
+function AlertDialog({ open, setOpen, handleAnswer }) {
   //const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -29,7 +29,7 @@ function AlertDialog({ open, setOpen, handleAnswer, answer, setAnswer }) {
       </Button> */}
       <Dialog
         open={open}
-        //onClose={handleClose}
+        onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
