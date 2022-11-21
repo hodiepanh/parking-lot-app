@@ -4,50 +4,54 @@ import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import Button from "@mui/material/Button";
-import { useDispatch, useSelector } from "react-redux";
-import { deleteParkingLotRex, getParkingLot } from "../../redux/parkingLots";
-import { useHistory } from "react-router-dom";
 import IconButton from "@mui/material/IconButton";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import AutoModeRoundedIcon from "@mui/icons-material/AutoModeRounded";
 import TuneRoundedIcon from "@mui/icons-material/TuneRounded";
 import Tooltip from "@mui/material/Tooltip";
+
+//import redux state management
+import { useDispatch, useSelector } from "react-redux";
+import { deleteParkingLotRex } from "../../redux/parkingLots";
+
+//import router
+import { useHistory } from "react-router-dom";
+
+//import component
 import AlertDialog from "./AlertDialog";
-import { SettingsPowerRounded } from "@mui/icons-material";
 
 function AvailableLotsList({ lotsList, setLotsList }) {
-  const parkingList = useSelector((state) => state.parkingReducer.value);
-  const dispatch = useDispatch();
-  const history = useHistory();
   const [openAlert, setOpenAlert] = useState(false);
   const [answerAlert, setAnswerAlert] = useState(false);
 
-  const handleAnswerAlert = () => {
-    setAnswerAlert(true);
-    setOpenAlert(false);
-  };
+  //redux state management
+  const parkingList = useSelector((state) => state.parkingReducer.value);
+  const dispatch = useDispatch();
 
+  //router
+  const history = useHistory();
+
+  //remove parking lot from list
   const removeLot = (index) => {
-    //setOpenAlert(true);
-    //console.log(index);
+    //find parking lot with index !== chosen index ->update state
     const newList = lotsList.filter((item) => item.id !== index);
     setLotsList(newList);
+
+    //remove from database
     dispatch(deleteParkingLotRex(index));
   };
 
-  useEffect(() => {
-    //dispatch(getParkingLot());
-    //console.log(lotsList);
-  }, [lotsList]);
-
+  //navigate to result screen
   const runAuto = () => {
     history.push("/result");
   };
+
+  //navigate to calibration screen
   const adjust = (data) => {
     history.push(`/calib/${data.id}`);
   };
 
+  //render list item
   const lotsMap = lotsList.map((data) => (
     <ListItem key={data.id} disablePadding>
       <ListItemButton>
@@ -84,33 +88,8 @@ function AvailableLotsList({ lotsList, setLotsList }) {
               removeLot(data.id);
               setOpenAlert(false);
             }}
-            //answer={answerAlert}
-            //setAnswer={setAnswerAlert}
           />
         </div>
-        {/* <Button
-          onClick={() => {
-            console.log(answerAlert);
-          }}
-        >
-          Test
-        </Button> */}
-
-        {/* <Button
-          onClick={() => {
-            removeLot(data.id);
-          }}
-        >
-          Clear
-        </Button>
-        <Button onClick={runAuto}>Run Auto</Button>
-        <Button
-          onClick={() => {
-            adjust(data);
-          }}
-        >
-          Adjust
-        </Button> */}
       </ListItemButton>
     </ListItem>
   ));

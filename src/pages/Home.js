@@ -3,34 +3,35 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import "../style/Home.css";
 import { useHistory } from "react-router-dom";
-import MenuItem from "@mui/material/MenuItem";
+
+//import state management
 import { useSelector, useDispatch } from "react-redux";
 import { addParkingLot, getParkingLotRex } from "../redux/parkingLots";
+
+//import component
 import DefineDialog from "../components/ultilites/DefineDialog";
 import AvailableLotsList from "../components/ultilites/AvailableLotsList";
 
 function Home() {
   const [openDefine, setOpenDefine] = React.useState(false);
-  const [openAuto, setOpenAuto] = React.useState(false);
-  const [openAdjust, setOpenAdjust] = React.useState(false);
-
-  const history = useHistory();
-  const parkingList = useSelector((state) => state.parkingReducer.value);
   const [lotsList, setLotsList] = useState([]);
+
+  //redux state managament
+  const parkingList = useSelector((state) => state.parkingReducer.value);
   const dispatch = useDispatch();
 
+  //open Define Dialog
   const handleToggleDefine = () => {
     setOpenDefine(!openDefine);
   };
 
-  const test = () => {};
-
+  //fetch data from database
+  //set parking lots list as fetched data
   useEffect(() => {
     dispatch(getParkingLotRex())
       .unwrap()
       .then((res) => {
         setLotsList(res);
-        //console.log(res);
       });
   }, []);
 
@@ -38,7 +39,6 @@ function Home() {
     <div>
       <h1>WELCOME TO IMAGE CALIBRATION</h1>
       <h2>Select Functions</h2>
-      {/* <Button onClick={test}>Test</Button> */}
       <div className="button-wrapper">
         <Stack spacing={2} direction="column">
           <Button onClick={handleToggleDefine} variant="contained">

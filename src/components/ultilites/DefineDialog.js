@@ -6,14 +6,12 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { TextField } from "@mui/material";
-import { useHistory } from "react-router-dom";
+
+//import redux state management
 import { useSelector, useDispatch } from "react-redux";
-import {
-  addParkingLotRex,
-  getParkingLot,
-  getParkingLotRex,
-  setParkingLot,
-} from "../../redux/parkingLots";
+import { addParkingLotRex } from "../../redux/parkingLots";
+
+//import component
 import Notification from "./Notification";
 
 export default function DefineDialog({ open, setOpen, lotsList, setLotsList }) {
@@ -22,53 +20,43 @@ export default function DefineDialog({ open, setOpen, lotsList, setLotsList }) {
   const [openNoti, setOpenNoti] = useState(false);
   const [titleList, setTitleList] = useState([]);
 
-  const history = useHistory();
+  //redux state managemeent
   const parkingList = useSelector((state) => state.parkingReducer.value);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    //console.log(lotsList);
-    // dispatch(getParkingLotRex())
-    //   .unwrap()
-    //   .then((res) => {
-    //     for (let i = 0; i < res.length; i++) {
-    //       titleList.push(res[i].title);
-    //     }
-    //   });
-  }, []);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
+  //close Define Dialog
   const handleClose = () => {
     setOpen(false);
   };
 
+  //add new parking lot
   const addParkingLot = (name) => {
+    //get parking lots title from parking lots data (title, id, landmarks, slots)
     for (let i = 0; i < lotsList.length; i++) {
       titleList.push(lotsList[i].title);
     }
-    //console.log(titleList);
+
+    //validator: title cannot be blank
     if (name != "") {
+      //if name already exists -> show error notification
       if (titleList.includes(name)) {
         setDefinedStatus("error");
       } else {
+        //if name is not blank -> add new parking lot to database
         dispatch(addParkingLotRex(name))
           .unwrap()
           .then((res) => {
             lotsList.push(res);
           });
+        //show success notification
         setDefinedStatus("success");
-
-        //load new parking lot
-        //window.location.reload(false);
       }
     } else {
       setDefinedStatus("warning");
     }
+
+    //open notification
     setOpenNoti(true);
-    //console.log(lotsList);
   };
 
   return (
@@ -81,7 +69,6 @@ export default function DefineDialog({ open, setOpen, lotsList, setLotsList }) {
             margin="dense"
             id="name"
             label="New parking lot name"
-            // type="email"
             fullWidth
             variant="standard"
             value={defineName}
