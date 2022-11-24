@@ -8,11 +8,8 @@ import FormLabel from "@mui/material/FormLabel";
 import Button from "@mui/material/Button";
 
 function DrawMode({ mode, setMode }) {
-  //   const [value, setValue] = React.useState("");
-
   const handleRadioChange = (event) => {
     setMode(event.target.value);
-    //console.log(event.target.value);
   };
 
   return (

@@ -16,6 +16,7 @@ import Divider from "@mui/material/Divider";
 import { styled } from "@mui/material/styles";
 import { useSelector, useDispatch } from "react-redux";
 import "../style/Result.css";
+import DebugDrawer from "../components/ultilites/DebugDrawer";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -29,95 +30,39 @@ function Result() {
   const standardImage = useSelector(
     (state) => state.parkingReducer.standardImage
   );
-  const itemData = [
-    {
-      img: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
-      title: "Breakfast",
-      heading: "Standard Image",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1551782450-a2132b4ba21d",
-      title: "Burger",
-      heading: "Captured Image",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1522770179533-24471fcdba45",
-      title: "Camera",
-      heading: "Calibrated Image",
-    },
+
+  const gridData = [
+    { title: "Standard Image", src: standardImage },
+    { title: "Captured Image", src: standardImage },
+    { title: "Calibrated Image", src: standardImage },
   ];
+
+  const gridItem = gridData.map((data) => (
+    <Grid xs={4}>
+      <h3>{data.title}</h3>
+      <Box
+        className="image"
+        component="img"
+        sx={{
+          height: 270,
+          width: 400,
+        }}
+        alt="The house from the offer."
+        src={data.src}
+      />
+    </Grid>
+  ));
   return (
     <div>
       <h1>Results</h1>
       <div className="layout">
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-          <Grid xs={4}>
-            <h2>Standard Image</h2>
-            <Box
-              className="image"
-              component="img"
-              sx={{
-                height: 200,
-                width: 300,
-              }}
-              alt="The house from the offer."
-              src={standardImage}
-            />
-          </Grid>
-          <Grid xs={4}>
-            <h2>Captured Image</h2>
-            <Box
-              className="image"
-              component="img"
-              sx={{
-                height: 200,
-                width: 300,
-              }}
-              alt="The house from the offer."
-              src={standardImage}
-            />
-          </Grid>
-          <Grid xs={4}>
-            <h2>Calibrated Image</h2>
-            <Box
-              className="image"
-              component="img"
-              sx={{
-                height: 200,
-                width: 300,
-              }}
-              alt="The house from the offer."
-              src={standardImage}
-            />
-          </Grid>
-          <Grid xs={4}>
-            <h1>RATING</h1>
+          {gridItem}
+          <Grid xs={12}>
+            <h2>Rating</h2>
+            <DebugDrawer />
           </Grid>
         </Grid>
-        <Box
-          className="debug-list"
-          sx={{
-            width: "100%",
-            maxWidth: 360,
-            bgcolor: "background.paper",
-          }}
-        >
-          <h2>Data storage</h2>
-          <nav aria-label="secondary mailbox folders">
-            <List>
-              <ListItem disablePadding>
-                <ListItemButton>
-                  <ListItemText primary="Trash" />
-                </ListItemButton>
-              </ListItem>
-              <ListItem disablePadding>
-                <ListItemButton component="a" href="#simple-list">
-                  <ListItemText primary="Spam" />
-                </ListItemButton>
-              </ListItem>
-            </List>
-          </nav>
-        </Box>
       </div>
       <div className="button-wrapper">
         <Stack spacing={2} direction="row">

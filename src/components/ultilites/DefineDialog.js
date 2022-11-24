@@ -17,6 +17,7 @@ import Notification from "./Notification";
 export default function DefineDialog({ open, setOpen, lotsList, setLotsList }) {
   const [defineName, setDefineName] = useState("");
   const [definedStatus, setDefinedStatus] = useState("");
+  const [message, setMessage] = useState("");
   const [openNoti, setOpenNoti] = useState(false);
   const [titleList, setTitleList] = useState([]);
 
@@ -27,6 +28,10 @@ export default function DefineDialog({ open, setOpen, lotsList, setLotsList }) {
   //close Define Dialog
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleCloseNoti = () => {
+    setOpenNoti(false);
   };
 
   //add new parking lot
@@ -41,6 +46,7 @@ export default function DefineDialog({ open, setOpen, lotsList, setLotsList }) {
       //if name already exists -> show error notification
       if (titleList.includes(name)) {
         setDefinedStatus("error");
+        setMessage("Parking Lot already exists. Choose another name.");
       } else {
         //if name is not blank -> add new parking lot to database
         dispatch(addParkingLotRex(name))
@@ -50,9 +56,11 @@ export default function DefineDialog({ open, setOpen, lotsList, setLotsList }) {
           });
         //show success notification
         setDefinedStatus("success");
+        setMessage("New Parking Lot is now available.");
       }
     } else {
       setDefinedStatus("warning");
+      setMessage("Name of parking lot cannot be blank.");
     }
 
     //open notification
@@ -90,8 +98,9 @@ export default function DefineDialog({ open, setOpen, lotsList, setLotsList }) {
       </Dialog>
       <Notification
         severity={definedStatus}
+        message={message}
         open={openNoti}
-        setOpen={setOpenNoti}
+        handleClose={handleCloseNoti}
       />
     </div>
   );
