@@ -9,20 +9,29 @@ import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import AutoModeRoundedIcon from "@mui/icons-material/AutoModeRounded";
 import TuneRoundedIcon from "@mui/icons-material/TuneRounded";
 import Tooltip from "@mui/material/Tooltip";
+import default_image from "../../assets/default_image.png";
 
 //import redux state management
 import { useDispatch, useSelector } from "react-redux";
-import { deleteParkingLotRex } from "../../redux/parkingLots";
+import {
+  closeAlert,
+  deleteParkingLotRex,
+  openAlert,
+  openNotification,
+} from "../../redux/parkingLots";
 
 //import router
 import { useHistory } from "react-router-dom";
 
 //import component
 import AlertDialog from "./AlertDialog";
+import Notification from "./Notification";
 
 function AvailableLotsList({ lotsList, setLotsList }) {
-  const [openAlert, setOpenAlert] = useState(false);
-  const [answerAlert, setAnswerAlert] = useState(false);
+  //const [openAlert, setOpenAlert] = useState(false);
+  const standardImage = useSelector(
+    (state) => state.parkingReducer.standardImage
+  );
 
   //redux state management
   const parkingList = useSelector((state) => state.parkingReducer.value);
@@ -43,7 +52,16 @@ function AvailableLotsList({ lotsList, setLotsList }) {
 
   //navigate to result screen
   const runAuto = () => {
-    history.push("/result");
+    if (standardImage == default_image) {
+      dispatch(
+        openNotification({
+          status: "error",
+          message: "Cannot run auto. Parking lot is not defined.",
+        })
+      );
+    } else {
+      history.push("/result");
+    }
   };
 
   //navigate to calibration screen
@@ -74,7 +92,7 @@ function AvailableLotsList({ lotsList, setLotsList }) {
           <Tooltip title="Delete">
             <IconButton
               onClick={() => {
-                setOpenAlert(true);
+                dispatch(openAlert(""));
               }}
               aria-label="delete"
             >
@@ -82,11 +100,9 @@ function AvailableLotsList({ lotsList, setLotsList }) {
             </IconButton>
           </Tooltip>
           <AlertDialog
-            open={openAlert}
-            setOpen={setOpenAlert}
             handleAnswer={() => {
               removeLot(data.id);
-              setOpenAlert(false);
+              dispatch(closeAlert());
             }}
           />
         </div>
@@ -101,6 +117,7 @@ function AvailableLotsList({ lotsList, setLotsList }) {
           {lotsMap}
         </List>
       </Box>
+      <Notification />
     </div>
   );
 }

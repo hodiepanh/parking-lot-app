@@ -3,12 +3,10 @@ import default_image from "../assets/default_image.png";
 import { parkingApi } from "../api/parkingDataApi";
 
 let initialState = {
-  value: [
-    { id: 0, title: "Parking Lot A" },
-    { id: 1, title: "Parking Lot B" },
-    { id: 2, title: "Parking Lot C" },
-  ],
+  value: [],
   standardImage: default_image,
+  notification: { open: false, status: "", message: "" },
+  alert: { open: false, message: "" },
 };
 
 export const getParkingLotRex = createAsyncThunk(
@@ -56,7 +54,14 @@ export const editLandmarkRex = createAsyncThunk(
     //console.log(editData);
     const id = editData.id;
     const edit_data = editData.landmarkList;
-    const resp = await parkingApi.editLandmark(id, edit_data);
+    const newLandmarkList = edit_data.map((data, index) => ({
+      id: index,
+      x1: data.x1,
+      y1: data.y1,
+      x2: data.x2,
+      y2: data.y2,
+    }));
+    const resp = await parkingApi.editLandmark(id, newLandmarkList);
     const data = resp.data;
     //console.log(data);
     return data;
@@ -98,6 +103,22 @@ export const parkingSlice = createSlice({
       state.standardImage = newImage;
       //console.log(state.standardImage);
     },
+    openNotification: (state, action) => {
+      state.notification = {
+        open: true,
+        status: action.payload.status,
+        message: action.payload.message,
+      };
+    },
+    closeNotification: (state) => {
+      state.notification.open = false;
+    },
+    openAlert: (state, action) => {
+      state.alert = { open: true, message: action.payload };
+    },
+    closeAlert: (state) => {
+      state.alert.open = false;
+    },
   },
   extraReducers: {
     [getParkingLotRex.fulfilled]: (state) => {
@@ -107,6 +128,11 @@ export const parkingSlice = createSlice({
     [addParkingLotRex.fulfilled]: (state, action) => {
       //const newLot = { id: state.value.length(), title: action.payload };
       state.value = [...state.value, action.payload];
+      state.notification = {
+        open: true,
+        status: "success",
+        message: "New parking lot added",
+      };
     },
     [deleteParkingLotRex.fulfilled]: (state, action) => {
       const index = action.payload.id;
@@ -137,6 +163,10 @@ export const {
   setParkingLot,
   getParkingLot,
   setReferenceImage,
+  closeNotification,
+  openNotification,
+  openAlert,
+  closeAlert,
 } = parkingSlice.actions;
 
 export default parkingSlice.reducer;

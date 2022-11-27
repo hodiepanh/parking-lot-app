@@ -6,9 +6,13 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import Slide from "@mui/material/Slide";
-import SettingOverlay from "../SettingOverlay";
+import SettingOverlay from "./SettingOverlay";
 import MuiAlert from "@mui/material/Alert";
+import IconButton from "@mui/material/IconButton";
+import MenuIcon from "@mui/icons-material/Menu";
 import Notification from "./Notification";
+import { useDispatch } from "react-redux";
+import { openNotification } from "../../redux/parkingLots";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -16,8 +20,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 function Navbar() {
   const [open, setOpen] = useState(false);
-  const [savedStatus, setSavedStatus] = useState("");
-  const [openNoti, setOpenNoti] = useState(false);
+  const dispatch = useDispatch();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -32,7 +35,19 @@ function Navbar() {
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
           <Toolbar>
-            <Button onClick={handleClickOpen} color="inherit">
+            <IconButton
+              size="large"
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+              sx={{ mr: 2 }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              Logo
+            </Typography>
+            <Button color="inherit" onClick={handleClickOpen}>
               Setting
             </Button>
           </Toolbar>
@@ -44,29 +59,27 @@ function Navbar() {
         onClose={handleClose}
         TransitionComponent={Transition}
       >
-        <AppBar sx={{ position: "relative" }}>
+        <AppBar sx={{ position: "static" }}>
           <Toolbar>
             <Button
               autoFocus
               color="inherit"
               onClick={() => {
-                setSavedStatus("success");
-                setOpenNoti(true);
+                dispatch(
+                  openNotification({
+                    status: "success",
+                    message: "Data saved successfully.",
+                  })
+                );
+                handleClose();
               }}
             >
               Save
             </Button>
-            <Button autoFocus color="inherit" onClick={handleClose}>
-              Close
-            </Button>
           </Toolbar>
         </AppBar>
         <SettingOverlay />
-        <Notification
-          severity={savedStatus}
-          open={openNoti}
-          setOpen={setOpenNoti}
-        />
+        <Notification />
       </Dialog>
     </div>
   );

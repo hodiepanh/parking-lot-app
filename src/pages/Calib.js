@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
@@ -10,11 +10,6 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
 import ListSubheader from "@mui/material/ListSubheader";
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import Typography from "@mui/material/Typography";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
@@ -28,6 +23,7 @@ import {
   editLandmarkRex,
   editSlotRex,
   setReferenceImage,
+  openNotification,
 } from "../redux/parkingLots";
 
 //import router
@@ -65,11 +61,6 @@ function Calib() {
   const history = useHistory();
   const { id } = useParams();
 
-  //notification
-  const [status, setStatus] = useState("");
-  const [message, setMessage] = useState("");
-  const [openNoti, setOpenNoti] = useState(false);
-
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
@@ -90,38 +81,6 @@ function Calib() {
     file.preview = URL.createObjectURL(file);
     setRefImage(file.preview);
   };
-
-  const handleCloseNoti = () => {
-    setOpenNoti(false);
-  };
-
-  const setNotiProp = (open, status, message) => {
-    setOpenNoti(open);
-    setStatus(status);
-    setMessage(message);
-  };
-
-  //const [index, setIndex] = React.useState([1, 2, 3, 4]);
-  //var index = [1, 2, 3, 4];
-
-  // const handleIndex = (event, item_index) => {
-  //   //console.log(item_index);
-  //   //console.log(event.target.value);
-  //   if (item_index == 0) {
-  //     setIndex([event.target.value, index[1], index[2], index[3]]);
-  //   }
-  //   if (item_index == 1) {
-  //     setIndex([index[0], event.target.value, index[2], index[3]]);
-  //   }
-  //   if (item_index == 2) {
-  //     setIndex([index[0], index[1], event.target.value, index[3]]);
-  //   }
-  //   if (item_index == 3) {
-  //     setIndex([index[0], index[1], index[2], event.target.value]);
-  //   }
-  //   //index[item_index] = event.target.value;
-  //   console.log(index);
-  // };
 
   //get coordinate start point of rectangle
   const startRect = ({ nativeEvent }) => {
@@ -171,10 +130,20 @@ function Calib() {
   //get coordinate end point of rectangle
   const endRect = ({ nativeEvent }) => {
     if (refImage == standardImage) {
-      setNotiProp(true, "error", "Choose the reference image first");
+      dispatch(
+        openNotification({
+          status: "error",
+          message: "Choose the reference image first",
+        })
+      );
     } else {
       if (mode == "") {
-        setNotiProp(true, "error", "Choose the drawing mode first");
+        dispatch(
+          openNotification({
+            status: "error",
+            message: "Choose the drawing mode first",
+          })
+        );
       } else {
         const newMouseX = nativeEvent.clientX - canvasOffsetX.current;
         const newMouseY = nativeEvent.clientY - canvasOffsetY.current;
@@ -200,20 +169,20 @@ function Calib() {
           setLandmarkList((prevState) => [
             ...prevState,
             {
-              id: landmarkList.length,
+              //id: landmarkList.length,
               x1: Math.round(startX.current),
               y1: Math.round(startY.current),
               x2: Math.round(startX.current + rectWidth),
               y2: Math.round(startY.current + rectHeight),
             },
           ]);
-          console.log(landmarkList);
+          //console.log(landmarkList);
         }
         if (mode == "slot") {
           setParkingSlotList((prevState) => [
             ...prevState,
             {
-              id: parkingslotList.length,
+              //id: parkingslotList.length,
               x1: Math.round(startX.current),
               y1: Math.round(startY.current),
               x2: Math.round(startX.current + rectWidth),
@@ -228,11 +197,11 @@ function Calib() {
   };
 
   //remove landmark in list -> erase landmark in canvas
-  const removeLandmarkData = (index) => {
-    const removeRect = landmarkList.filter((item) => item.id == index);
-    const newList = landmarkList.filter((item) => item.id !== index);
+  const removeLandmarkData = (data) => {
+    const removeRect = landmarkList.filter((item) => item == data);
+    //console.log(removeRect);
+    const newList = landmarkList.filter((item) => item !== data);
     setLandmarkList(newList);
-
     contextRef.current.clearRect(
       removeRect[0].x1 - 1,
       removeRect[0].y1 - 1,
@@ -242,11 +211,10 @@ function Calib() {
   };
 
   //remove parking slot in list -> erase parking slot in canvas
-  const removeSlotData = (index) => {
-    const removeRect = parkingslotList.filter((item) => item.id == index);
-    const newList = parkingslotList.filter((item) => item.id !== index);
+  const removeSlotData = (data) => {
+    const removeRect = parkingslotList.filter((item) => item == data);
+    const newList = parkingslotList.filter((item) => item !== data);
     setParkingSlotList(newList);
-
     contextRef.current.clearRect(
       removeRect[0].x1 - 1,
       removeRect[0].y1 - 1,
@@ -256,8 +224,8 @@ function Calib() {
   };
 
   //render landmark list item
-  const landmarkMap = landmarkList.map((data) => (
-    <ListItem key={data.id} disablePadding>
+  const landmarkMap = landmarkList.map((data, index) => (
+    <ListItem key={index} disablePadding>
       <ListItemButton>
         {/* <Box sx={{ minWidth: 120 }}>
           <FormControl sx={{ m: 1, minWidth: 80 }} size="small">
@@ -280,11 +248,11 @@ function Calib() {
           </FormControl>
         </Box> */}
         <ListItemText
-          primary={`${data.id}: (${data.x1}, ${data.y1}), (${data.x2}, ${data.y2})`}
+          primary={`${index}: (${data.x1}, ${data.y1}), (${data.x2}, ${data.y2})`}
         />
         <Button
           onClick={() => {
-            removeLandmarkData(data.id);
+            removeLandmarkData(data);
           }}
         >
           Clear
@@ -294,15 +262,15 @@ function Calib() {
   ));
 
   //render parking slot list item
-  const parkingslotMap = parkingslotList.map((data) => (
-    <ListItem key={data.id} disablePadding>
+  const parkingslotMap = parkingslotList.map((data, index) => (
+    <ListItem key={index} disablePadding>
       <ListItemButton>
         <ListItemText
           primary={`${data.x1}, ${data.y1}, ${data.x2}, ${data.y2}`}
         />
         <Button
           onClick={() => {
-            removeSlotData(data.id);
+            removeSlotData(data);
           }}
         >
           Clear
@@ -311,28 +279,24 @@ function Calib() {
     </ListItem>
   ));
 
-  //const [newLandmarkList, setNewLandmarkList] = useState([]);
   //save data to the database
   const saveData = () => {
     if (landmarkList.length !== 4) {
-      setNotiProp(true, "error", "Only 4 landmarks");
+      dispatch(
+        openNotification({
+          status: "error",
+          message: "Only 4 landmarks.",
+        })
+      );
     } else {
-      // var newLandmarkList = [];
-      // for (let i = 0; i < index.length; i++) {
-      //   newLandmarkList.push({
-      //     id: landmarkList[i].id,
-      //     index: index[i],
-      //     x1: landmarkList[i].x1,
-      //     y1: landmarkList[i].y1,
-      //     x2: landmarkList[i].x2,
-      //     y2: landmarkList[i].y2,
-      //   });
-      // }
-      // setLandmarkList(newLandmarkList);
-      // console.log(landmarkList);
       dispatch(editLandmarkRex({ id, landmarkList }));
       dispatch(editSlotRex({ id, parkingslotList }));
-      setNotiProp(true, "success", "Data saved successfully");
+      dispatch(
+        openNotification({
+          status: "success",
+          message: "Data saved successfully",
+        })
+      );
     }
   };
 
@@ -347,8 +311,17 @@ function Calib() {
 
   //navigate to result screen
   const toResult = () => {
-    dispatch(setReferenceImage(refImage));
-    history.push("/result");
+    if (landmarkList.length != 4) {
+      dispatch(
+        openNotification({
+          status: "error",
+          message: "Cannot show result. Landmarks are not defined.",
+        })
+      );
+    } else {
+      dispatch(setReferenceImage(refImage));
+      history.push("/result");
+    }
   };
 
   return (
@@ -392,18 +365,6 @@ function Calib() {
               }}
               subheader={<li />}
             >
-              {/* {[0, 1, 2, 3, 4].map((sectionId) => (
-                <li key={`section-${sectionId}`}>
-                  <ul>
-                    <ListSubheader>{`I'm sticky ${sectionId}`}</ListSubheader>
-                    {[0, 1, 2].map((item) => (
-                      <ListItem key={`item-${sectionId}-${item}`}>
-                        <ListItemText primary={`Item ${item}`} />
-                      </ListItem>
-                    ))}
-                  </ul>
-                </li>
-              ))} */}
               <ListSubheader>Landmarks</ListSubheader>
               {landmarkMap}
               <ListSubheader>Parking Slots</ListSubheader>
@@ -457,13 +418,7 @@ function Calib() {
           </Box>
         </div>
       </div>
-
-      <Notification
-        severity={status}
-        message={message}
-        open={openNoti}
-        handleClose={handleCloseNoti}
-      />
+      <Notification />
     </div>
   );
 }

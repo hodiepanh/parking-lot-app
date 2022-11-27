@@ -5,16 +5,20 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import { useDispatch, useSelector } from "react-redux";
+import { closeAlert } from "../../redux/parkingLots";
 
-function AlertDialog({ open, setOpen, handleAnswer }) {
+function AlertDialog({ handleAnswer }) {
+  const alert = useSelector((state) => state.parkingReducer.alert);
+  const dispatch = useDispatch();
   const handleClose = () => {
-    setOpen(false);
+    dispatch(closeAlert());
   };
 
   return (
     <div>
       <Dialog
-        open={open}
+        open={alert.open}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"

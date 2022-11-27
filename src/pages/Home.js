@@ -6,7 +6,7 @@ import { useHistory } from "react-router-dom";
 
 //import state management
 import { useSelector, useDispatch } from "react-redux";
-import { addParkingLot, getParkingLotRex } from "../redux/parkingLots";
+import { getParkingLotRex } from "../redux/parkingLots";
 
 //import component
 import DefineDialog from "../components/ultilites/DefineDialog";

@@ -9,17 +9,13 @@ import { TextField } from "@mui/material";
 
 //import redux state management
 import { useSelector, useDispatch } from "react-redux";
-import { addParkingLotRex } from "../../redux/parkingLots";
+import { addParkingLotRex, openNotification } from "../../redux/parkingLots";
 
 //import component
 import Notification from "./Notification";
 
 export default function DefineDialog({ open, setOpen, lotsList, setLotsList }) {
   const [defineName, setDefineName] = useState("");
-  const [definedStatus, setDefinedStatus] = useState("");
-  const [message, setMessage] = useState("");
-  const [openNoti, setOpenNoti] = useState(false);
-  const [titleList, setTitleList] = useState([]);
 
   //redux state managemeent
   const parkingList = useSelector((state) => state.parkingReducer.value);
@@ -29,24 +25,21 @@ export default function DefineDialog({ open, setOpen, lotsList, setLotsList }) {
   const handleClose = () => {
     setOpen(false);
   };
-
-  const handleCloseNoti = () => {
-    setOpenNoti(false);
-  };
-
   //add new parking lot
   const addParkingLot = (name) => {
     //get parking lots title from parking lots data (title, id, landmarks, slots)
-    for (let i = 0; i < lotsList.length; i++) {
-      titleList.push(lotsList[i].title);
-    }
+    const titleList = lotsList.map((data) => data.title);
 
     //validator: title cannot be blank
     if (name != "") {
       //if name already exists -> show error notification
       if (titleList.includes(name)) {
-        setDefinedStatus("error");
-        setMessage("Parking Lot already exists. Choose another name.");
+        dispatch(
+          openNotification({
+            status: "error",
+            message: "Parking lot already exists. Choose another name.",
+          })
+        );
       } else {
         //if name is not blank -> add new parking lot to database
         dispatch(addParkingLotRex(name))
@@ -54,17 +47,15 @@ export default function DefineDialog({ open, setOpen, lotsList, setLotsList }) {
           .then((res) => {
             lotsList.push(res);
           });
-        //show success notification
-        setDefinedStatus("success");
-        setMessage("New Parking Lot is now available.");
       }
     } else {
-      setDefinedStatus("warning");
-      setMessage("Name of parking lot cannot be blank.");
+      dispatch(
+        openNotification({
+          status: "error",
+          message: "Name of parking lot cannot be blank.",
+        })
+      );
     }
-
-    //open notification
-    setOpenNoti(true);
   };
 
   return (
@@ -96,12 +87,7 @@ export default function DefineDialog({ open, setOpen, lotsList, setLotsList }) {
           </Button>
         </DialogActions>
       </Dialog>
-      <Notification
-        severity={definedStatus}
-        message={message}
-        open={openNoti}
-        handleClose={handleCloseNoti}
-      />
+      <Notification />
     </div>
   );
 }

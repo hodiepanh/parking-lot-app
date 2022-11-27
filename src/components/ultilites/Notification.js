@@ -2,30 +2,33 @@ import React from "react";
 import Stack from "@mui/material/Stack";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
+import { useDispatch, useSelector } from "react-redux";
+import { closeNotification } from "../../redux/parkingLots";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-function Notification({ severity, message, open, handleClose }) {
-  // const handleClose = (event, reason) => {
-  //   if (reason === "clickaway") {
-  //     return;
-  //   }
-
-  //   setOpen(false);
-  // };
-
+function Notification() {
+  const noti = useSelector((state) => state.parkingReducer.notification);
+  const dispatch = useDispatch();
+  const handleClose = () => {
+    dispatch(closeNotification());
+  };
   return (
     <div>
       <Stack spacing={2} sx={{ width: "100%" }}>
-        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        <Snackbar
+          open={noti.open}
+          autoHideDuration={6000}
+          onClose={handleClose}
+        >
           <Alert
             onClose={handleClose}
-            severity={severity}
+            severity={noti.status}
             sx={{ width: "100%" }}
           >
-            {message}
+            {noti.message}
           </Alert>
         </Snackbar>
         {/* <Alert severity="error">This is an error message!</Alert>
