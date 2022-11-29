@@ -19,7 +19,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 function Navbar() {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const dispatch = useDispatch();
 
   const handleClickOpen = () => {

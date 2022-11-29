@@ -7,11 +7,11 @@ import Navbar from "./components/ultilites/Navbar";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { ThemeProvider } from "@mui/material";
 import { theme } from "./style/CustomTheme";
-
+import Box from "@mui/material/Box";
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <div>
+      <Box sx={{ backgroundColor: "background.default" }}>
         <Navbar />
         <Router>
           <div className="App">
@@ -31,7 +31,7 @@ function App() {
             </Switch>
           </div>
         </Router>
-      </div>
+      </Box>
     </ThemeProvider>
   );
 }

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+
 import "../style/Home.css";
 import { useHistory } from "react-router-dom";
 
@@ -37,13 +39,14 @@ function Home() {
 
   return (
     <div>
-      <h1>WELCOME TO IMAGE CALIBRATION</h1>
-      <h2>Select Functions</h2>
+      <Typography variant="h1">WELCOME TO IMAGE CALIBRATION</Typography>
       <div className="button-wrapper">
         <Stack spacing={2} direction="column">
           <Button onClick={handleToggleDefine} variant="contained">
             Define New Parking Lot
           </Button>
+          <Button variant="outlined">Outline</Button>
+          <Button variant="text">Text</Button>
           <AvailableLotsList lotsList={lotsList} setLotsList={setLotsList} />
         </Stack>
       </div>
