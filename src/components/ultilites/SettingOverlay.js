@@ -9,9 +9,10 @@ import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import "../../style/SettingOverlay.css";
-import { Button } from "@mui/material";
+import { Button, colors } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
+import Typography from "@mui/material/Typography";
 
 function SettingOverlay() {
   const [open, setOpen] = React.useState(false);
@@ -110,6 +111,9 @@ function SettingOverlay() {
             variant="outlined"
             error={!!data.error}
             type={data.type}
+            // style={{
+            //   backgroundColor: "white",
+            // }}
           />
           <ErrorMessage
             errors={errors}
@@ -123,14 +127,16 @@ function SettingOverlay() {
 
   return (
     <div className="setting-form">
-      <h1>Settings</h1>
+      <Typography variant="h1">Settings</Typography>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <h2>Camera setting</h2>
+        <Typography variant="h3">Camera setting</Typography>
         <div className="camera-setting">{controlMap}</div>
-        <Button type="submit">Test</Button>
+        <Button variant="outlined" type="submit">
+          Test
+        </Button>
       </form>
       <form>
-        <h2>Function settings</h2>
+        <Typography variant="h3">Function setting</Typography>
         <Controller
           name="interval"
           control={control}

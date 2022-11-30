@@ -4,11 +4,19 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Unstable_Grid2";
 import Paper from "@mui/material/Paper";
-import { styled } from "@mui/material/styles";
+import Typography from "@mui/material/Typography";
 import { useSelector, useDispatch } from "react-redux";
 import "../style/Result.css";
 import DebugDrawer from "../components/ultilites/DebugDrawer";
 import { useHistory } from "react-router-dom";
+//import style
+import { styled } from "@mui/system";
+const RedButton = styled(Button)(({ theme }) => ({
+  backgroundColor: theme.palette.error.main,
+  "&:hover": {
+    backgroundColor: theme.palette.error.dark,
+  },
+}));
 
 function Result() {
   const standardImage = useSelector(
@@ -28,7 +36,9 @@ function Result() {
 
   const gridItem = gridData.map((data, index) => (
     <Grid key={index} xs={4}>
-      <h3>{data.title}</h3>
+      <Typography variant="h2" style={{ fontSize: 20 }}>
+        {data.title}
+      </Typography>
       <Box
         className="image"
         component="img"
@@ -43,12 +53,12 @@ function Result() {
   ));
   return (
     <div>
-      <h1>Results</h1>
+      <Typography variant="h1">Result</Typography>
       <div className="layout">
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           {gridItem}
           <Grid xs={12}>
-            <h2>Rating</h2>
+            <Typography variant="h2">Rating</Typography>
             <DebugDrawer />
           </Grid>
         </Grid>
@@ -58,7 +68,7 @@ function Result() {
           <Button variant="contained" onClick={toHome}>
             Back to Define mode
           </Button>
-          <Button variant="contained">Compare to Reference</Button>
+          <RedButton variant="contained">Compare to Reference</RedButton>
           <Button variant="contained">Accept results</Button>
         </Stack>
       </div>

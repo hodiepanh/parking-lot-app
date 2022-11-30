@@ -77,8 +77,8 @@ export default function DefineDialog({ open, setOpen, lotsList, setLotsList }) {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
           <Button
+            variant="outlined"
             onClick={() => {
               addParkingLot(defineName);
             }}

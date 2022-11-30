@@ -2,28 +2,29 @@ import { createTheme, experimental_sx as sx } from "@mui/material";
 import CssBaseline from "@mui/material";
 import { red } from "@mui/material/colors";
 //const font = "'Hanalei Fill', cursive";
+
 export const theme = createTheme({
   typography: {
     fontFamily: "Montserrat",
     h1: {
       fontSize: 32,
       fontWeight: 700,
-      lineHeight: "50px",
+      lineHeight: "90px",
       letterSpacing: "0.1em",
       textTransform: "uppercase",
     },
     h2: {
       fontSize: 24,
       fontWeight: 600,
-      lineHeight: "30px",
+      lineHeight: "60px",
       letterSpacing: "0.1em",
       textTransform: "uppercase",
     },
     h3: {
-      fontSize: 24,
-      fontWeight: 400,
+      fontSize: 20,
+      fontWeight: 600,
       lineHeight: "30px",
-      letterSpacing: "0.05em",
+      letterSpacing: "0.1em",
       textTransform: "capitalize",
     },
     h4: {
@@ -47,11 +48,15 @@ export const theme = createTheme({
     button: {
       fontWeight: 500,
       fontSize: 16,
-      lineHeight: "39px",
+      lineHeight: "30px",
     },
   },
   palette: {
     primary: {
+      main: "#088E90",
+      light: "#46BEBE",
+    },
+    success: {
       main: "#088E90",
       light: "#46BEBE",
     },
@@ -67,6 +72,9 @@ export const theme = createTheme({
       light: "#E5BC4E",
     },
   },
+  shape: {
+    borderRadius: 0,
+  },
   components: {
     MuiButton: {
       styleOverrides: {
@@ -81,18 +89,50 @@ export const theme = createTheme({
         },
       },
     },
-    MuiTextField: {
+    // MuiTextField: {
+    //   styleOverrides: {
+    //     root: sx({
+    //       "&MuiOutlinedInput-root": {
+    //         "&>fieldset": {
+    //           borderColor: "red",
+    //         },
+    //       },
+    //     }),
+    //     input: {
+    //       borderColor: "red",
+    //       color: "red",
+    //     },
+    //   },
+    // },
+    //list
+    MuiList: {
       styleOverrides: {
-        root: sx({
-          "&MuiOutlinedInput-root": {
-            "&>fieldset": {
-              borderColor: "red",
-            },
-          },
-        }),
-        input: {
-          borderColor: "red",
-          color: "red",
+        root: {
+          backgroundColor: "#878787",
+        },
+      },
+    },
+    MuiListItem: {
+      styleOverrides: {
+        root: {
+          color: "white",
+        },
+      },
+    },
+    // MuiDialog: {
+    //   styleOverrides: {
+    //     root: {
+    //       paper: {
+    //         backgroundColor: "red",
+    //       },
+    //       borderRadius: 0,
+    //     },
+    //   },
+    // },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "#DDDDDD",
         },
       },
     },

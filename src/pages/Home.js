@@ -38,15 +38,13 @@ function Home() {
   }, []);
 
   return (
-    <div>
+    <div class="page-wrapper">
       <Typography variant="h1">WELCOME TO IMAGE CALIBRATION</Typography>
       <div className="button-wrapper">
-        <Stack spacing={2} direction="column">
+        <Stack spacing={5} direction="column">
           <Button onClick={handleToggleDefine} variant="contained">
             Define New Parking Lot
           </Button>
-          <Button variant="outlined">Outline</Button>
-          <Button variant="text">Text</Button>
           <AvailableLotsList lotsList={lotsList} setLotsList={setLotsList} />
         </Stack>
       </div>

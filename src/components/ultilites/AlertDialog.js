@@ -7,6 +7,25 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { closeAlert } from "../../redux/parkingLots";
+import { styled } from "@mui/system";
+import "../../style/ultilities.css";
+
+const StyleDialog = styled(Dialog)(({ theme }) => ({
+  padding: theme.spacing(1),
+  color: theme.palette.text.secondary,
+  "& .MuiDialogTitle-root": {
+    fontWeight: 500,
+    fontSize: "16px",
+    letterSpacing: "0.1em",
+    textTransform: "uppercase",
+    color: "#878787",
+  },
+  "& .MuiDialogContentText-root": {
+    fontWeight: 400,
+    fontSize: "14px",
+    color: "#878787",
+  },
+}));
 
 function AlertDialog({ handleAnswer }) {
   const alert = useSelector((state) => state.parkingReducer.alert);
@@ -17,9 +36,19 @@ function AlertDialog({ handleAnswer }) {
 
   return (
     <div>
-      <Dialog
+      <StyleDialog
         open={alert.open}
         onClose={handleClose}
+        BackdropProps={{
+          style: {
+            backgroundColor: "rgba(0, 0, 0, 0.3)",
+          },
+        }}
+        // PaperProps={{
+        //   style: {
+        //     backgroundColor: "#DDDDDD",
+        //   },
+        // }}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -32,12 +61,23 @@ function AlertDialog({ handleAnswer }) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>No</Button>
-          <Button onClick={handleAnswer} autoFocus>
+          <Button
+            variant="contained"
+            className="dialog-button"
+            onClick={handleAnswer}
+            autoFocus
+          >
             Yes
           </Button>
+          <Button
+            variant="outlined"
+            className="dialog-button"
+            onClick={handleClose}
+          >
+            No
+          </Button>
         </DialogActions>
-      </Dialog>
+      </StyleDialog>
     </div>
   );
 }

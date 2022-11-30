@@ -26,6 +26,14 @@ import { useHistory } from "react-router-dom";
 //import component
 import AlertDialog from "./AlertDialog";
 import Notification from "./Notification";
+//import style
+import { styled } from "@mui/system";
+const StyleList = styled(List)(({ theme }) => ({
+  width: "100%",
+  "& .MuiIconButton-root": {
+    color: "white",
+  },
+}));
 
 function AvailableLotsList({ lotsList, setLotsList }) {
   //const [openAlert, setOpenAlert] = useState(false);
@@ -113,9 +121,9 @@ function AvailableLotsList({ lotsList, setLotsList }) {
   return (
     <div>
       <Box sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
-        <List component="nav" aria-label="secondary mailbox folder">
+        <StyleList component="nav" aria-label="secondary mailbox folder">
           {lotsMap}
-        </List>
+        </StyleList>
       </Box>
       <Notification />
     </div>

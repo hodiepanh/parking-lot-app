@@ -15,6 +15,10 @@ import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
+import CloseIcon from "@mui/icons-material/Close";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+
 import "../style/Calib.css";
 
 //import redux state management
@@ -32,6 +36,22 @@ import { useHistory, useParams } from "react-router-dom";
 //import component
 import DrawMode from "../components/ultilites/DrawMode";
 import Notification from "../components/ultilites/Notification";
+
+//import style
+import { styled } from "@mui/system";
+const StyleList = styled(List)(({ theme }) => ({
+  backgroundColor: "#878787",
+  "& .MuiListSubheader-root": {
+    backgroundColor: "#878787",
+    color: "white",
+    textAlign: "left",
+    textTransform: "uppercase",
+    letterSpacing: "0.1em",
+  },
+  "& .MuiIconButton-root": {
+    color: "white",
+  },
+}));
 
 function Calib() {
   const [drawing, setDrawing] = useState(false);
@@ -250,13 +270,14 @@ function Calib() {
         <ListItemText
           primary={`${index}: (${data.x1}, ${data.y1}), (${data.x2}, ${data.y2})`}
         />
-        <Button
+        <IconButton
+          aria-label="delete"
           onClick={() => {
             removeLandmarkData(data);
           }}
         >
-          Clear
-        </Button>
+          <CloseIcon color="white" />
+        </IconButton>
       </ListItemButton>
     </ListItem>
   ));
@@ -268,13 +289,14 @@ function Calib() {
         <ListItemText
           primary={`${data.x1}, ${data.y1}, ${data.x2}, ${data.y2}`}
         />
-        <Button
+        <IconButton
+          aria-label="delete"
           onClick={() => {
             removeSlotData(data);
           }}
         >
-          Clear
-        </Button>
+          <CloseIcon color="white" />
+        </IconButton>
       </ListItemButton>
     </ListItem>
   ));
@@ -326,7 +348,7 @@ function Calib() {
 
   return (
     <div className="view">
-      <h1>DEFINE PARKING LOT</h1>
+      <Typography variant="h1">Define parking lot</Typography>
       <div className="layout">
         <div className="image-editor">
           <canvas
@@ -334,6 +356,8 @@ function Calib() {
             id="canvas"
             style={{
               backgroundImage: `url('${refImage}')`,
+              cursor: "crosshair",
+              caretColor: "yellow",
             }}
             ref={canvasRef}
             width="600"
@@ -352,12 +376,17 @@ function Calib() {
               bgcolor: "background.paper",
             }}
           >
-            <h3>Data storage</h3>
-            <List
+            <Typography
+              variant="h2"
+              style={{ lineHeight: 0, textAlign: "top", marginBottom: 30 }}
+            >
+              Data store
+            </Typography>
+            <StyleList
               sx={{
                 width: "100%",
                 maxWidth: 360,
-                bgcolor: "background.paper",
+
                 position: "relative",
                 overflow: "auto",
                 height: 200,
@@ -369,7 +398,7 @@ function Calib() {
               {landmarkMap}
               <ListSubheader>Parking Slots</ListSubheader>
               {parkingslotMap}
-            </List>
+            </StyleList>
             <DrawMode mode={mode} setMode={setMode} />
             <div className="button-wrapper">
               <Stack spacing={2} direction="row">

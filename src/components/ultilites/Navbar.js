@@ -19,7 +19,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 function Navbar() {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
 
   const handleClickOpen = () => {
@@ -41,15 +41,16 @@ function Navbar() {
               color="inherit"
               aria-label="menu"
               sx={{ mr: 2 }}
+              onClick={handleClickOpen}
             >
               <MenuIcon />
             </IconButton>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               Logo
             </Typography>
-            <Button color="inherit" onClick={handleClickOpen}>
+            {/* <Button color="inherit" onClick={handleClickOpen}>
               Setting
-            </Button>
+            </Button> */}
           </Toolbar>
         </AppBar>
       </Box>
