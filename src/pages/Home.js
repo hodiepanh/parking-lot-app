@@ -35,10 +35,11 @@ function Home() {
       .then((res) => {
         setLotsList(res);
       });
+    console.log(window.innerWidth, window.innerHeight);
   }, []);
 
   return (
-    <div class="page-wrapper">
+    <div className="page-wrapper">
       <Typography variant="h1">WELCOME TO IMAGE CALIBRATION</Typography>
       <div className="button-wrapper">
         <Stack spacing={5} direction="column">

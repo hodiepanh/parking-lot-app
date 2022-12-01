@@ -6,6 +6,7 @@ import FormControl from "@mui/material/FormControl";
 import FormHelperText from "@mui/material/FormHelperText";
 import FormLabel from "@mui/material/FormLabel";
 import Button from "@mui/material/Button";
+import "../../style/ultilities.css";
 
 function DrawMode({ mode, setMode }) {
   const handleRadioChange = (event) => {
@@ -15,7 +16,15 @@ function DrawMode({ mode, setMode }) {
   return (
     <div>
       <form>
-        <FormControl sx={{ m: 3 }} variant="standard">
+        <FormControl
+          sx={{
+            m: 3,
+            display: "flex",
+            alignItems: "flex-start",
+            margin: "20px 0",
+          }}
+          variant="standard"
+        >
           <FormLabel id="demo-error-radios">Choose a drawing mode:</FormLabel>
           <RadioGroup
             row

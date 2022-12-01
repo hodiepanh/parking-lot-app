@@ -77,9 +77,14 @@ export const theme = createTheme({
   },
   components: {
     MuiButton: {
+      disableElevation: true,
       styleOverrides: {
         root: {
           borderRadius: 0,
+          disableElevation: true,
+        },
+        contained: {
+          disableElevation: true,
         },
         outlined: {
           border: "2px solid",

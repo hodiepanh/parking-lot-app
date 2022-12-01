@@ -18,6 +18,13 @@ const RedButton = styled(Button)(({ theme }) => ({
   },
 }));
 
+const YellowButton = styled(Button)(({ theme }) => ({
+  backgroundColor: theme.palette.warning.main,
+  "&:hover": {
+    backgroundColor: theme.palette.warning.dark,
+  },
+}));
+
 function Result() {
   const standardImage = useSelector(
     (state) => state.parkingReducer.standardImage
@@ -35,7 +42,7 @@ function Result() {
   };
 
   const gridItem = gridData.map((data, index) => (
-    <Grid key={index} xs={4}>
+    <Grid key={index} columns={{ xs: 4, sm: 8, md: 12 }}>
       <Typography variant="h2" style={{ fontSize: 20 }}>
         {data.title}
       </Typography>
@@ -52,10 +59,15 @@ function Result() {
     </Grid>
   ));
   return (
-    <div>
+    <div className="layout">
       <Typography variant="h1">Result</Typography>
-      <div className="layout">
-        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+      <div>
+        <Grid
+          container
+          justifyContent="center"
+          rowSpacing={1}
+          columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+        >
           {gridItem}
           <Grid xs={12}>
             <Typography variant="h2">Rating</Typography>
@@ -69,7 +81,7 @@ function Result() {
             Back to Define mode
           </Button>
           <RedButton variant="contained">Compare to Reference</RedButton>
-          <Button variant="contained">Accept results</Button>
+          <YellowButton variant="contained">Accept results</YellowButton>
         </Stack>
       </div>
     </div>
