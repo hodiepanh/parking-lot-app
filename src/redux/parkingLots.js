@@ -6,7 +6,7 @@ let initialState = {
   value: [],
   standardImage: default_image,
   notification: { open: false, status: "", message: "" },
-  alert: { open: false, message: "" },
+  alert: { open: false, message: "", data: {} },
 };
 
 export const getParkingLotRex = createAsyncThunk(
@@ -114,7 +114,11 @@ export const parkingSlice = createSlice({
       state.notification.open = false;
     },
     openAlert: (state, action) => {
-      state.alert = { open: true, message: action.payload };
+      state.alert = {
+        open: true,
+        message: action.payload.message,
+        data: action.payload.data,
+      };
     },
     closeAlert: (state) => {
       state.alert.open = false;

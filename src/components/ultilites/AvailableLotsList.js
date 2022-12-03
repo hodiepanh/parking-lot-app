@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -14,7 +14,6 @@ import default_image from "../../assets/default_image.png";
 //import redux state management
 import { useDispatch, useSelector } from "react-redux";
 import {
-  closeAlert,
   deleteParkingLotRex,
   openAlert,
   openNotification,
@@ -26,6 +25,7 @@ import { useHistory } from "react-router-dom";
 //import component
 import AlertDialog from "./AlertDialog";
 import Notification from "./Notification";
+
 //import style
 import { styled } from "@mui/system";
 const StyleList = styled(List)(({ theme }) => ({
@@ -36,7 +36,6 @@ const StyleList = styled(List)(({ theme }) => ({
 }));
 
 function AvailableLotsList({ lotsList, setLotsList }) {
-  //const [openAlert, setOpenAlert] = useState(false);
   const standardImage = useSelector(
     (state) => state.parkingReducer.standardImage
   );
@@ -48,18 +47,9 @@ function AvailableLotsList({ lotsList, setLotsList }) {
   //router
   const history = useHistory();
 
-  //remove parking lot from list
-  const removeLot = (index) => {
-    //find parking lot with index !== chosen index ->update state
-    const newList = lotsList.filter((item) => item.id !== index);
-    setLotsList(newList);
-
-    //remove from database
-    dispatch(deleteParkingLotRex(index));
-  };
-
   //navigate to result screen
   const runAuto = () => {
+    //only allow run auto if parking lot is defined - when standard image is not default
     if (standardImage == default_image) {
       dispatch(
         openNotification({
@@ -100,19 +90,14 @@ function AvailableLotsList({ lotsList, setLotsList }) {
           <Tooltip title="Delete">
             <IconButton
               onClick={() => {
-                dispatch(openAlert(""));
+                dispatch(openAlert({ message: "", data: data }));
               }}
               aria-label="delete"
             >
               <DeleteOutlineRoundedIcon />
             </IconButton>
           </Tooltip>
-          <AlertDialog
-            handleAnswer={() => {
-              removeLot(data.id);
-              dispatch(closeAlert());
-            }}
-          />
+          <AlertDialog lotsList={lotsList} setLotsList={setLotsList} />
         </div>
       </ListItemButton>
     </ListItem>
@@ -120,7 +105,7 @@ function AvailableLotsList({ lotsList, setLotsList }) {
 
   return (
     <div>
-      <Box sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
+      <Box sx={{ width: "100vw", maxWidth: 300, bgcolor: "background.paper" }}>
         <StyleList component="nav" aria-label="secondary mailbox folder">
           {lotsMap}
         </StyleList>

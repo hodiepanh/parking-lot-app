@@ -34,8 +34,8 @@ function Home() {
       .unwrap()
       .then((res) => {
         setLotsList(res);
+        //console.log(lotsList);
       });
-    console.log(window.innerWidth, window.innerHeight);
   }, []);
 
   return (

@@ -5,8 +5,13 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+
+//import state management
 import { useDispatch, useSelector } from "react-redux";
 import { closeAlert } from "../../redux/parkingLots";
+import { deleteParkingLotRex } from "../../redux/parkingLots";
+
+//import style
 import { styled } from "@mui/system";
 import "../../style/ultilities.css";
 
@@ -27,13 +32,22 @@ const StyleDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-function AlertDialog({ handleAnswer }) {
+function AlertDialog({ lotsList, setLotsList }) {
   const alert = useSelector((state) => state.parkingReducer.alert);
   const dispatch = useDispatch();
   const handleClose = () => {
     dispatch(closeAlert());
   };
 
+  //remove parking lot from list
+  const removeLot = (index) => {
+    //find parking lot with index !== chosen index ->update state
+    const newList = lotsList.filter((item) => item.id !== index);
+    setLotsList(newList);
+
+    //remove from database
+    dispatch(deleteParkingLotRex(index));
+  };
   return (
     <div>
       <StyleDialog
@@ -44,11 +58,6 @@ function AlertDialog({ handleAnswer }) {
             backgroundColor: "rgba(0, 0, 0, 0.3)",
           },
         }}
-        // PaperProps={{
-        //   style: {
-        //     backgroundColor: "#DDDDDD",
-        //   },
-        // }}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -64,7 +73,11 @@ function AlertDialog({ handleAnswer }) {
           <Button
             variant="contained"
             className="dialog-button"
-            onClick={handleAnswer}
+            // onClick={handleAnswer}
+            onClick={() => {
+              removeLot(alert.data.id);
+              handleClose();
+            }}
             autoFocus
           >
             Yes

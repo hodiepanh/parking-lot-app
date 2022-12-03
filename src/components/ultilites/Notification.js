@@ -2,6 +2,8 @@ import React from "react";
 import Stack from "@mui/material/Stack";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
+
+//import state management
 import { useDispatch, useSelector } from "react-redux";
 import { closeNotification } from "../../redux/parkingLots";
 

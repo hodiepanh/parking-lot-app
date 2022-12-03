@@ -1,14 +1,11 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
-import ButtonGroup from "@mui/material/ButtonGroup";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import Divider from "@mui/material/Divider";
 import ListSubheader from "@mui/material/ListSubheader";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -31,11 +28,9 @@ import { useHistory, useParams } from "react-router-dom";
 
 //import component
 import DrawMode from "./DrawMode";
-import Notification from "./Notification";
 
 //import style
 import "../../style/ultilities.css";
-
 import { styled } from "@mui/system";
 const StyleList = styled(List)(({ theme }) => ({
   backgroundColor: "#878787",
@@ -136,6 +131,7 @@ function CalibUlti({
 
   //save data to the database
   const saveData = () => {
+    //only save data to database if there are 4 landmarks
     if (landmarkList.length !== 4) {
       dispatch(
         openNotification({
@@ -144,6 +140,7 @@ function CalibUlti({
         })
       );
     } else {
+      //save to database -> send success notification
       dispatch(editLandmarkRex({ id, landmarkList }));
       dispatch(editSlotRex({ id, parkingslotList }));
       dispatch(
@@ -155,26 +152,11 @@ function CalibUlti({
     }
   };
 
-  //navigate to result screen
-  const toResult = () => {
-    if (landmarkList.length != 4) {
-      dispatch(
-        openNotification({
-          status: "error",
-          message: "Cannot show result. Landmarks are not defined.",
-        })
-      );
-    } else {
-      dispatch(setReferenceImage(image));
-      history.push("/result");
-    }
-  };
-
   return (
     <div className="ulti-wrapper">
       <Box
         sx={{
-          width: "100%",
+          // width: "100%",
           maxWidth: 360,
         }}
       >
@@ -188,7 +170,6 @@ function CalibUlti({
           sx={{
             width: "100%",
             maxWidth: 360,
-
             position: "relative",
             overflow: "auto",
             height: 200,

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -25,6 +25,7 @@ export default function DefineDialog({ open, setOpen, lotsList, setLotsList }) {
   const handleClose = () => {
     setOpen(false);
   };
+
   //add new parking lot
   const addParkingLot = (name) => {
     //get parking lots title from parking lots data (title, id, landmarks, slots)

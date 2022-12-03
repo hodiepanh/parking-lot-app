@@ -5,7 +5,7 @@
 .button-wrapper {
     display: flex;
     justify-content: center;
-    
+
 }
 .button-footer {
     display: flex;
@@ -15,10 +15,16 @@
 
 .image-editor {
     display: flex;
-    flex-direction:column;
-    padding: 0 10px;
+    align-items: center;
+    /* flex-direction:row; */
+    /* justify-content: space-between; */
+    padding:  10px;
 }
 
+canvas {
+    width: 600px;
+    height: 400px;
+}
 .image {
     margin-bottom: 10px;
     background-size: 600px 400px;
@@ -26,21 +32,32 @@
 .ulti-wrapper{
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
+    /* justify-content: flex-start;
+    align-items: flex-start; */
 }
 .data-list {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
     width: 30vw;
+    margin: 0 50px;
 }
 
 .layout {
     display: flex;
-    justify-content: space-around;
+    flex-direction: row;
+    /* justify-content: space-around; */
+
 }
 
 .drawer {
     display: none;
 }
+
+.next-button-small {
+    display: none;
+}
+
 
 @media (max-width:800px) {
     .layout {
@@ -59,5 +76,8 @@
     .drawer {
         display: flex;
         margin: 0 10px
+    }
+    .next-button-small{
+        display: inline;
     }
 }

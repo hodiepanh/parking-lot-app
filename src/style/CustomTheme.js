@@ -1,7 +1,4 @@
 import { createTheme, experimental_sx as sx } from "@mui/material";
-import CssBaseline from "@mui/material";
-import { red } from "@mui/material/colors";
-//const font = "'Hanalei Fill', cursive";
 
 export const theme = createTheme({
   typography: {

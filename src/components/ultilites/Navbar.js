@@ -6,13 +6,16 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import Slide from "@mui/material/Slide";
-import SettingOverlay from "./SettingOverlay";
-import MuiAlert from "@mui/material/Alert";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import Notification from "./Notification";
+
+//import statemanagement
 import { useDispatch } from "react-redux";
 import { openNotification } from "../../redux/parkingLots";
+
+//import component
+import SettingOverlay from "./SettingOverlay";
+import Notification from "./Notification";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -48,9 +51,6 @@ function Navbar() {
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               Logo
             </Typography>
-            {/* <Button color="inherit" onClick={handleClickOpen}>
-              Setting
-            </Button> */}
           </Toolbar>
         </AppBar>
       </Box>

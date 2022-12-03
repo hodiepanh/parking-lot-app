@@ -3,33 +3,30 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Unstable_Grid2";
-import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
-import { useSelector, useDispatch } from "react-redux";
-import "../style/Result.css";
 import DebugDrawer from "../components/ultilites/DebugDrawer";
-import { useHistory } from "react-router-dom";
-//import style
-import { styled } from "@mui/system";
-const RedButton = styled(Button)(({ theme }) => ({
-  backgroundColor: theme.palette.error.main,
-  "&:hover": {
-    backgroundColor: theme.palette.error.dark,
-  },
-}));
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import Tooltip from "@mui/material/Tooltip";
 
-const YellowButton = styled(Button)(({ theme }) => ({
-  backgroundColor: theme.palette.warning.main,
-  "&:hover": {
-    backgroundColor: theme.palette.warning.dark,
-  },
-}));
+//import routing
+import { useHistory } from "react-router-dom";
+
+//import state management
+import { useSelector, useDispatch } from "react-redux";
+
+//import style
+import "../style/Result.css";
+import { styled } from "@mui/system";
+import { IconButton } from "@mui/material";
+import { theme } from "../style/CustomTheme";
 
 function Result() {
   const standardImage = useSelector(
     (state) => state.parkingReducer.standardImage
   );
 
+  //image data
   const gridData = [
     { title: "Standard Image", src: standardImage },
     { title: "Captured Image", src: standardImage },
@@ -37,6 +34,8 @@ function Result() {
   ];
 
   const history = useHistory();
+
+  //navigate to home screen
   const toHome = () => {
     history.push("/");
   };
@@ -66,22 +65,34 @@ function Result() {
           container
           justifyContent="center"
           rowSpacing={1}
+          //responsive grid
           columnSpacing={{ xs: 1, sm: 2, md: 3 }}
         >
           {gridItem}
           <Grid xs={12}>
             <Typography variant="h2">Rating</Typography>
-            <DebugDrawer />
           </Grid>
         </Grid>
       </div>
       <div className="button-wrapper">
         <Stack spacing={2} direction="row">
-          <Button variant="contained" onClick={toHome}>
-            Back to Define mode
-          </Button>
-          <RedButton variant="contained">Compare to Reference</RedButton>
-          <YellowButton variant="contained">Accept results</YellowButton>
+          <Tooltip title="Back to Define mode">
+            <IconButton
+              onClick={toHome}
+              style={{ color: theme.palette.primary.main }}
+            >
+              <ArrowBackIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Compare to reference">
+            <Button variant="outlined">Compare</Button>
+          </Tooltip>
+          <DebugDrawer />
+          <Tooltip title="Accept result">
+            <IconButton style={{ color: theme.palette.primary.main }}>
+              <ArrowForwardIcon />
+            </IconButton>
+          </Tooltip>
         </Stack>
       </div>
     </div>
