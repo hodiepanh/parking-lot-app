@@ -15,6 +15,7 @@ import default_image from "../../assets/default_image.png";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteParkingLotRex,
+  setReferenceImage,
   openAlert,
   openNotification,
 } from "../../redux/parkingLots";
@@ -48,9 +49,13 @@ function AvailableLotsList({ lotsList, setLotsList }) {
   const history = useHistory();
 
   //navigate to result screen
-  const runAuto = () => {
+  const runAuto = (data) => {
+    //console.log(standardImage);
+    //find reference image (image with id)
+    //if exist -> set image for Calib screen
+
     //only allow run auto if parking lot is defined - when standard image is not default
-    if (standardImage == default_image) {
+    if (!data.image) {
       dispatch(
         openNotification({
           status: "error",
@@ -58,29 +63,39 @@ function AvailableLotsList({ lotsList, setLotsList }) {
         })
       );
     } else {
+      dispatch(setReferenceImage(data.image));
       history.push("/result");
     }
   };
 
   //navigate to calibration screen
   const adjust = (data) => {
+    //if reference image is define -> set reference image
+    if (data.image) {
+      dispatch(setReferenceImage(data.image));
+    }
     history.push(`/calib/${data.id}`);
   };
 
   //render list item
-  const lotsMap = lotsList.map((data) => (
-    <ListItem key={data.id} disablePadding>
+  const lotsMap = lotsList.map((data, index) => (
+    <ListItem key={index} disablePadding>
       <ListItemButton>
         <ListItemText primary={data.title} />
         <div>
           <Tooltip title="Run Auto">
-            <IconButton onClick={runAuto}>
+            <IconButton
+              onClick={() => {
+                runAuto(data);
+              }}
+            >
               <AutoModeRoundedIcon />
             </IconButton>
           </Tooltip>
           <Tooltip title="Adjust">
             <IconButton
               onClick={() => {
+                //console.log(data);
                 adjust(data);
               }}
             >

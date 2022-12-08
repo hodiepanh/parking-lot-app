@@ -19,6 +19,7 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   editLandmarkRex,
   editSlotRex,
+  editImageRex,
   setReferenceImage,
   openNotification,
 } from "../../redux/parkingLots";
@@ -56,7 +57,10 @@ function CalibUlti({
   image,
   inputFile,
   handleChange,
+  saved,
+  setSaved,
 }) {
+  //drawer
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -129,6 +133,12 @@ function CalibUlti({
     </ListItem>
   ));
 
+  const uploadImage = () => {
+    const formData = new FormData();
+    formData.append("image", image);
+    dispatch(editImageRex({ id, formData }));
+  };
+
   //save data to the database
   const saveData = () => {
     //only save data to database if there are 4 landmarks
@@ -142,13 +152,17 @@ function CalibUlti({
     } else {
       //save to database -> send success notification
       dispatch(editLandmarkRex({ id, landmarkList }));
-      dispatch(editSlotRex({ id, parkingslotList }));
+      //dispatch(editSlotRex({ id, parkingslotList }));
+      uploadImage();
       dispatch(
         openNotification({
           status: "success",
           message: "Data saved successfully",
         })
       );
+
+      //set saved status = true
+      setSaved(true);
     }
   };
 

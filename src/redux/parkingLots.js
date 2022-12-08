@@ -81,6 +81,19 @@ export const editSlotRex = createAsyncThunk(
   }
 );
 
+export const editImageRex = createAsyncThunk(
+  "parkinglots/edit",
+  async (editData) => {
+    //console.log(editData);
+    const id = editData.id;
+    const edit_data = editData.formData;
+    const resp = await parkingApi.editReferenceImage(id, edit_data);
+    const data = resp.data;
+    //console.log(data);
+    return data;
+  }
+);
+
 export const parkingSlice = createSlice({
   name: "parking",
   initialState,
@@ -98,6 +111,16 @@ export const parkingSlice = createSlice({
       console.log(state.value);
     },
     setReferenceImage: (state, action) => {
+      //const newImage = require(action.payload);
+      const newImage = require(`../assets/Reference/${action.payload}`);
+      //const newImage = action.payload;
+      //console.log(action.payload);
+      state.standardImage = newImage;
+      //console.log(state.standardImage);
+    },
+    setResultImage: (state, action) => {
+      //const newImage = require(action.payload);
+      //const newImage = require(`../assets/Reference/${action.payload}`);
       const newImage = action.payload;
       //console.log(action.payload);
       state.standardImage = newImage;
@@ -131,7 +154,7 @@ export const parkingSlice = createSlice({
     },
     [addParkingLotRex.fulfilled]: (state, action) => {
       //const newLot = { id: state.value.length(), title: action.payload };
-      state.value = [...state.value, action.payload];
+      state.value = [...state.value, action.payload.title];
       state.notification = {
         open: true,
         status: "success",
@@ -157,6 +180,12 @@ export const parkingSlice = createSlice({
       // state.value[id].title = action.payload.title;
       // state.loading = false;
     },
+    [editImageRex.fullfilled]: (state, action) => {
+      console.log(action.payload);
+      // let id = Number(action.payload.id);
+      // state.value[id].title = action.payload.title;
+      // state.loading = false;
+    },
     [searchParkingLotRex.fulfilled]: () => {},
   },
 });
@@ -167,6 +196,7 @@ export const {
   setParkingLot,
   getParkingLot,
   setReferenceImage,
+  setResultImage,
   closeNotification,
   openNotification,
   openAlert,

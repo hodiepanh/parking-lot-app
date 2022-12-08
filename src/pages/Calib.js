@@ -8,17 +8,24 @@ import "../style/Calib.css";
 
 //import redux state management
 import { useSelector, useDispatch } from "react-redux";
-import { setReferenceImage, openNotification } from "../redux/parkingLots";
+import {
+  editImageRex,
+  setReferenceImage,
+  setResultImage,
+  openNotification,
+} from "../redux/parkingLots";
 
 //import router
 import { useHistory, useParams } from "react-router-dom";
 
 //import component
 import Notification from "../components/ultilites/Notification";
+import axios from "axios";
 
 function Calib() {
   const [drawing, setDrawing] = useState(false);
   const [mode, setMode] = useState("");
+  const [saved, setSaved] = useState(false);
 
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
@@ -36,10 +43,15 @@ function Calib() {
   const standardImage = useSelector(
     (state) => state.parkingReducer.standardImage
   );
+
+  const parkinglotValue = useSelector((state) => state.parkingReducer.value);
+  //console.log(parkinglotValue);
   const inputFile = useRef(null);
   const [refImage, setRefImage] = useState(standardImage);
+  const [saveImage, setSaveImage] = useState("");
   const dispatch = useDispatch();
 
+  //console.log(refImage);
   //router
   const history = useHistory();
   const { id } = useParams();
@@ -77,6 +89,8 @@ function Calib() {
       image={refImage}
       inputFile={inputFile}
       handleChange={handleChange}
+      saved={saved}
+      setSaved={setSaved}
     />
   );
 
@@ -97,8 +111,43 @@ function Calib() {
       return;
     }
     //cannot access file path -> upload image to temp cache
+    setSaveImage(event.target.files[0]);
+
+    //console.log(saveImage);
+    //console.log(event.target.files[0]);
     file.preview = URL.createObjectURL(file);
     setRefImage(file.preview);
+  };
+
+  //test image upload
+  //const [file, setFile] = useState();
+  //const [description, setDescription] = useState("");
+  //const [image, setImage] = useState();
+
+  // const uploadImage = async () => {
+  //   // event.preventDefault();
+
+  //   const formData = new FormData();
+  //   formData.append("image", saveImage);
+  //   //formData.append("description", description);
+
+  //   const result = await axios.post(
+  //     "http://localhost:5000/parkinglots/upload",
+  //     formData,
+  //     {
+  //       headers: {
+  //         "Access-Control-Allow-Origin": "*",
+  //         "Content-Type": "multipart/form-data",
+  //       },
+  //     }
+  //   );
+  //   //setImage(result.data.imagePath);
+  // };
+
+  const uploadImage = () => {
+    const formData = new FormData();
+    formData.append("image", saveImage);
+    dispatch(editImageRex({ id, formData }));
   };
 
   //get coordinate start point of rectangle
@@ -248,16 +297,28 @@ function Calib() {
   //navigate to result screen
   const toResult = () => {
     //only navigate if there are 4 landmarks
-    if (landmarkList.length != 4) {
+    if (saved == false) {
       dispatch(
         openNotification({
           status: "error",
-          message: "Cannot show result. Landmarks are not defined.",
+          message: "Landmarks are not saved to databased.",
         })
       );
-    } else {
+    }
+    // if (landmarkList.length != 4) {
+    //   dispatch(
+    //     openNotification({
+    //       status: "error",
+    //       message: "Cannot show result. Landmarks are not defined.",
+    //     })
+    //   );
+    // }
+    else {
       //set image in Result Screen
-      dispatch(setReferenceImage(refImage));
+      //dispatch(setReferenceImage(`${id}_${saveImage.name}`));
+      dispatch(setResultImage(refImage));
+      //console.log(`${id}_${saveImage.name}`);
+      //console.log(refImage);
       history.push("/result");
     }
   };
@@ -271,6 +332,7 @@ function Calib() {
             className="image"
             id="canvas"
             style={{
+              //backgroundImage: `url(${require("../assets/Parking Lots/Sample lot/lmTst_9.jpg")})`,
               backgroundImage: `url('${refImage}')`,
               cursor: "crosshair",
             }}
@@ -289,13 +351,18 @@ function Calib() {
               setDrawMode={setMode}
               removeLandmark={removeLandmarkData}
               removeSlot={removeSlotData}
-              image={refImage}
+              image={saveImage}
               inputFile={inputFile}
               handleChange={handleChange}
+              saved={saved}
+              setSaved={setSaved}
             />
             <div className="next-button-full">
               <Button variant="outlined" onClick={toResult}>
                 Next
+              </Button>
+              <Button variant="outlined" onClick={uploadImage}>
+                Upload
               </Button>
             </div>
           </div>
@@ -318,6 +385,9 @@ function Calib() {
           <div className="next-button-small">
             <Button variant="outlined" onClick={toResult}>
               Next
+            </Button>
+            <Button variant="outlined" onClick={uploadImage}>
+              Upload
             </Button>
           </div>
         </div>

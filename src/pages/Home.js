@@ -14,6 +14,9 @@ import { getParkingLotRex } from "../redux/parkingLots";
 import DefineDialog from "../components/ultilites/DefineDialog";
 import AvailableLotsList from "../components/ultilites/AvailableLotsList";
 
+//axios
+import axios from "axios";
+
 function Home() {
   const [openDefine, setOpenDefine] = React.useState(false);
   const [lotsList, setLotsList] = useState([]);
@@ -38,9 +41,16 @@ function Home() {
       });
   }, []);
 
+  const getData = () => {
+    axios.get("http://localhost:5000/parkinglots").then((res) => {
+      console.log(res.data);
+    });
+  };
+
   return (
     <div className="page-wrapper">
       <Typography variant="h1">WELCOME TO IMAGE CALIBRATION</Typography>
+      {/* <Button onClick={getData}>Get</Button> */}
       <div className="button-wrapper">
         <Stack spacing={5} direction="column">
           <Button onClick={handleToggleDefine} variant="contained">
