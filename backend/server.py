@@ -54,13 +54,14 @@ def add():
         
         title=body['title']
 
+
         newData = db['parkinglots'].insert_one({
             #"_id":id,
             "title":title
         })
 
         return jsonify({
-            #"id": str(ObjectId(newData)),
+            "id": str(newData.inserted_id),
             "title":title,
             "msg":"parking lot added"
         })
@@ -105,8 +106,11 @@ def updateSlot(id):
 def fileUpload(id):
     file = request.files.get('image')
     #filename is id (1 parking lot = 1 reference image)
+    
+    filename=str(id)+".jpg"
     #check is reference image exist (name exists) -> overwrite if exist
-    filename=str(id) +"_" + file.filename
+    # if(os.path.exists(f'../src/assets/Reference/{filename}')):
+    #     os.remove(f'../src/assets/Reference/{filename}')   
     file.save(os.path.join('../src/assets/Reference', filename))
 
     db['parkinglots'].update_one({'_id':ObjectId(id)},{'$set':{

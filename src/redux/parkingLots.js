@@ -7,6 +7,7 @@ let initialState = {
   standardImage: default_image,
   notification: { open: false, status: "", message: "" },
   alert: { open: false, message: "", data: {} },
+  loading: false,
 };
 
 export const getParkingLotRex = createAsyncThunk(
@@ -111,14 +112,22 @@ export const parkingSlice = createSlice({
       console.log(state.value);
     },
     setReferenceImage: (state, action) => {
+      if (action.payload == "default") {
+        const newImage = default_image;
+        state.standardImage = newImage;
+      } else {
+        const newImage = require(`../assets/Reference/${action.payload}`);
+        state.standardImage = newImage;
+      }
       //const newImage = require(action.payload);
-      const newImage = require(`../assets/Reference/${action.payload}`);
+
       //const newImage = action.payload;
       //console.log(action.payload);
-      state.standardImage = newImage;
+      //state.standardImage = newImage;
       //console.log(state.standardImage);
     },
     setResultImage: (state, action) => {
+      console.log(typeof action.payload);
       //const newImage = require(action.payload);
       //const newImage = require(`../assets/Reference/${action.payload}`);
       const newImage = action.payload;
@@ -148,9 +157,19 @@ export const parkingSlice = createSlice({
     },
   },
   extraReducers: {
+    [getParkingLotRex.pending]: (state) => {
+      state.loading = true;
+    },
     [getParkingLotRex.fulfilled]: (state) => {
       //state.value = action.payload;
       //console.log(state.value);
+      state.loading = false;
+    },
+    [getParkingLotRex.rejected]: (state) => {
+      state.loading = true;
+    },
+    [addParkingLotRex.pending]: (state) => {
+      state.loading = true;
     },
     [addParkingLotRex.fulfilled]: (state, action) => {
       //const newLot = { id: state.value.length(), title: action.payload };
@@ -160,6 +179,13 @@ export const parkingSlice = createSlice({
         status: "success",
         message: "New parking lot added",
       };
+      state.loading = false;
+    },
+    [addParkingLotRex.rejected]: (state) => {
+      state.loading = true;
+    },
+    [deleteParkingLotRex.pending]: (state) => {
+      state.loading = true;
     },
     [deleteParkingLotRex.fulfilled]: (state, action) => {
       const index = action.payload.id;
@@ -168,23 +194,44 @@ export const parkingSlice = createSlice({
       //onsole.log(state.value);
       state.loading = false;
     },
+    [deleteParkingLotRex.rejected]: (state) => {
+      state.loading = true;
+    },
+    [editLandmarkRex.pending]: (state) => {
+      state.loading = true;
+    },
     [editLandmarkRex.fullfilled]: (state, action) => {
       console.log(action.payload);
       // let id = Number(action.payload.id);
       // state.value[id].title = action.payload.title;
-      // state.loading = false;
+      state.loading = false;
+    },
+    [editLandmarkRex.rejected]: (state) => {
+      state.loading = true;
+    },
+    [editSlotRex.pending]: (state) => {
+      state.loading = true;
     },
     [editSlotRex.fullfilled]: (state, action) => {
       console.log(action.payload);
       // let id = Number(action.payload.id);
       // state.value[id].title = action.payload.title;
-      // state.loading = false;
+      state.loading = false;
+    },
+    [editSlotRex.rejected]: (state) => {
+      state.loading = true;
+    },
+    [editImageRex.pending]: (state) => {
+      state.loading = true;
     },
     [editImageRex.fullfilled]: (state, action) => {
       console.log(action.payload);
       // let id = Number(action.payload.id);
       // state.value[id].title = action.payload.title;
-      // state.loading = false;
+      state.loading = false;
+    },
+    [editImageRex.rejected]: (state) => {
+      state.loading = true;
     },
     [searchParkingLotRex.fulfilled]: () => {},
   },

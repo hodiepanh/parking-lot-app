@@ -9,7 +9,6 @@ import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import AutoModeRoundedIcon from "@mui/icons-material/AutoModeRounded";
 import TuneRoundedIcon from "@mui/icons-material/TuneRounded";
 import Tooltip from "@mui/material/Tooltip";
-import default_image from "../../assets/default_image.png";
 
 //import redux state management
 import { useDispatch, useSelector } from "react-redux";
@@ -51,8 +50,6 @@ function AvailableLotsList({ lotsList, setLotsList }) {
   //navigate to result screen
   const runAuto = (data) => {
     //console.log(standardImage);
-    //find reference image (image with id)
-    //if exist -> set image for Calib screen
 
     //only allow run auto if parking lot is defined - when standard image is not default
     if (!data.image) {
@@ -63,6 +60,7 @@ function AvailableLotsList({ lotsList, setLotsList }) {
         })
       );
     } else {
+      //if exist -> set image for Calib screen + Result screen
       dispatch(setReferenceImage(data.image));
       history.push("/result");
     }
@@ -71,7 +69,9 @@ function AvailableLotsList({ lotsList, setLotsList }) {
   //navigate to calibration screen
   const adjust = (data) => {
     //if reference image is define -> set reference image
-    if (data.image) {
+    if (!data.image) {
+      dispatch(setReferenceImage("default"));
+    } else {
       dispatch(setReferenceImage(data.image));
     }
     history.push(`/calib/${data.id}`);

@@ -3,6 +3,7 @@ import Drawer from "@mui/material/Drawer";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import CalibUlti from "../components/ultilites/CalibUlti";
+import default_image from "../assets/default_image.png";
 
 import "../style/Calib.css";
 
@@ -11,7 +12,6 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   editImageRex,
   setReferenceImage,
-  setResultImage,
   openNotification,
 } from "../redux/parkingLots";
 
@@ -39,19 +39,18 @@ function Calib() {
   const [landmarkList, setLandmarkList] = useState([]);
   const [parkingslotList, setParkingSlotList] = useState([]);
 
-  //image in canvas
+  //image in canvas;
   const standardImage = useSelector(
     (state) => state.parkingReducer.standardImage
   );
 
   const parkinglotValue = useSelector((state) => state.parkingReducer.value);
-  //console.log(parkinglotValue);
+
   const inputFile = useRef(null);
   const [refImage, setRefImage] = useState(standardImage);
   const [saveImage, setSaveImage] = useState("");
   const dispatch = useDispatch();
 
-  //console.log(refImage);
   //router
   const history = useHistory();
   const { id } = useParams();
@@ -86,7 +85,8 @@ function Calib() {
       setDrawMode={setMode}
       removeLandmark={removeLandmarkData}
       removeSlot={removeSlotData}
-      image={refImage}
+      imageRef={refImage}
+      image={saveImage}
       inputFile={inputFile}
       handleChange={handleChange}
       saved={saved}
@@ -95,6 +95,12 @@ function Calib() {
   );
 
   useEffect(() => {
+    try {
+      setRefImage(require(`../assets/Reference/${id}.jpg`));
+    } catch (err) {
+      setRefImage(standardImage);
+    }
+
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
     contextRef.current = context;
@@ -113,8 +119,6 @@ function Calib() {
     //cannot access file path -> upload image to temp cache
     setSaveImage(event.target.files[0]);
 
-    //console.log(saveImage);
-    //console.log(event.target.files[0]);
     file.preview = URL.createObjectURL(file);
     setRefImage(file.preview);
   };
@@ -152,7 +156,7 @@ function Calib() {
 
   //get coordinate start point of rectangle
   const startRect = ({ nativeEvent }) => {
-    if (refImage == standardImage) {
+    if (refImage == default_image) {
       //alert("choose the reference image first");
     } else {
       if (mode == "") {
@@ -197,7 +201,7 @@ function Calib() {
 
   //get coordinate end point of rectangle
   const endRect = ({ nativeEvent }) => {
-    if (refImage == standardImage) {
+    if (refImage == default_image) {
       dispatch(
         openNotification({
           status: "error",
@@ -296,29 +300,18 @@ function Calib() {
 
   //navigate to result screen
   const toResult = () => {
-    //only navigate if there are 4 landmarks
-    if (saved == false) {
+    //only navigate if parking is already defined (data exist in db)
+    //or only navigate if parking defined this time
+    if (refImage == default_image) {
       dispatch(
         openNotification({
           status: "error",
           message: "Landmarks are not saved to databased.",
         })
       );
-    }
-    // if (landmarkList.length != 4) {
-    //   dispatch(
-    //     openNotification({
-    //       status: "error",
-    //       message: "Cannot show result. Landmarks are not defined.",
-    //     })
-    //   );
-    // }
-    else {
+    } else {
       //set image in Result Screen
-      //dispatch(setReferenceImage(`${id}_${saveImage.name}`));
-      dispatch(setResultImage(refImage));
-      //console.log(`${id}_${saveImage.name}`);
-      //console.log(refImage);
+      dispatch(setReferenceImage(`${id}.jpg`));
       history.push("/result");
     }
   };
@@ -351,6 +344,7 @@ function Calib() {
               setDrawMode={setMode}
               removeLandmark={removeLandmarkData}
               removeSlot={removeSlotData}
+              imageRef={refImage}
               image={saveImage}
               inputFile={inputFile}
               handleChange={handleChange}
@@ -361,9 +355,9 @@ function Calib() {
               <Button variant="outlined" onClick={toResult}>
                 Next
               </Button>
-              <Button variant="outlined" onClick={uploadImage}>
+              {/* <Button variant="outlined" onClick={uploadImage}>
                 Upload
-              </Button>
+              </Button> */}
             </div>
           </div>
         </div>
@@ -386,9 +380,9 @@ function Calib() {
             <Button variant="outlined" onClick={toResult}>
               Next
             </Button>
-            <Button variant="outlined" onClick={uploadImage}>
+            {/* <Button variant="outlined" onClick={uploadImage}>
               Upload
-            </Button>
+            </Button> */}
           </div>
         </div>
       </div>

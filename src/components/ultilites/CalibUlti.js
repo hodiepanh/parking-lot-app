@@ -54,6 +54,7 @@ function CalibUlti({
   setDrawMode,
   removeLandmark,
   removeSlot,
+  imageRef,
   image,
   inputFile,
   handleChange,
@@ -157,7 +158,7 @@ function CalibUlti({
       dispatch(
         openNotification({
           status: "success",
-          message: "Data saved successfully",
+          message: "Data saved successfully.",
         })
       );
 

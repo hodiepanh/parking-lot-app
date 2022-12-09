@@ -41,12 +41,14 @@ function AlertDialog({ lotsList, setLotsList }) {
 
   //remove parking lot from list
   const removeLot = (index) => {
-    //find parking lot with index !== chosen index ->update state
-    const newList = lotsList.filter((item) => item.id !== index);
-    setLotsList(newList);
-
-    //remove from database
-    dispatch(deleteParkingLotRex(index));
+    //remove from database first then remove in UI
+    dispatch(deleteParkingLotRex(index))
+      .unwrap()
+      .then(() => {
+        //find parking lot with index !== chosen index ->update state
+        const newList = lotsList.filter((item) => item.id !== index);
+        setLotsList(newList);
+      });
   };
   return (
     <div>
@@ -75,7 +77,6 @@ function AlertDialog({ lotsList, setLotsList }) {
             className="dialog-button"
             // onClick={handleAnswer}
             onClick={() => {
-              //console.log(alert.data);
               removeLot(alert.data.id);
               handleClose();
             }}
