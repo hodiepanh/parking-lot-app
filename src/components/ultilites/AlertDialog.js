@@ -75,7 +75,6 @@ function AlertDialog({ lotsList, setLotsList }) {
           <Button
             variant="contained"
             className="dialog-button"
-            // onClick={handleAnswer}
             onClick={() => {
               removeLot(alert.data.id);
               handleClose();

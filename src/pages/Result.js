@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
@@ -10,7 +10,7 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Tooltip from "@mui/material/Tooltip";
 
 //import routing
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 
 //import state management
 import { useSelector, useDispatch } from "react-redux";
@@ -25,16 +25,23 @@ function Result() {
   const standardImage = useSelector(
     (state) => state.parkingReducer.standardImage
   );
-
+  const { id } = useParams();
+  const [refImage, setRefImage] = useState();
   //image data
   const gridData = [
-    { title: "Standard Image", src: standardImage },
+    { title: "Standard Image", src: refImage },
     { title: "Captured Image", src: standardImage },
     { title: "Calibrated Image", src: standardImage },
   ];
 
   const history = useHistory();
-
+  useEffect(() => {
+    try {
+      setRefImage(require(`../assets/Reference/${id}.jpg`));
+    } catch (err) {
+      setRefImage(standardImage);
+    }
+  });
   //navigate to home screen
   const toHome = () => {
     history.push("/");

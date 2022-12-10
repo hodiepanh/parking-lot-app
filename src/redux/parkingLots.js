@@ -119,21 +119,11 @@ export const parkingSlice = createSlice({
         const newImage = require(`../assets/Reference/${action.payload}`);
         state.standardImage = newImage;
       }
-      //const newImage = require(action.payload);
-
-      //const newImage = action.payload;
-      //console.log(action.payload);
-      //state.standardImage = newImage;
-      //console.log(state.standardImage);
     },
     setResultImage: (state, action) => {
       console.log(typeof action.payload);
-      //const newImage = require(action.payload);
-      //const newImage = require(`../assets/Reference/${action.payload}`);
       const newImage = action.payload;
-      //console.log(action.payload);
       state.standardImage = newImage;
-      //console.log(state.standardImage);
     },
     openNotification: (state, action) => {
       state.notification = {
@@ -161,8 +151,6 @@ export const parkingSlice = createSlice({
       state.loading = true;
     },
     [getParkingLotRex.fulfilled]: (state) => {
-      //state.value = action.payload;
-      //console.log(state.value);
       state.loading = false;
     },
     [getParkingLotRex.rejected]: (state) => {
@@ -191,7 +179,6 @@ export const parkingSlice = createSlice({
       const index = action.payload.id;
       const delItems = state.value.filter((items) => items.id !== index);
       state.value = [...delItems];
-      //onsole.log(state.value);
       state.loading = false;
     },
     [deleteParkingLotRex.rejected]: (state) => {
@@ -226,8 +213,6 @@ export const parkingSlice = createSlice({
     },
     [editImageRex.fullfilled]: (state, action) => {
       console.log(action.payload);
-      // let id = Number(action.payload.id);
-      // state.value[id].title = action.payload.title;
       state.loading = false;
     },
     [editImageRex.rejected]: (state) => {

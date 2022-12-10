@@ -312,7 +312,7 @@ function Calib() {
     } else {
       //set image in Result Screen
       dispatch(setReferenceImage(`${id}.jpg`));
-      history.push("/result");
+      history.push(`/result/${id}`);
     }
   };
 

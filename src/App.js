@@ -25,7 +25,7 @@ function App() {
               <Route exact path="/calib/:id">
                 <Calib />
               </Route>
-              <Route exact path="/result">
+              <Route exact path="/result/:id">
                 <Result />
               </Route>
             </Switch>

@@ -49,8 +49,6 @@ function AvailableLotsList({ lotsList, setLotsList }) {
 
   //navigate to result screen
   const runAuto = (data) => {
-    //console.log(standardImage);
-
     //only allow run auto if parking lot is defined - when standard image is not default
     if (!data.image) {
       dispatch(
@@ -60,20 +58,12 @@ function AvailableLotsList({ lotsList, setLotsList }) {
         })
       );
     } else {
-      //if exist -> set image for Calib screen + Result screen
-      dispatch(setReferenceImage(data.image));
-      history.push("/result");
+      history.push(`/result/${data.id}`);
     }
   };
 
   //navigate to calibration screen
   const adjust = (data) => {
-    //if reference image is define -> set reference image
-    if (!data.image) {
-      dispatch(setReferenceImage("default"));
-    } else {
-      dispatch(setReferenceImage(data.image));
-    }
     history.push(`/calib/${data.id}`);
   };
 
@@ -95,7 +85,6 @@ function AvailableLotsList({ lotsList, setLotsList }) {
           <Tooltip title="Adjust">
             <IconButton
               onClick={() => {
-                //console.log(data);
                 adjust(data);
               }}
             >

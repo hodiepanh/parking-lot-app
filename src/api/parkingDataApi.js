@@ -1,12 +1,4 @@
 import axios from "axios";
-// const app = axios.create({
-//   baseURL: "http://localhost:5000/parkinglots",
-//   headers: {
-//     "Access-Control-Allow-Origin": "*",
-//     "Content-Type": "application/json",
-//   },
-//   withCredentials: false,
-// });
 
 //const url = "http://localhost:3001/parkinglots";
 const baseURL = "http://localhost:5000";

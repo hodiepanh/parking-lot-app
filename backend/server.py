@@ -42,18 +42,11 @@ def api():
             dataJson.append(dataDict)
         return jsonify(dataJson)
 
-    #return {"data": ["data1", "data2", "data3"]}
-
 @app.route('/parkinglots', methods = ['POST'])
 def add():
     if request.method =="POST":
-        body = request.json
-        # if(body['id']==null):
-        #id = random.randint(0,100)
-        
-        
+        body = request.json     
         title=body['title']
-
 
         newData = db['parkinglots'].insert_one({
             #"_id":id,
@@ -69,7 +62,6 @@ def add():
 @app.route('/parkinglots/<id>', methods=['GET'])
 def getUserbyId(id):
     data = db['parkinglots'].find_one({'_id': ObjectId(id)})
-    #print(data)
 
     #id = data['id']
     title = data['title']
