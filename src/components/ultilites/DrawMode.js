@@ -23,7 +23,7 @@ function DrawMode({ mode, setMode }) {
             m: 3,
             display: "flex",
             alignItems: "flex-start",
-            margin: "20px 0",
+            margin: "10px 0",
           }}
           variant="standard"
         >

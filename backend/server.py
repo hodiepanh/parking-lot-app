@@ -73,6 +73,12 @@ def getUserbyId(id):
 
 @app.route('/parkinglots/<id>', methods=['DELETE'])
 def deleteUser(id):
+    #delete reference image from local file
+    filename=str(id)+".jpg"
+    #check is reference image exist (name exists)
+    if(os.path.exists(f'../src/assets/Reference/{filename}')):
+         os.remove(f'../src/assets/Reference/{filename}')  
+
     db['parkinglots'].delete_one({'_id': ObjectId(id)})
     return jsonify({"msg":"Lot deleted"})
 

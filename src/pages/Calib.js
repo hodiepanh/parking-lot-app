@@ -48,6 +48,7 @@ function Calib() {
 
   const inputFile = useRef(null);
   const [refImage, setRefImage] = useState(standardImage);
+
   const [saveImage, setSaveImage] = useState("");
   const dispatch = useDispatch();
 
@@ -95,12 +96,6 @@ function Calib() {
   );
 
   useEffect(() => {
-    try {
-      setRefImage(require(`../assets/Reference/${id}.jpg`));
-    } catch (err) {
-      setRefImage(standardImage);
-    }
-
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
     contextRef.current = context;
@@ -108,7 +103,13 @@ function Calib() {
     const canvasOffset = canvas.getBoundingClientRect();
     canvasOffsetX.current = canvasOffset.left;
     canvasOffsetY.current = canvasOffset.top;
-  }, [mode]);
+
+    try {
+      setRefImage(require(`../assets/Reference/${id}.jpg`));
+    } catch (err) {
+      setRefImage(standardImage);
+    }
+  }, []);
 
   //set image in canvas from local storage
   const handleChange = (event) => {
