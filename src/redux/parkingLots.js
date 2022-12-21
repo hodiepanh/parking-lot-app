@@ -95,6 +95,19 @@ export const editImageRex = createAsyncThunk(
   }
 );
 
+export const editCalibratedRex = createAsyncThunk(
+  "parkinglots/edit",
+  async (editData) => {
+    //console.log(editData);
+    const id = editData.id;
+    const edit_data = editData.formData;
+    const resp = await parkingApi.editCalibratedImage(id, edit_data);
+    const data = resp.data;
+    //console.log(data);
+    return data;
+  }
+);
+
 export const parkingSlice = createSlice({
   name: "parking",
   initialState,
@@ -217,6 +230,10 @@ export const parkingSlice = createSlice({
     },
     [editImageRex.rejected]: (state) => {
       state.loading = true;
+    },
+    [editCalibratedRex.fullfilled]: (state, action) => {
+      console.log(action.payload);
+      state.loading = false;
     },
     [searchParkingLotRex.fulfilled]: () => {},
   },

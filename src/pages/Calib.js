@@ -11,6 +11,7 @@ import "../style/Calib.css";
 import { useSelector, useDispatch } from "react-redux";
 import {
   editImageRex,
+  editCalibratedRex,
   setReferenceImage,
   openNotification,
 } from "../redux/parkingLots";
@@ -153,6 +154,12 @@ function Calib() {
     const formData = new FormData();
     formData.append("image", saveImage);
     dispatch(editImageRex({ id, formData }));
+  };
+
+  const calibrateImage = () => {
+    const formData = new FormData();
+    formData.append("image", saveImage);
+    dispatch(editCalibratedRex({ id, formData }));
   };
 
   //get coordinate start point of rectangle
@@ -313,7 +320,15 @@ function Calib() {
     } else {
       //set image in Result Screen
       dispatch(setReferenceImage(`${id}.jpg`));
-      history.push(`/result/${id}`);
+      //calibrate image
+      const formData = new FormData();
+      formData.append("image", saveImage);
+      dispatch(editCalibratedRex({ id, formData }))
+        .unwrap()
+        .then(() => {
+          //go to result when calibrate is success
+          history.push(`/result/${id}`);
+        });
     }
   };
 

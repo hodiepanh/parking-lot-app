@@ -20,6 +20,7 @@ import {
   editLandmarkRex,
   editSlotRex,
   editImageRex,
+  editCalibratedRex,
   setReferenceImage,
   openNotification,
 } from "../../redux/parkingLots";
@@ -140,6 +141,12 @@ function CalibUlti({
     dispatch(editImageRex({ id, formData }));
   };
 
+  const calibrateImage = () => {
+    const formData = new FormData();
+    formData.append("image", image);
+    dispatch(editCalibratedRex({ id, formData }));
+  };
+
   //save data to the database
   const saveData = () => {
     //only save data to database if there are 4 landmarks
@@ -155,6 +162,7 @@ function CalibUlti({
       dispatch(editLandmarkRex({ id, landmarkList }));
       //dispatch(editSlotRex({ id, parkingslotList }));
       uploadImage();
+      //calibrateImage();
       dispatch(
         openNotification({
           status: "success",

@@ -8,6 +8,7 @@ import DebugDrawer from "../components/ultilites/DebugDrawer";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Tooltip from "@mui/material/Tooltip";
+import default_image from "../assets/default_image.png";
 
 //import routing
 import { useHistory, useParams } from "react-router-dom";
@@ -27,11 +28,12 @@ function Result() {
   );
   const { id } = useParams();
   const [refImage, setRefImage] = useState();
+  const [calibImage, setCalibImage] = useState();
   //image data
   const gridData = [
     { title: "Standard Image", src: refImage },
     { title: "Captured Image", src: standardImage },
-    { title: "Calibrated Image", src: standardImage },
+    { title: "Calibrated Image", src: calibImage },
   ];
 
   const history = useHistory();
@@ -39,7 +41,13 @@ function Result() {
     try {
       setRefImage(require(`../assets/Reference/${id}.jpg`));
     } catch (err) {
-      setRefImage(standardImage);
+      setRefImage(default_image);
+    }
+
+    try {
+      setCalibImage(require(`../assets/Calibrated/${id}_rotated.jpg`));
+    } catch (err) {
+      setRefImage(default_image);
     }
   });
   //navigate to home screen
