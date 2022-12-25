@@ -95,11 +95,9 @@ export const editSlotRex = createAsyncThunk(
 export const editImageRex = createAsyncThunk(
   "parkinglots/edit",
   async (editData) => {
-    console.log(editData.title);
     const id = editData.id;
-    const title = editData.title;
     const edit_data = editData.formData;
-    const resp = await parkingApi.editReferenceImage(id, title, edit_data);
+    const resp = await parkingApi.editReferenceImage(id, edit_data);
     const data = resp.data;
     //console.log(data);
     return data;

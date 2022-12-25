@@ -50,8 +50,8 @@ export const parkingApi = {
       slot: data,
     });
   },
-  editReferenceImage: (id, title, data) => {
-    return axiosClient.post(`${url}/${id}/image`, { title: title, data: data });
+  editReferenceImage: (id, data) => {
+    return axiosClient.post(`${url}/${id}/image`, data);
   },
   editCalibratedImage: (id, title, data) => {
     return axiosClient.post(`${url}/${id}/calibrate`, {

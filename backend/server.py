@@ -134,7 +134,6 @@ def updateSlot(id):
 @app.route('/parkinglots/<id>/image', methods=['POST'])
 def fileUpload(id):
     file = request.files.get('image')
-    title = request.json['title']
     # filename is id (1 parking lot = 1 reference image)
 
     filename = str(id)+".jpg"

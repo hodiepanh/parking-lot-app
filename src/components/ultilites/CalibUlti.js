@@ -143,7 +143,7 @@ function CalibUlti({
   const uploadImage = () => {
     const formData = new FormData();
     formData.append("image", image);
-    dispatch(editImageRex({ id, title, formData }));
+    dispatch(editImageRex({ id, formData }));
   };
 
   const calibrateImage = () => {
