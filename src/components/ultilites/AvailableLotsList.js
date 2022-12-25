@@ -58,13 +58,19 @@ function AvailableLotsList({ lotsList, setLotsList }) {
         })
       );
     } else {
-      history.push(`/result/${data.id}`);
+      history.push({
+        pathname: `/result/${data.id}`,
+        state: data.title,
+      });
     }
   };
 
   //navigate to calibration screen
   const adjust = (data) => {
-    history.push(`/calib/${data.id}`);
+    history.push({
+      pathname: `/calib/${data.id}`,
+      state: data.title,
+    });
   };
 
   //render list item

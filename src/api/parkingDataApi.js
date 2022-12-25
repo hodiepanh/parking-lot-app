@@ -21,6 +21,9 @@ export const parkingApi = {
   getParkingLot: () => {
     return axiosClient.get(url);
   },
+  getParkingLotById: (id) => {
+    return axiosClient.get(`${url}/${id}`);
+  },
   addParkingLot: (newName) => {
     const newLot = { title: newName };
     //console.log(newLot);
@@ -47,10 +50,13 @@ export const parkingApi = {
       slot: data,
     });
   },
-  editReferenceImage: (id, data) => {
-    return axiosClient.post(`${url}/${id}/image`, data);
+  editReferenceImage: (id, title, data) => {
+    return axiosClient.post(`${url}/${id}/image`, { title: title, data: data });
   },
-  editCalibratedImage: (id, data) => {
-    return axiosClient.post(`${url}/${id}/calibrate`, data);
+  editCalibratedImage: (id, title, data) => {
+    return axiosClient.post(`${url}/${id}/calibrate`, {
+      title: title,
+      data: data,
+    });
   },
 };

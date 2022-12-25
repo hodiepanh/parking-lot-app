@@ -15,6 +15,7 @@ import { useHistory, useParams } from "react-router-dom";
 
 //import state management
 import { useSelector, useDispatch } from "react-redux";
+import { getParkingLotByIdRex } from "../redux/parkingLots";
 
 //import style
 import "../style/Result.css";
@@ -29,27 +30,84 @@ function Result() {
   const { id } = useParams();
   const [refImage, setRefImage] = useState();
   const [calibImage, setCalibImage] = useState();
+  const [capturedImage, setCapturedImage] = useState();
+  const [calibImageList, setCalibImageList] = useState([]);
+  const [capturedImageList, setCapturedImageList] = useState([]);
+  const [incre, setIncre] = useState(0);
   //image data
   const gridData = [
     { title: "Standard Image", src: refImage },
-    { title: "Captured Image", src: standardImage },
+    { title: "Captured Image", src: capturedImage },
     { title: "Calibrated Image", src: calibImage },
   ];
 
   const history = useHistory();
+  //get parking lot name
+  const parking_name = history.location.state;
+  const dispatch = useDispatch();
   useEffect(() => {
+    getStandardImage();
+    dispatch(getParkingLotByIdRex(id))
+      .unwrap()
+      .then((res) => {
+        //console.log(res.result);
+        setCalibImageList(res.result.map((data) => data.title));
+        setCapturedImageList(
+          res.result.map((data) => data.title.replace("_rotated", ""))
+        );
+      })
+      .then(() => {
+        getCalibImage(default_image);
+        getCapturedImage(default_image);
+      });
+  }, []);
+
+  //get standard image
+  const getStandardImage = () => {
     try {
       setRefImage(require(`../assets/Reference/${id}.jpg`));
     } catch (err) {
       setRefImage(default_image);
     }
+  };
 
+  //get captured image -> iterate through array
+  const getCapturedImage = (image_name) => {
     try {
-      setCalibImage(require(`../assets/Calibrated/${id}_rotated.jpg`));
+      setCapturedImage(
+        require(`../assets/Parking Lots/Sample lot/${image_name}`)
+      );
+      //setCalibImage(require(`../assets/Calibrated/${id}_rotated.jpg`));
     } catch (err) {
-      setRefImage(default_image);
+      setCapturedImage(default_image);
     }
-  });
+  };
+
+  //get calibrated image -> iterate through array
+  const getCalibImage = (image_name) => {
+    try {
+      setCalibImage(
+        require(`../assets/Calibrated/${parking_name}/${image_name}`)
+      );
+      //setCalibImage(require(`../assets/Calibrated/${id}_rotated.jpg`));
+    } catch (err) {
+      setCalibImage(default_image);
+    }
+  };
+
+  //show captured and calibrated image
+  //called -> iterate
+  const nextResult = () => {
+    try {
+      getCapturedImage(capturedImageList[incre]);
+      getCalibImage(calibImageList[incre]);
+      setIncre(incre + 1);
+    } catch (err) {
+      //setCalibImage(default_image);
+      setIncre(0);
+    }
+  };
+
   //navigate to home screen
   const toHome = () => {
     history.push("/");
@@ -67,7 +125,7 @@ function Result() {
           height: 270,
           width: 400,
         }}
-        alt="The house from the offer."
+        alt={data.title}
         src={data.src}
       />
     </Grid>
@@ -75,6 +133,7 @@ function Result() {
   return (
     <div className="layout">
       <Typography variant="h1">Result</Typography>
+
       <div>
         <Grid
           container
@@ -101,6 +160,11 @@ function Result() {
           </Tooltip>
           <Tooltip title="Compare to reference">
             <Button variant="outlined">Compare</Button>
+          </Tooltip>
+          <Tooltip title="Observe next result">
+            <Button variant="outlined" onClick={nextResult}>
+              Next
+            </Button>
           </Tooltip>
           <DebugDrawer />
           <Tooltip title="Accept result">

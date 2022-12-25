@@ -5,7 +5,7 @@ from flask_cors import CORS
 import json
 import random
 import os
-from app import print_sth, tranform_image, input_path
+from app import tranform_image, transform_images_from_folder, mock_path, input_path
 
 app = Flask(__name__)
 
@@ -72,20 +72,38 @@ def add():
 def getUserbyId(id):
     data = db['parkinglots'].find_one({'_id': ObjectId(id)})
 
-    # id = data['id']
+    id = data['_id']
     title = data['title']
 
-    return jsonify({
-        # 'id': id,
-        'title': title
-    })
+    try:
+        landmark = data['landmark']
+        image = data['image']
+        result = data['result']
+        dataDict = {
+            "id": str(id),
+            "title": title,
+            'landmark': landmark,
+            'image': image,
+            'result': result,
+            # 'slot':str(slot)
+        }
+    except KeyError:
+        # slot=data['slot']
+        dataDict = {
+            "id": str(id),
+            "title": title,
+            # 'landmark':str(landmark),
+            # 'slot':str(slot)
+        }
+
+    return jsonify(dataDict)
 
 
 @app.route('/parkinglots/<id>', methods=['DELETE'])
 def deleteUser(id):
     # delete reference image from local file
     filename = str(id)+".jpg"
-    # check is reference image exist (name exists)
+    # check is reference image exist (name exists) -> remove
     if (os.path.exists(f'../src/assets/Reference/{filename}')):
         os.remove(f'../src/assets/Reference/{filename}')
 
@@ -116,21 +134,18 @@ def updateSlot(id):
 @app.route('/parkinglots/<id>/image', methods=['POST'])
 def fileUpload(id):
     file = request.files.get('image')
+    title = request.json['title']
     # filename is id (1 parking lot = 1 reference image)
 
     filename = str(id)+".jpg"
 
     # check is reference image exist (name exists) -> overwrite if exist
-    # if(os.path.exists(f'../src/assets/Reference/{filename}')):
-    #     os.remove(f'../src/assets/Reference/{filename}')
+
     file.save(os.path.join('../src/assets/Reference', filename))
 
     db['parkinglots'].update_one({'_id': ObjectId(id)}, {'$set': {
         'image': filename
     }})
-
-    # function to get file from the filename - rotate - rename - save into directory
-    # tranform_image(str(id), os.path.join('../src/assets/Reference', filename))
 
     return jsonify({
         "image": filename,
@@ -141,21 +156,19 @@ def fileUpload(id):
 @app.route('/parkinglots/<id>/calibrate', methods=['POST'])
 def calibrateImage(id):
     file = request.files.get('image')
-    # filename is id (1 parking lot = 1 reference image)
+    title = request.json['title']
 
-    filename = str(id)+".jpg"
-    filename_result = str(id)+"_rotated.jpg"
+    # function to get files array from the path - calibrate - rename - save into directory
+    # return the result filenames array
+    calib_result = transform_images_from_folder(mock_path, title)
+    # print(filename_result)
 
     db['parkinglots'].update_one({'_id': ObjectId(id)}, {'$set': {
-        'result': filename_result
+        'result': calib_result
     }})
 
-    # print(f'{input_path}/{filename_result}')
-    # function to get file from the filename - rotate - rename - save into directory
-    tranform_image(str(id), f'{input_path}/{filename}')
-
     return jsonify({
-        "result": filename_result,
+        "result": calib_result,
         "msg": "slot updated"
     })
 

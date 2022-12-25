@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
@@ -26,7 +26,7 @@ import {
 } from "../../redux/parkingLots";
 
 //import router
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useLocation, useParams } from "react-router-dom";
 
 //import component
 import DrawMode from "./DrawMode";
@@ -76,7 +76,12 @@ function CalibUlti({
   //router
   const history = useHistory();
   const { id } = useParams();
+  const [title, setTitle] = useState(history.location.state);
 
+  // useEffect(() => {
+  //   //console.log(history.location.state);
+  //   setTitle(history.location.state);
+  // });
   //render landmark list item
   const landmarkMap = landmarkList.map((data, index) => (
     <ListItem key={index} disablePadding>
@@ -138,13 +143,13 @@ function CalibUlti({
   const uploadImage = () => {
     const formData = new FormData();
     formData.append("image", image);
-    dispatch(editImageRex({ id, formData }));
+    dispatch(editImageRex({ id, title, formData }));
   };
 
   const calibrateImage = () => {
     const formData = new FormData();
     formData.append("image", image);
-    dispatch(editCalibratedRex({ id, formData }));
+    dispatch(editCalibratedRex({ id, title, formData }));
   };
 
   //save data to the database

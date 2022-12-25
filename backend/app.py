@@ -4,6 +4,7 @@ import os
 # define path here
 input_path = "../src/assets/Reference"
 output_path = "../src/assets/Calibrated"
+mock_path = "../src/assets/Parking Lots/Sample lot"
 # input
 # img = cv.imread(f"{input_path}/lmTst_0.jpg")
 
@@ -67,14 +68,40 @@ def print_sth(something):
 # 1 input - 1 output
 
 
-def tranform_image(name, image):
+def tranform_image(name, directory, image):
     img = cv.imread(image)
-    resize_image(img, 50)
+    img = resize_image(img, 50)
     img = rotate_image(img, 45)
-    img_name = image + "_rotated.jpg"
+    # img_name = image + "_rotated.jpg"
+    if (os.path.isdir(f'{output_path}/{directory}') is False):
+        os.mkdir(os.path.join(output_path, directory))
     cv.imwrite(
-        f'{output_path}/{name}_rotated.jpg', img)
-    # show_image(name+"_rotated.jpg", img)
+        f'{output_path}/{directory}/{os.path.splitext(name)[0]}_rotated.jpg', img)
+    return f'{os.path.splitext(name)[0]}_rotated.jpg'
 
 # function to get file from the filename - resize - rotate - rename - save into directory
 # 1 input - many output
+
+# read all file from a directory
+
+
+def transform_images_from_folder(path, folder_name):
+    # create an array
+    result = []
+    i = 0
+    for filename in os.listdir(path):
+        f = os.path.join(path, filename)
+        # checking if it is a file
+        if os.path.isfile(f):
+            # checking if it is an image
+            if (os.path.splitext(f)[1] == ".jpg" or os.path.splitext(f)[1] == ".png"):
+                # print(f)
+                result_single = {"id": i, "title": tranform_image(
+                    filename, folder_name, f)}
+                result.append(result_single)
+                i = i + 1
+    # return result filenames array
+    return result
+
+
+# transform_images_from_folder(mock_path)

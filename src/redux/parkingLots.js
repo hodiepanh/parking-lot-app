@@ -20,6 +20,16 @@ export const getParkingLotRex = createAsyncThunk(
   }
 );
 
+export const getParkingLotByIdRex = createAsyncThunk(
+  "parkinglots/get",
+  async (id) => {
+    const response = await parkingApi.getParkingLotById(id);
+    const data = response.data;
+    //console.log(data);
+    return data;
+  }
+);
+
 export const addParkingLotRex = createAsyncThunk(
   "parkinglots/add",
   async (newLot) => {
@@ -85,10 +95,11 @@ export const editSlotRex = createAsyncThunk(
 export const editImageRex = createAsyncThunk(
   "parkinglots/edit",
   async (editData) => {
-    //console.log(editData);
+    console.log(editData.title);
     const id = editData.id;
+    const title = editData.title;
     const edit_data = editData.formData;
-    const resp = await parkingApi.editReferenceImage(id, edit_data);
+    const resp = await parkingApi.editReferenceImage(id, title, edit_data);
     const data = resp.data;
     //console.log(data);
     return data;
@@ -100,8 +111,9 @@ export const editCalibratedRex = createAsyncThunk(
   async (editData) => {
     //console.log(editData);
     const id = editData.id;
+    const title = editData.title;
     const edit_data = editData.formData;
-    const resp = await parkingApi.editCalibratedImage(id, edit_data);
+    const resp = await parkingApi.editCalibratedImage(id, title, edit_data);
     const data = resp.data;
     //console.log(data);
     return data;
@@ -169,6 +181,7 @@ export const parkingSlice = createSlice({
     [getParkingLotRex.rejected]: (state) => {
       state.loading = true;
     },
+    [getParkingLotByIdRex.fullfilled]: (state) => {},
     [addParkingLotRex.pending]: (state) => {
       state.loading = true;
     },

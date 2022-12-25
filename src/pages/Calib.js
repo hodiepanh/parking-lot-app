@@ -56,6 +56,7 @@ function Calib() {
   //router
   const history = useHistory();
   const { id } = useParams();
+  const [title, setTitle] = useState(history.location.state);
 
   //setup drawer
   const [state, setState] = React.useState({
@@ -153,13 +154,13 @@ function Calib() {
   const uploadImage = () => {
     const formData = new FormData();
     formData.append("image", saveImage);
-    dispatch(editImageRex({ id, formData }));
+    dispatch(editImageRex({ id, title, formData }));
   };
 
   const calibrateImage = () => {
     const formData = new FormData();
     formData.append("image", saveImage);
-    dispatch(editCalibratedRex({ id, formData }));
+    dispatch(editCalibratedRex({ id, title, formData }));
   };
 
   //get coordinate start point of rectangle
@@ -323,11 +324,11 @@ function Calib() {
       //calibrate image
       const formData = new FormData();
       formData.append("image", saveImage);
-      dispatch(editCalibratedRex({ id, formData }))
+      dispatch(editCalibratedRex({ id, title, formData }))
         .unwrap()
         .then(() => {
           //go to result when calibrate is success
-          history.push(`/result/${id}`);
+          history.push({ pathname: `/result/${id}`, state: title });
         });
     }
   };
