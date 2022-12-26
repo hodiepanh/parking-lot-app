@@ -154,13 +154,13 @@ function Calib() {
   const uploadImage = () => {
     const formData = new FormData();
     formData.append("image", saveImage);
-    dispatch(editImageRex({ id, title, formData }));
+    dispatch(editImageRex({ id, formData }));
   };
 
   const calibrateImage = () => {
     const formData = new FormData();
     formData.append("image", saveImage);
-    dispatch(editCalibratedRex({ id, title, formData }));
+    dispatch(editCalibratedRex({ id, title }));
   };
 
   //get coordinate start point of rectangle
@@ -324,13 +324,17 @@ function Calib() {
       //calibrate image
       const formData = new FormData();
       formData.append("image", saveImage);
-      dispatch(editCalibratedRex({ id, title, formData }))
+      dispatch(editCalibratedRex({ id, title }))
         .unwrap()
         .then(() => {
           //go to result when calibrate is success
           history.push({ pathname: `/result/${id}`, state: title });
         });
     }
+  };
+
+  const test = () => {
+    console.log(saveImage);
   };
 
   return (

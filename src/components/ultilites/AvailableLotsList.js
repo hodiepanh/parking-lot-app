@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   deleteParkingLotRex,
   setReferenceImage,
+  editCalibratedRex,
   openAlert,
   openNotification,
 } from "../../redux/parkingLots";
@@ -58,10 +59,17 @@ function AvailableLotsList({ lotsList, setLotsList }) {
         })
       );
     } else {
-      history.push({
-        pathname: `/result/${data.id}`,
-        state: data.title,
-      });
+      //calibrate then go to result screen
+      const id = data.id;
+      const title = data.title;
+      dispatch(editCalibratedRex({ id, title }))
+        .unwrap()
+        .then(() => {
+          history.push({
+            pathname: `/result/${data.id}`,
+            state: data.title,
+          });
+        });
     }
   };
 

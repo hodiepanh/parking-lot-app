@@ -1,3 +1,6 @@
+# import imutils
+import math
+import landmark_recognition
 import cv2 as cv
 import numpy as np
 import os
@@ -7,6 +10,7 @@ output_path = "../src/assets/Calibrated"
 mock_path = "../src/assets/Parking Lots/Sample lot"
 # input
 # img = cv.imread(f"{input_path}/lmTst_0.jpg")
+img = cv.imread("../src/assets/TestData/lmTst_0.jpg")
 
 # resize
 
@@ -20,8 +24,21 @@ def resize_image(image, scale_percent):
     return result
 
 
-# img = resize_image(img)
+# img = resize_image(img, 50)
+# draw dot on image
 
+
+def image_draw_dot(image, coord):
+    # draw a red dot
+    image_result = cv.circle(image, coord, radius=0,
+                             color=(0, 0, 255), thickness=3)
+    # make the image 50% smaller
+    image_result = resize_image(image_result, 50)
+
+    return image_result
+
+
+# image_draw = image_draw_dot(img, (100, 100))
 # rotate by degree around center
 
 
@@ -79,7 +96,12 @@ def tranform_image(name, directory, image):
         f'{output_path}/{directory}/{os.path.splitext(name)[0]}_rotated.jpg', img)
     return f'{os.path.splitext(name)[0]}_rotated.jpg'
 
+
 # function to get file from the filename - resize - rotate - rename - save into directory
+# img = rotate_image(img, 10)
+# img = translate_image(img, 10, 10)
+# cv.imwrite('../src/assets/TestData/lmTst_0_cur.jpg', img)
+
 # 1 input - many output
 
 # read all file from a directory

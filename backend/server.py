@@ -154,7 +154,7 @@ def fileUpload(id):
 
 @app.route('/parkinglots/<id>/calibrate', methods=['POST'])
 def calibrateImage(id):
-    file = request.files.get('image')
+    # file = request.files.get('image')
     title = request.json['title']
 
     # function to get files array from the path - calibrate - rename - save into directory

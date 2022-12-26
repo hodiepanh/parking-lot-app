@@ -9,9 +9,12 @@ im_lower = np.array([20, 110, 110], dtype='uint8')
 im_upper = np.array([35, 255, 255], dtype='uint8')
 kernel = np.ones((3, 3), np.uint8)
 
+img_test = cv2.imread("../src/assets/Parking lots/Sample lot/lmTst_0.jpg")
 
 # ----------------------------------------------------------------------------------------------------------------------
 # Define landmark recognition function
+
+
 def find_landmark(image_data):
     # Initiate values
     # Debug:
@@ -87,9 +90,10 @@ def find_landmark(image_data):
     return current_status, current_x, current_y
 # ----------------------------------------------------------------------------------------------------------------------
 
-
 # ----------------------------------------------------------------------------------------------------------------------
 # Get coordinate information from standard image log file
+
+
 def get_coordinate_std_file(input_path, input_name):
     # Define log file name
     file_name = "01_std_log.csv"

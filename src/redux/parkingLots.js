@@ -110,8 +110,8 @@ export const editCalibratedRex = createAsyncThunk(
     //console.log(editData);
     const id = editData.id;
     const title = editData.title;
-    const edit_data = editData.formData;
-    const resp = await parkingApi.editCalibratedImage(id, title, edit_data);
+    //const edit_data = editData.formData;
+    const resp = await parkingApi.editCalibratedImage(id, title);
     const data = resp.data;
     //console.log(data);
     return data;

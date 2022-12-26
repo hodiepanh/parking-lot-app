@@ -53,10 +53,9 @@ export const parkingApi = {
   editReferenceImage: (id, data) => {
     return axiosClient.post(`${url}/${id}/image`, data);
   },
-  editCalibratedImage: (id, title, data) => {
+  editCalibratedImage: (id, title) => {
     return axiosClient.post(`${url}/${id}/calibrate`, {
       title: title,
-      data: data,
     });
   },
 };
