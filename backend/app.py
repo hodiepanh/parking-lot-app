@@ -26,12 +26,15 @@ def resize_image(image, scale_percent):
 
 # img = resize_image(img, 50)
 # draw dot on image
+def show_image(name, image):
+    cv.imshow(name, image)
+    cv.waitKey(0)
 
 
 def image_draw_dot(image, coord):
     # draw a red dot
     image_result = cv.circle(image, coord, radius=0,
-                             color=(0, 0, 255), thickness=3)
+                             color=(0, 0, 255), thickness=5)
     # make the image 50% smaller
     image_result = resize_image(image_result, 50)
 
@@ -39,7 +42,18 @@ def image_draw_dot(image, coord):
 
 
 # image_draw = image_draw_dot(img, (100, 100))
+
+# draw line/vector on image
+def image_draw_line(image, vector):
+    image_result = cv.line(
+        image, vector[0], vector[1], color=(0, 0, 255), thickness=9)
+    # image_result = resize_image(image_result, 50)
+    return image_result
 # rotate by degree around center
+
+
+# image_draw_line_test = image_draw_line(img, [(0, 0), (500, 500)])
+# show_image("test", image_draw_line_test)
 
 
 def rotate_image(image, angle):
@@ -73,11 +87,6 @@ def save_image(image):
 # output show on screen
 
 
-def show_image(name, image):
-    cv.imshow(name, image)
-    cv.waitKey(0)
-
-
 def print_sth(something):
     print(something)
 
@@ -98,9 +107,9 @@ def tranform_image(name, directory, image):
 
 
 # function to get file from the filename - resize - rotate - rename - save into directory
-# img = rotate_image(img, 10)
-# img = translate_image(img, 10, 10)
-# cv.imwrite('../src/assets/TestData/lmTst_0_cur.jpg', img)
+img = rotate_image(img, 10)
+img = translate_image(img, 5, 5)
+cv.imwrite('../src/assets/TestData/lmTst_0_cur.jpg', img)
 
 # 1 input - many output
 
@@ -127,3 +136,44 @@ def transform_images_from_folder(path, folder_name):
 
 
 # transform_images_from_folder(mock_path)
+
+def get_landmark_data(landmark_data):
+    landmark = []
+    for i in range(0, 4):
+        data = {'id':  landmark_data[i]['id']+1, 'x1': landmark_data[i]['x1'],
+                'y1': landmark_data[i]['y1'], 'x2': landmark_data[i]['x2'], 'y2': landmark_data[i]['y2']}
+        landmark.append(data)
+
+    # print(landmark)
+    return landmark
+
+
+def landmark_def_group(image, landmark):
+    small_image = []
+    landmark_data = []
+    for i in range(int(len(landmark))):
+        small_img = landmark_recognition.image_get_data(
+            image, landmark[i]['x1'], landmark[i]['y1'], landmark[i]['x2'], landmark[i]['y2'])
+        # landmark_x, landmark_y = landmark_recognition.landmark_definition(small_image)
+        landmark_data.append(
+            landmark_recognition.landmark_definition(small_img))
+        small_image.append(small_img)
+        # print(landmark_data[i])
+        # small_image_draw = image_draw_dot(small_image[i], landmark_data[i])
+        # show_image(str(i+1), small_image_draw)
+    return landmark_data
+
+
+# small_image = landmark_recognition.image_get_data(
+#   image_path="../src/assets/TestData/lmTst_0.jpg",
+#   start_position_x=475, start_position_y=600, end_position_x=525, end_position_y=650)
+# 638ebdea45421afa329b6ad9
+image_path = "../src/assets/Reference/638ebdea45421afa329b6ad9.jpg"
+# img = cv.imread(image_path)
+# height, width = img.shape[:2]
+# print(height, width)
+landmark_test = [{'id': 0, 'x1': 432, 'y1': 576, 'x2': 528, 'y2': 657},
+                 {'id': 1, 'x1': 1117, 'y1': 590, 'x2': 1213, 'y2': 671},
+                 {'id': 2, 'x1': 253, 'y1': 806, 'x2': 349, 'y2': 887},
+                 {'id': 3, 'x1': 1197, 'y1': 865, 'x2': 1293, 'y2': 946}]
+# print(landmark_def_group(image_path, landmark_test))

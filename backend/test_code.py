@@ -1,5 +1,6 @@
 import math
 import landmark_recognition
+import image_calibration
 import cv2 as cv
 import numpy as np
 import os
@@ -8,8 +9,8 @@ import app
 img_ref_test = cv.imread("../src/assets/TestData/lmTst_0.jpg")
 ref_status, ref_x, ref_y = landmark_recognition.find_landmark(img_ref_test)
 print(ref_status, ref_x, ref_y)
-# for i in range(1, 5):
-#     image_ref_dot = app.image_draw_dot(img_ref_test, (ref_x[i], ref_y[i]))
+for i in range(1, 5):
+    image_ref_dot = app.image_draw_dot(img_ref_test, (ref_x[i], ref_y[i]))
 
 # app.show_image("image draw", image_ref_dot)
 
@@ -19,7 +20,7 @@ print(cur_status, cur_x, cur_y)
 for i in range(1, 5):
     image_cur_dot = app.image_draw_dot(img_cur_test, (cur_x[i], cur_y[i]))
 
-app.show_image("image draw", image_cur_dot)
+# app.show_image("image draw", image_cur_dot)
 
 
 # [0, 1, 1, 1, 1] [0, 502, 1172, 318, 1252] [0, 612, 633, 861, 904]
@@ -34,7 +35,7 @@ reference_x = ref_x
 reference_y = ref_y
 current_x = cur_x
 current_y = cur_y
-status = cur_status
+# status = cur_status
 
 # for ii in range(0, 5):
 #     reference_x.append(ref_x[ii])
@@ -44,7 +45,7 @@ status = cur_status
 #     status.append(current_status[ii])
 
 
-def case_switch_mode():
+def case_switch_mode(status):
     run_flag = 0  # Initiate run_flag, determine if the program could execute or not
     run_mode = 0  # Initiate run_mode, determine if the program run in 4 landmarks mode or 3 landmarks mode
     # run_mode = 1: 4 landmarks mode, run_mode = 0: 3 landmark mode
@@ -102,8 +103,8 @@ def case_switch_mode():
     return run_flag, run_mode, cur_toggle
 
 
-run_flag_test, run_mode_test, cur_toggle_test = case_switch_mode()
-print(run_flag_test, run_mode_test, cur_toggle_test)
+run_flag_test, run_mode_test, cur_toggle_test = case_switch_mode(cur_status)
+# print(run_flag_test, run_mode_test, cur_toggle_test)
 
 # (1, 1, [0, 0, 0, 0, 0])
 # 1 = run program
@@ -150,8 +151,12 @@ def midpoint_calculate(run_flag, run_mode, cur_toggle):
 
 ref_midpoint_x_test, ref_midpoint_y_test, cur_midpoint_x_test, cur_midpoint_y_test = midpoint_calculate(
     run_flag_test, run_mode_test, cur_toggle_test)
-print(ref_midpoint_x_test, ref_midpoint_y_test,
-      cur_midpoint_x_test, cur_midpoint_y_test)
+# print(ref_midpoint_x_test, ref_midpoint_y_test,
+#      cur_midpoint_x_test, cur_midpoint_y_test)
+
+image_ref_mid_point = app.image_draw_dot(
+    img_ref_test, (ref_midpoint_x_test, ref_midpoint_y_test))
+# app.show_image("ref mid point", image_ref_mid_point)
 
 image_mid_point = app.image_draw_dot(
     img_cur_test, (cur_midpoint_x_test, cur_midpoint_y_test))
@@ -159,7 +164,7 @@ image_mid_point = app.image_draw_dot(
 image_mid_point = app.image_draw_dot(
     img_cur_test, (ref_midpoint_x_test, ref_midpoint_y_test))
 
-app.show_image("mid point", image_mid_point)
+# app.show_image("mid point", image_mid_point)
 
 # Calculate rotation angle using vector-based calculations
 
@@ -169,7 +174,6 @@ def rotate_angle(ref_midpoint_x, ref_midpoint_y, cur_midpoint_x, cur_midpoint_y,
     # Determine the reference vector & current vector
     ref_vector = [ref_xx - ref_midpoint_x, ref_yy - ref_midpoint_y]
     cur_vector = [cur_xx - cur_midpoint_x, cur_yy - cur_midpoint_y]
-
     unit_ref_vector = ref_vector / np.linalg.norm(ref_vector)
     unit_cur_vector = cur_vector / np.linalg.norm(cur_vector)
     dot_prod = np.dot(unit_ref_vector, unit_cur_vector)
@@ -193,9 +197,19 @@ def rotate_angle(ref_midpoint_x, ref_midpoint_y, cur_midpoint_x, cur_midpoint_y,
 # reference_x[1], reference_y[1], current_x[1], current_y[1])
 
 
-angle_test = rotate_angle(ref_midpoint_x_test, ref_midpoint_y_test,
-                          cur_midpoint_x_test, cur_midpoint_y_test, reference_x[1], reference_y[1], current_x[1], current_y[1])
-print(angle_test)
+# case 1: missing landmark 1
+angle_2_test = rotate_angle(ref_midpoint_x_test, ref_midpoint_y_test,
+                            cur_midpoint_x_test, cur_midpoint_y_test, reference_x[2], reference_y[2], current_x[2], current_y[2])
+
+angle_3_test = rotate_angle(ref_midpoint_x_test, ref_midpoint_y_test,
+                            cur_midpoint_x_test, cur_midpoint_y_test, reference_x[3], reference_y[3], current_x[3], current_y[3])
+angle_final_test = round((angle_2_test + angle_3_test) / 2)
+
+# print(angle_2_test, angle_3_test, angle_final_test)
+# image_cur_draw_vector = app.image_draw_line(
+#     image_mid_point, [(abs(reference_x[2] - ref_midpoint_x_test), abs(reference_y[2] - ref_midpoint_y_test)),
+#                       (abs(current_x[2]-cur_midpoint_x_test), abs(current_y[2]-cur_midpoint_x_test))])
+# app.show_image("vector", image_cur_draw_vector)
 
 
 def run_case(run_flag, run_mode, cur_toggle):
@@ -226,7 +240,7 @@ def run_case(run_flag, run_mode, cur_toggle):
 
 
 run_case_test = run_case(run_flag_test, run_mode_test, cur_toggle_test)
-print(run_case_test)
+# print("run case: ", run_case_test)
 
 
 def zoom_image(img):
@@ -249,6 +263,8 @@ def zoom_image(img):
 
 
 zoom_image_test = zoom_image(img_cur_test)
+# zoom_image_test = app.resize_image(zoom_image_test, 25)
+# app.show_image("zoom", zoom_image_test)
 
 # Translation calibration main function
 
@@ -281,17 +297,18 @@ def translation(shift_image, case, ref_midpoint_x, ref_midpoint_y, cur_midpoint_
         translation_x = 0
         translation_y = 0
         # Zoom out image
-        shift = zoom_image(shift_image)
+        # Turn off this zoom - replace with the cutout function
+        # shift = zoom_image(shift_image)
         # Do nothing, return the original image
-        shift_revert = shift
+        shift_revert = shift_image
 
     return shift_revert, translation_x, translation_y, translation_flag
 
 
 shift_revert_test, translation_x_test, translation_y_test, translation_flag_test = translation(
     zoom_image_test, run_case_test, ref_midpoint_x_test, ref_midpoint_y_test, cur_midpoint_x_test, cur_midpoint_y_test)
-print(translation_x_test,
-      translation_y_test, translation_flag_test)
+# print(translation_x_test,
+#      translation_y_test, translation_flag_test)
 
 # if rotation_case(case, ref_midpoint_x, ref_midpoint_y, reference_x[1], reference_y[1],
 # cur_midpoint_x, cur_midpoint_y, current_x[1], current_y[1]) == "counter clockwise"
@@ -334,7 +351,7 @@ def rotation_case(case, ref_midpoint_x, ref_midpoint_y, ref_xx, ref_yy, cur_midp
 rot_case_test = rotation_case(run_case_test, ref_midpoint_x_test, ref_midpoint_y_test,
                               reference_x[1], reference_y[1], cur_midpoint_x_test, cur_midpoint_y_test, current_x[1], current_y[1])
 
-print(rot_case_test)
+# print("rotation case: ", rot_case_test)
 
 
 def rotation(image, case, ref_midpoint_x, ref_midpoint_y, cur_midpoint_x, cur_midpoint_y):
@@ -424,4 +441,55 @@ def rotation(image, case, ref_midpoint_x, ref_midpoint_y, cur_midpoint_x, cur_mi
 rotate_image_test, angle_final_test, rotation_flag_test = rotation(zoom_image_test, run_case_test, ref_midpoint_x_test,
                                                                    ref_midpoint_y_test, cur_midpoint_x_test, cur_midpoint_y_test)
 
-print(angle_final_test, rotation_flag_test)
+# rotate_image_test_resize = app.resize_image(rotate_image_test, 30)
+# app.show_image("rotation", rotate_image_test_resize)
+# print("rotation angle:", angle_final_test, "rotated: ", rotation_flag_test)
+
+# Cut out the region of interest, update landmark values
+rot_image_cutout = rotate_image_test[960:960 + 1080, 540:540 + 1920]
+rot_image_cutout_resize = app.resize_image(rot_image_cutout, 30)
+# app.show_image("cutout", rot_image_cutout_resize)
+# Find all landmarks again, then perform image translation if necessary
+new_status, current_x, current_y = landmark_recognition.find_landmark(
+    rot_image_cutout)
+# print(new_status, current_x, current_y)
+run_fl, run_md, cur_togg = case_switch_mode(new_status)
+ref_mid_x, ref_mid_y, cur_mid_x, cur_mid_y = midpoint_calculate(
+    run_fl, run_md, cur_togg)
+r_case = run_case(run_fl, run_md, cur_togg)
+# print("run case: ", r_case)
+
+
+# translate_image_test, translation_x_test, translation_y_test, translation_flag_test = translation(
+#     rotate_image_test, run_case_test, ref_midpoint_x_test, ref_midpoint_y_test, cur_midpoint_x_test, cur_midpoint_y_test)
+translate_image_test, translation_x_test, translation_y_test, translation_flag_test = translation(
+    rotate_image_test, r_case, ref_mid_x, ref_mid_y, cur_mid_x, cur_mid_y
+)
+trans_image_cutout = translate_image_test[960:960 + 1080, 540:540 + 1920]
+translate_image_test_resize = app.resize_image(trans_image_cutout, 30)
+# app.show_image("translation", translate_image_test_resize)
+# print("translation level: ", translation_x_test,
+#       translation_y_test, "translated:", translation_flag_test)
+
+result_calib, calib_flag = image_calibration.image_calibration(
+    parent_path=app.output_path, image_data=img_cur_test, parklot_name="Parking Lot A",
+    mode=0, filename="test.jpg", current_status=cur_status,
+    ref_x=ref_x, ref_y=ref_y, cur_x=cur_x, cur_y=cur_y)
+
+result_image_cutout = result_calib[960:960 + 1080, 540:540 + 1920]
+result_image_cutout_resize = app.resize_image(result_image_cutout, 30)
+app.show_image("result", result_image_cutout_resize)
+
+# [0, 502, 1172, 318, 1252] = landmark x-coord
+# [0, 612, 633, 861, 904] = landmark y-coord
+small_image = landmark_recognition.image_get_data(
+    image_path="../src/assets/TestData/lmTst_0.jpg", start_position_x=475, start_position_y=600, end_position_x=525, end_position_y=650)
+# app.show_image("original", img_ref_test)
+# app.show_image("crop", small_image)
+
+landmark_x, landmark_y = landmark_recognition.landmark_definition(small_image)
+print(landmark_x, landmark_y)
+
+landmark_draw = app.resize_image(app.image_draw_dot(
+    small_image, (landmark_x, landmark_y)), 200)
+# app.show_image("landmark", landmark_draw)

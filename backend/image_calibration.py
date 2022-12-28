@@ -2,9 +2,10 @@
 import os
 import numpy as np
 import cv2
-import imutils
+# import imutils
 import datetime
 import math
+import app
 
 # Import additional packages/file
 import landmark_recognition
@@ -189,7 +190,9 @@ def image_calibration(
         # Expand the image to 3000 x 3000 px
         zoom = cv2.warpAffine(img, roi, (3000, 3000))
         # Matching the center point of the original image to the new center point of 3000 x 3000 px image
-        shift_image = imutils.translate(
+        # shift_image = imutils.translate(
+        #     zoom, (1500 - 1920 / 2), (1500 - 1080 / 2))
+        shift_image = app.translate_image(
             zoom, (1500 - 1920 / 2), (1500 - 1080 / 2))
         # Debug: Show enlarged & shifted image
         # cv2.imshow("Test image", shift_image)
@@ -216,7 +219,9 @@ def image_calibration(
 
             # Return the original position
             shift_copy = shift_image
-            shift_revert = imutils.translate(
+            # shift_revert = imutils.translate(
+            #     shift_copy, translation_x, translation_y)
+            shift_revert = app.translate_image(
                 shift_copy, translation_x, translation_y)
             # Return signal flag, determine that image has been translated
             translation_flag = True
@@ -224,9 +229,9 @@ def image_calibration(
             translation_x = 0
             translation_y = 0
             # Zoom out image
-            shift = zoom_image(shift_image)
+            # shift = zoom_image(shift_image)
             # Do nothing, return the original image
-            shift_revert = shift
+            shift_revert = shift_image
 
         return shift_revert, translation_x, translation_y, translation_flag
 
@@ -360,28 +365,35 @@ def image_calibration(
         # Write down the desired image
         # Avoid using static addresses, try using environment variable instead!
         # Image save path
-        result_path = path + "\\data_process\\{}\\calib".format(parklot_name)
+        # result_path = path + "\\data_process\\{}\\calib".format(parklot_name)
+        output_path = path
+        directory = parklot_name
+        if (os.path.isdir(f'{output_path}/{directory}') is False):
+            os.mkdir(os.path.join(output_path, directory))
+
         # Separate filename, remove the extension
         name = os.path.splitext(filename)[0]
-        cv2.imwrite(os.path.join(
-            result_path, 'recov_{}_({}_{}_{}).jpg'.format(name, translation_x, translation_y, angle)), image_out
-        )
+        # cv2.imwrite(os.path.join(
+        #     result_path, 'recov_{}_({}_{}_{}).jpg'.format(name, translation_x, translation_y, angle)), image_out
+        # )
+        cv2.imwrite(
+            f'{output_path}/{directory}/{name}_({translation_x}_{translation_y}_{angle}).jpg', image_out)
         # Log debug information
-        f_debug = open(
-            path + "\\data_process\\{}\\debug.txt".format(parklot_name), 'a+')
-        f_debug.write("{}\n".format(datetime.datetime.now()))
-        f_debug.write("filename: {}\n".format(name))
-        f_debug.write("Working case: {}\n".format(case))
+        # f_debug = open(
+        #     path + "\\data_process\\{}\\debug.txt".format(parklot_name), 'a+')
+        # f_debug.write("{}\n".format(datetime.datetime.now()))
+        # f_debug.write("filename: {}\n".format(name))
+        # f_debug.write("Working case: {}\n".format(case))
 
-        if case != -1:
-            print(filename, "recovered")
-            f_debug.write(filename + " recovered\n")
-        else:
-            # cv2.imwrite(os.path.join(result_path, 'not_recov_{}.jpg'.format(name)), cut)
-            print(filename, " not recovered, please check the camera/input")
-            f_debug.write(
-                filename + " not recovered, please check the camera/input\n")
-        f_debug.write("\n")
+        # if case != -1:
+        #     print(filename, "recovered")
+        #     f_debug.write(filename + " recovered\n")
+        # else:
+        #     # cv2.imwrite(os.path.join(result_path, 'not_recov_{}.jpg'.format(name)), cut)
+        #     print(filename, " not recovered, please check the camera/input")
+        #     f_debug.write(
+        #         filename + " not recovered, please check the camera/input\n")
+        # f_debug.write("\n")
         # print("")
 
     # Initiate calibration flags
@@ -397,6 +409,8 @@ def image_calibration(
 
     # Zoom out image
     process_image = zoom_image(image_data)
+    # result_image
+    result_image = image_data
     if mode == 0:
         # Perform image rotation calibration first
         rot_image, rot_angle, rot_flag = rotation(
@@ -416,6 +430,7 @@ def image_calibration(
         trans_image, trans_x, trans_y, trans_flag =\
             translation(rot_image, r_case, ref_mid_x,
                         ref_mid_y, cur_mid_x, cur_mid_y)
+        result_image = trans_image
         if rot_flag & trans_flag is False:
             trans_image = rot_image
         # Save image as file
@@ -424,9 +439,9 @@ def image_calibration(
 
         # Return image calibration signal
         if rot_flag & trans_flag is True:
-            return True
+            return result_image, True
         else:
-            return False
+            return result_image, False
 
     # In case of running image rotation calibration only:
     elif mode == 1:
@@ -435,8 +450,8 @@ def image_calibration(
         rot_image, rot_angle, rot_flag = rotation(
             process_image, r_case, ref_mid_x, ref_mid_y, cur_mid_x, cur_mid_y)
         save_image(parent_path, rot_image, r_case, trans_x, trans_y, rot_angle)
-
-        return rot_flag
+        result_image = rot_image
+        return result_image, rot_flag
 
     # In case of running image translation calibration only:
     elif mode == 2:
@@ -446,9 +461,9 @@ def image_calibration(
         rot_angle = 0
         save_image(parent_path, trans_image, r_case,
                    trans_x, trans_y, rot_angle)
-
-        return trans_flag
+        result_image = trans_image
+        return result_image, trans_flag
 
     # Other than previous listed cases (Redundant)
     else:
-        return rot_flag & trans_flag
+        return result_image, rot_flag & trans_flag

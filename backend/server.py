@@ -5,7 +5,7 @@ from flask_cors import CORS
 import json
 import random
 import os
-from app import tranform_image, transform_images_from_folder, mock_path, input_path
+from app import tranform_image, transform_images_from_folder, mock_path, input_path, get_landmark_data, landmark_def_group
 
 app = Flask(__name__)
 
@@ -113,12 +113,27 @@ def deleteUser(id):
 
 @app.route('/parkinglots/<id>/landmark', methods=['PATCH'])
 def updateLandmark(id):
+    # print(request.json['landmark'][0])
+    landmark = request.json['landmark']
+    image_path = f'../src/assets/Reference/{id}.jpg'
+    landmark_data = landmark_def_group(image_path, landmark)
+    # turn into dictionary
+    # data =[(68, 37), (59, 42), (66, 55), (54, 40)]
+    landmark_dict = []
+    for i in range(int(len(landmark_data))):
+        data_dict = {"id": i,
+                     "x": landmark_data[i][0], "y": landmark_data[i][1]}
+        landmark_dict.append(data_dict)
+
+    # print(landmark_dict)
+
     db['parkinglots'].update_one({'_id': ObjectId(id)}, {'$set': {
-        'landmark': request.json['landmark']
+        'landmark': landmark_dict
     }})
     return jsonify({
         "msg": "landmark updated"
     })
+    # return "success"
 
 
 @app.route('/parkinglots/<id>/slot', methods=['PATCH'])
@@ -154,24 +169,28 @@ def fileUpload(id):
 
 @app.route('/parkinglots/<id>/calibrate', methods=['POST'])
 def calibrateImage(id):
+    data = db['parkinglots'].find_one({'_id': ObjectId(id)})
+    landmark = data['landmark']
+    title = data['title']
+    print(landmark)
     # file = request.files.get('image')
-    title = request.json['title']
+    # title = request.json['title']
 
-    # function to get files array from the path - calibrate - rename - save into directory
-    # return the result filenames array
-    calib_result = transform_images_from_folder(mock_path, title)
-    # print(filename_result)
+    # # function to get files array from the path - calibrate - rename - save into directory
+    # # return the result filenames array
+    # calib_result = transform_images_from_folder(mock_path, title)
+    # # print(filename_result)
 
-    db['parkinglots'].update_one({'_id': ObjectId(id)}, {'$set': {
-        'result': calib_result
-    }})
+    # db['parkinglots'].update_one({'_id': ObjectId(id)}, {'$set': {
+    #     'result': calib_result
+    # }})
 
-    return jsonify({
-        "result": calib_result,
-        "msg": "slot updated"
-    })
+    # return jsonify({
+    #     "result": calib_result,
+    #     "msg": "slot updated"
+    # })
 
-    # return "success"
+    return "success"
 
 
 if __name__ == "__main__":
