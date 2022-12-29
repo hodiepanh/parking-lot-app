@@ -9,8 +9,6 @@ im_lower = np.array([20, 110, 110], dtype='uint8')
 im_upper = np.array([35, 255, 255], dtype='uint8')
 kernel = np.ones((3, 3), np.uint8)
 
-img_test = cv2.imread("../src/assets/Parking lots/Sample lot/lmTst_0.jpg")
-
 # ----------------------------------------------------------------------------------------------------------------------
 # Define landmark recognition function
 

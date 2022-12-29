@@ -53,7 +53,10 @@ function Result() {
         //console.log(res.result);
         setCalibImageList(res.result.map((data) => data.title));
         setCapturedImageList(
-          res.result.map((data) => data.title.replace("_rotated", ""))
+          res.result.map(
+            (data) =>
+              `${data.title.substring(0, data.title.indexOf("(") - 1)}.jpg`
+          )
         );
       })
       .then(() => {
@@ -108,6 +111,11 @@ function Result() {
     }
   };
 
+  const test = () => {
+    console.log(capturedImageList);
+    console.log(calibImageList);
+  };
+
   //navigate to home screen
   const toHome = () => {
     history.push("/");
@@ -133,7 +141,7 @@ function Result() {
   return (
     <div className="layout">
       <Typography variant="h1">Result</Typography>
-
+      <Button onClick={test}>Test</Button>
       <div>
         <Grid
           container

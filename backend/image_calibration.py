@@ -5,7 +5,7 @@ import cv2
 # import imutils
 import datetime
 import math
-import app
+import server_app
 
 # Import additional packages/file
 import landmark_recognition
@@ -13,7 +13,7 @@ import landmark_recognition
 
 # Define main function - Image Calibration
 # Inputs:
-# parent_path: Top working directory of the program, used for file navigation
+# parent_path: Top working parklot_name of the program, used for file navigation
 # image_data: Read image data from saved location
 # parklot_name: Passed parking lot name, might be new name or available name selected
 # mode: Calibration mode, 0 for both translation and rotation, 1 for translation, 2 for rotation
@@ -190,9 +190,11 @@ def image_calibration(
         # Expand the image to 3000 x 3000 px
         zoom = cv2.warpAffine(img, roi, (3000, 3000))
         # Matching the center point of the original image to the new center point of 3000 x 3000 px image
+
+        # change imutils function because cause errors in flask server (idky)
         # shift_image = imutils.translate(
         #     zoom, (1500 - 1920 / 2), (1500 - 1080 / 2))
-        shift_image = app.translate_image(
+        shift_image = server_app.translate_image(
             zoom, (1500 - 1920 / 2), (1500 - 1080 / 2))
         # Debug: Show enlarged & shifted image
         # cv2.imshow("Test image", shift_image)
@@ -219,9 +221,12 @@ def image_calibration(
 
             # Return the original position
             shift_copy = shift_image
+
+            # change imutils function because cause errors in flask server (idky)
             # shift_revert = imutils.translate(
             #     shift_copy, translation_x, translation_y)
-            shift_revert = app.translate_image(
+
+            shift_revert = server_app.translate_image(
                 shift_copy, translation_x, translation_y)
             # Return signal flag, determine that image has been translated
             translation_flag = True
@@ -366,10 +371,8 @@ def image_calibration(
         # Avoid using static addresses, try using environment variable instead!
         # Image save path
         # result_path = path + "\\data_process\\{}\\calib".format(parklot_name)
-        output_path = path
-        directory = parklot_name
-        if (os.path.isdir(f'{output_path}/{directory}') is False):
-            os.mkdir(os.path.join(output_path, directory))
+        if (os.path.isdir(f'{path}/{parklot_name}') is False):
+            os.mkdir(os.path.join(path, parklot_name))
 
         # Separate filename, remove the extension
         name = os.path.splitext(filename)[0]
@@ -377,7 +380,7 @@ def image_calibration(
         #     result_path, 'recov_{}_({}_{}_{}).jpg'.format(name, translation_x, translation_y, angle)), image_out
         # )
         cv2.imwrite(
-            f'{output_path}/{directory}/{name}_({translation_x}_{translation_y}_{angle}).jpg', image_out)
+            f'{path}/{parklot_name}/{name}_({translation_x}_{translation_y}_{angle}).jpg', image_out)
         # Log debug information
         # f_debug = open(
         #     path + "\\data_process\\{}\\debug.txt".format(parklot_name), 'a+')
@@ -411,6 +414,7 @@ def image_calibration(
     process_image = zoom_image(image_data)
     # result_image
     result_image = image_data
+    result_name = ""
     if mode == 0:
         # Perform image rotation calibration first
         rot_image, rot_angle, rot_flag = rotation(
@@ -437,11 +441,13 @@ def image_calibration(
         save_image(parent_path, trans_image, r_case,
                    trans_x, trans_y, rot_angle)
 
+        # os.path.splitext(filename)[0]
+        result_name = f'{os.path.splitext(filename)[0]}_({trans_x}_{trans_y}_{rot_angle}).jpg'
         # Return image calibration signal
         if rot_flag & trans_flag is True:
-            return result_image, True
+            return result_image, result_name, True
         else:
-            return result_image, False
+            return result_image, result_name, False
 
     # In case of running image rotation calibration only:
     elif mode == 1:
@@ -451,7 +457,8 @@ def image_calibration(
             process_image, r_case, ref_mid_x, ref_mid_y, cur_mid_x, cur_mid_y)
         save_image(parent_path, rot_image, r_case, trans_x, trans_y, rot_angle)
         result_image = rot_image
-        return result_image, rot_flag
+        result_name = f'{os.path.splitext(filename)[0]}_({trans_x}_{trans_y}_{rot_angle}).jpg'
+        return result_image, result_name, rot_flag
 
     # In case of running image translation calibration only:
     elif mode == 2:
@@ -462,8 +469,9 @@ def image_calibration(
         save_image(parent_path, trans_image, r_case,
                    trans_x, trans_y, rot_angle)
         result_image = trans_image
-        return result_image, trans_flag
+        result_name = f'{os.path.splitext(filename)[0]}_({trans_x}_{trans_y}_{rot_angle}).jpg'
+        return result_image, result_name, trans_flag
 
     # Other than previous listed cases (Redundant)
     else:
-        return result_image, rot_flag & trans_flag
+        return result_image, result_name, rot_flag & trans_flag

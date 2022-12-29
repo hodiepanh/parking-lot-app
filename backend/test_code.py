@@ -4,7 +4,7 @@ import image_calibration
 import cv2 as cv
 import numpy as np
 import os
-import app
+import server_app as app
 # testing function from lamdmark calibration
 img_ref_test = cv.imread("../src/assets/TestData/lmTst_0.jpg")
 ref_status, ref_x, ref_y = landmark_recognition.find_landmark(img_ref_test)
@@ -471,7 +471,7 @@ translate_image_test_resize = app.resize_image(trans_image_cutout, 30)
 # print("translation level: ", translation_x_test,
 #       translation_y_test, "translated:", translation_flag_test)
 
-result_calib, calib_flag = image_calibration.image_calibration(
+result_calib, result_name, calib_flag = image_calibration.image_calibration(
     parent_path=app.output_path, image_data=img_cur_test, parklot_name="Parking Lot A",
     mode=0, filename="test.jpg", current_status=cur_status,
     ref_x=ref_x, ref_y=ref_y, cur_x=cur_x, cur_y=cur_y)

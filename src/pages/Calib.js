@@ -424,7 +424,7 @@ function Calib() {
         .unwrap()
         .then(() => {
           //go to result when calibrate is success
-          //history.push({ pathname: `/result/${id}`, state: title });
+          history.push({ pathname: `/result/${id}`, state: title });
         });
     }
   };

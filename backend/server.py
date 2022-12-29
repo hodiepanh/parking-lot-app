@@ -5,7 +5,7 @@ from flask_cors import CORS
 import json
 import random
 import os
-from app import tranform_image, transform_images_from_folder, mock_path, input_path, get_landmark_data, landmark_def_group
+import server_app
 
 app = Flask(__name__)
 
@@ -116,7 +116,8 @@ def updateLandmark(id):
     # print(request.json['landmark'][0])
     landmark = request.json['landmark']
     image_path = f'../src/assets/Reference/{id}.jpg'
-    landmark_data = landmark_def_group(image_path, landmark)
+    landmark_data = server_app.landmark_defintion_ref_image(
+        image_path, landmark)
     # turn into dictionary
     # data =[(68, 37), (59, 42), (66, 55), (54, 40)]
     landmark_dict = []
@@ -173,24 +174,38 @@ def calibrateImage(id):
     landmark = data['landmark']
     title = data['title']
     print(landmark)
-    # file = request.files.get('image')
-    # title = request.json['title']
 
-    # # function to get files array from the path - calibrate - rename - save into directory
-    # # return the result filenames array
-    # calib_result = transform_images_from_folder(mock_path, title)
-    # # print(filename_result)
+    # change landmark to ref_x, ref_y format
+    ref_x = [0]
+    ref_y = [0]
+    for i in range(int(len(landmark))):
+        ref_x.append(landmark[i]['x'])
+        ref_y.append(landmark[i]['y'])
+    print(ref_x, ref_y)
 
-    # db['parkinglots'].update_one({'_id': ObjectId(id)}, {'$set': {
-    #     'result': calib_result
-    # }})
+    # calibrate image
 
-    # return jsonify({
-    #     "result": calib_result,
-    #     "msg": "slot updated"
-    # })
+    # ref_image_name_test = "test_img_calib/Reference/lmTst_0.jpg"
+    ref_image_name_test = f'../src/assets/Reference/{id}.jpg'
+    # cur_image_path = "test_img_calib/Data/Mock"
+    cur_image_path = '../src/assets/Parking Lots/Sample lot'
+    destination = "../src/assets/Calibrated/"
+    # parklot_name = "Mock"
 
-    return "success"
+    calib_result = server_app.calibrate_image_multiple(
+        ref_image_name_test, cur_image_path, destination, title)
+    print(calib_result)
+
+    db['parkinglots'].update_one({'_id': ObjectId(id)}, {'$set': {
+        'result': calib_result
+    }})
+
+    return jsonify({
+        "result": calib_result,
+        "msg": "slot updated"
+    })
+
+    # return "success"
 
 
 if __name__ == "__main__":
