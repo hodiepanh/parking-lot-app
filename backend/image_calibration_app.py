@@ -146,20 +146,36 @@ parklot_name = "Mock"
 
 
 def write_debug(data, debug_file):
-    with open(debug_file, 'a', newline='', encoding='UTF8') as f:
-        writer = csv.writer(f)
+    for i in range(int(len(data))):
+        data[i] = str(data[i])
+    # data = ['Afghanistan', 652090, 'AF', 'AFG']
 
-        # write the header
-        # writer.writerow(header)
+    # check if header already exist
+    exist = False
+    with open(debug_file, 'r', encoding='UTF8') as read_file:
+        csvreader = csv.reader(read_file, delimiter=',')
+        for line in csvreader:
+            # # print(line)
+            # print(type(data))
+            if (line == data):
+                exist = True
 
-        # write the data
-        writer.writerow(data)
-        # close file
-        f.close()
+    if not exist:
+        with open(debug_file, 'a', newline='', encoding='UTF8') as f:
+            writer = csv.writer(f)
+
+            # write the header
+            # writer.writerow(header)
+
+            # write the data
+            writer.writerow(data)
+            # close file
+            f.close()
 
 
-# data = ['Afghanistan', 652090, 'AF', 'AFG']
+data = ['Afghanistan', 652090, 'AF', 'AFG']
 # write_debug(data, debug_file="debug/debug_log.csv")
+
 
 def clear_file(file):
     f = open(file, "w")
