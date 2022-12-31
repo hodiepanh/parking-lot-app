@@ -146,7 +146,7 @@ parklot_name = "Mock"
 
 
 def write_debug(data, debug_file):
-    with open(debug_file, 'a', encoding='UTF8') as f:
+    with open(debug_file, 'a', newline='', encoding='UTF8') as f:
         writer = csv.writer(f)
 
         # write the header
@@ -167,4 +167,4 @@ def clear_file(file):
     f.close()
 
 
-# clear_file("debug/debug_log.csv")
+# clear_file("debug/debug_log_Mock.csv")
