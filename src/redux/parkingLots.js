@@ -179,7 +179,15 @@ export const parkingSlice = createSlice({
     [getParkingLotRex.rejected]: (state) => {
       state.loading = true;
     },
-    [getParkingLotByIdRex.fullfilled]: (state) => {},
+    [getParkingLotByIdRex.pending]: (state) => {
+      state.loading = true;
+    },
+    [getParkingLotByIdRex.fullfilled]: (state) => {
+      state.loading = false;
+    },
+    [getParkingLotByIdRex.rejected]: (state) => {
+      state.loading = true;
+    },
     [addParkingLotRex.pending]: (state) => {
       state.loading = true;
     },
@@ -242,9 +250,15 @@ export const parkingSlice = createSlice({
     [editImageRex.rejected]: (state) => {
       state.loading = true;
     },
+    [editCalibratedRex.pending]: (state) => {
+      state.loading = true;
+    },
     [editCalibratedRex.fullfilled]: (state, action) => {
       console.log(action.payload);
       state.loading = false;
+    },
+    [editCalibratedRex.rejected]: (state) => {
+      state.loading = true;
     },
     [searchParkingLotRex.fulfilled]: () => {},
   },

@@ -164,16 +164,24 @@ function CalibUlti({
       );
     } else {
       //save to database -> send success notification
-      dispatch(editLandmarkRex({ id, landmarkList }));
-      //dispatch(editSlotRex({ id, parkingslotList }));
-      uploadImage();
-      //calibrateImage();
-      dispatch(
-        openNotification({
-          status: "success",
-          message: "Data saved successfully.",
+      dispatch(editLandmarkRex({ id, landmarkList }))
+        .unwrap()
+        .then(() => {
+          if (image != "") {
+            uploadImage();
+          }
         })
-      );
+        .then(() => {
+          dispatch(
+            openNotification({
+              status: "success",
+              message: "Data saved successfully.",
+            })
+          );
+        });
+      //dispatch(editSlotRex({ id, parkingslotList }));
+      //uploadImage();
+      //calibrateImage();
 
       //set saved status = true
       setSaved(true);

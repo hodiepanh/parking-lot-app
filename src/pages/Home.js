@@ -13,6 +13,7 @@ import { getParkingLotRex } from "../redux/parkingLots";
 //import component
 import DefineDialog from "../components/ultilites/DefineDialog";
 import AvailableLotsList from "../components/ultilites/AvailableLotsList";
+import LoadingOverlay from "../components/ultilites/LoadingOverlay";
 
 //axios
 import axios from "axios";
@@ -23,6 +24,7 @@ function Home() {
 
   //redux state managament
   const parkingList = useSelector((state) => state.parkingReducer.value);
+  const loading = useSelector((state) => state.parkingReducer.loading);
   const dispatch = useDispatch();
 
   //open Define Dialog
@@ -51,6 +53,7 @@ function Home() {
     <div className="page-wrapper">
       <Typography variant="h1">WELCOME TO IMAGE CALIBRATION</Typography>
       {/* <Button onClick={getData}>Get</Button> */}
+      {loading && <LoadingOverlay />}
       <div className="button-wrapper">
         <Stack spacing={5} direction="column">
           <Button onClick={handleToggleDefine} variant="contained">

@@ -21,6 +21,7 @@ import { useHistory, useParams } from "react-router-dom";
 
 //import component
 import Notification from "../components/ultilites/Notification";
+import LoadingOverlay from "../components/ultilites/LoadingOverlay";
 import axios from "axios";
 
 function Calib() {
@@ -51,6 +52,7 @@ function Calib() {
   );
 
   const parkinglotValue = useSelector((state) => state.parkingReducer.value);
+  const loading = useSelector((state) => state.parkingReducer.loading);
 
   const inputFile = useRef(null);
   const [refImage, setRefImage] = useState(standardImage);
@@ -105,7 +107,29 @@ function Calib() {
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
+
     contextRef.current = context;
+
+    contextRef.current.beginPath();
+    contextRef.current.moveTo(300, 0);
+    contextRef.current.lineTo(300, 400);
+    contextRef.current.stroke();
+
+    contextRef.current.beginPath();
+    contextRef.current.moveTo(0, 300);
+    contextRef.current.lineTo(600, 300);
+    contextRef.current.stroke();
+
+    contextRef.current.fillStyle = "red";
+    contextRef.current.font = "30px Arial";
+    //landmark 1
+    contextRef.current.fillText("1", 150, 150);
+    //landmark 2
+    contextRef.current.fillText("2", 450, 150);
+    //landmark 3
+    contextRef.current.fillText("3", 150, 350);
+    //landmark 4
+    contextRef.current.fillText("4", 450, 350);
 
     const canvasOffset = canvas.getBoundingClientRect();
     canvasOffsetX.current = canvasOffset.left;
@@ -169,7 +193,7 @@ function Calib() {
   };
   //draw rectangle with only one click
   const clickRect = ({ nativeEvent }) => {
-    if (refImage == default_image) {
+    if (refImage == default_image || mode == "") {
       dispatch(
         openNotification({
           status: "error",
@@ -430,12 +454,24 @@ function Calib() {
   };
 
   const test = () => {
+    //canvasOffsetX.current = canvasOffset.left;
+    //canvasOffsetY.current = canvasOffset.top;
+    // contextRef.current.beginPath();
+    // contextRef.current.moveTo(300, 0);
+    // contextRef.current.lineTo(300, 400);
+    // contextRef.current.stroke();
+
+    // contextRef.current.beginPath();
+    // contextRef.current.moveTo(0, 200);
+    // contextRef.current.lineTo(600, 200);
+    // contextRef.current.stroke();
     console.log(saveImage);
   };
-
   return (
     <div className="view">
       <Typography variant="h1">Define parking lot</Typography>
+      {/* <Button onClick={test}>Test</Button> */}
+      {loading && <LoadingOverlay />}
       <div className="layout">
         <div className="image-editor">
           <canvas

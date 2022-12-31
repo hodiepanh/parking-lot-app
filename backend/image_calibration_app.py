@@ -5,10 +5,11 @@ import image_calibration
 import cv2 as cv
 import numpy as np
 import os
+import csv
 # define path here
-input_path = "../src/assets/Reference"
-output_path = "../src/assets/Calibrated"
-mock_path = "../src/assets/Parking Lots/Sample lot"
+# input_path = "../src/assets/Reference"
+# output_path = "../src/assets/Calibrated"
+# mock_path = "../src/assets/Parking Lots/Sample lot"
 # input
 # img = cv.imread(f"{input_path}/lmTst_0.jpg")
 img = cv.imread("../src/assets/TestData/lmTst_0.jpg")
@@ -60,13 +61,12 @@ def translate_image(image, hor, ver):
     shifted = cv.warpAffine(image, M, (image.shape[1], image.shape[0]))
     return shifted
 
-# save into directory
 
-    print(something)
+reference_path = "test_img_calib/Reference"
 
 
 def transform_mock(image_name, max_angle, max_x, max_y, destination):
-    image = cv.imread(f'test_img_calib/Reference/{image_name}.jpg',)
+    image = cv.imread(f'{reference_path}/{image_name}.jpg',)
     for i in range(-int(max_angle), int(max_angle)):
         img_rotate = rotate_image(image, i)
         cv.imwrite(f'{destination}/{image_name}_0_0_{i}.jpg', img_rotate)
@@ -89,6 +89,8 @@ def landmark_defintion_ref_image(image, landmark):
             image, landmark[i]['x1'], landmark[i]['y1'], landmark[i]['x2'], landmark[i]['y2'])
         landmark_x, landmark_y = landmark_recognition.landmark_definition(
             small_img)
+        # organize landmark data into correct order
+
         landmark_data.append(
             ((landmark[i]['x1']+landmark_x), (landmark[i]['y1'] + landmark_y)))
         small_image.append(small_img)
@@ -135,9 +137,34 @@ def calibrate_image_multiple(ref_image_name, cur_img_path, destination, parklot_
     return result
 
 
-# ref_image_name_test = "test_img_calib/Reference/lmTst_0.jpg"
-# cur_image_path = "test_img_calib/Data/Mock"
-# destination = "test_img_calib/Calibrated/"
-# parklot_name = "Mock"
-# calibrate_multiple(ref_image_name_test, cur_image_path,
-#                   destination, parklot_name)
+ref_image_name_test = "test_img_calib/Reference/lmTst_0.jpg"
+cur_image_path = "test_img_calib/Data/Mock"
+destination = "test_img_calib/Calibrated/"
+parklot_name = "Mock"
+# calibrate_image_multiple(ref_image_name_test, cur_image_path,
+#                         destination, parklot_name)
+
+
+def write_debug(data, debug_file):
+    with open(debug_file, 'a', encoding='UTF8') as f:
+        writer = csv.writer(f)
+
+        # write the header
+        # writer.writerow(header)
+
+        # write the data
+        writer.writerow(data)
+        # close file
+        f.close()
+
+
+# data = ['Afghanistan', 652090, 'AF', 'AFG']
+# write_debug(data, debug_file="debug/debug_log.csv")
+
+def clear_file(file):
+    f = open(file, "w")
+    f.truncate()
+    f.close()
+
+
+# clear_file("debug/debug_log.csv")

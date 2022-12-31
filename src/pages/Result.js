@@ -27,6 +27,7 @@ function Result() {
   const standardImage = useSelector(
     (state) => state.parkingReducer.standardImage
   );
+  const loading = useSelector((state) => state.parkingReducer.loading);
   const { id } = useParams();
   const [refImage, setRefImage] = useState();
   const [calibImage, setCalibImage] = useState();

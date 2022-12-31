@@ -5,7 +5,8 @@ from flask_cors import CORS
 import json
 import random
 import os
-import server_app
+import image_calibration_app
+import path
 
 app = Flask(__name__)
 
@@ -115,11 +116,12 @@ def deleteUser(id):
 def updateLandmark(id):
     # print(request.json['landmark'][0])
     landmark = request.json['landmark']
-    image_path = f'../src/assets/Reference/{id}.jpg'
-    landmark_data = server_app.landmark_defintion_ref_image(
+    image_path = f'{path.reference_path}/{id}.jpg'
+    landmark_data = image_calibration_app.landmark_defintion_ref_image(
         image_path, landmark)
     # turn into dictionary
     # data =[(68, 37), (59, 42), (66, 55), (54, 40)]
+
     landmark_dict = []
     for i in range(int(len(landmark_data))):
         data_dict = {"id": i,
@@ -156,7 +158,7 @@ def fileUpload(id):
 
     # check is reference image exist (name exists) -> overwrite if exist
 
-    file.save(os.path.join('../src/assets/Reference', filename))
+    file.save(os.path.join(path.reference_path, filename))
 
     db['parkinglots'].update_one({'_id': ObjectId(id)}, {'$set': {
         'image': filename
@@ -173,7 +175,7 @@ def calibrateImage(id):
     data = db['parkinglots'].find_one({'_id': ObjectId(id)})
     landmark = data['landmark']
     title = data['title']
-    print(landmark)
+    # print(landmark)
 
     # change landmark to ref_x, ref_y format
     ref_x = [0]
@@ -181,20 +183,20 @@ def calibrateImage(id):
     for i in range(int(len(landmark))):
         ref_x.append(landmark[i]['x'])
         ref_y.append(landmark[i]['y'])
-    print(ref_x, ref_y)
+    # print(ref_x, ref_y)
 
     # calibrate image
 
     # ref_image_name_test = "test_img_calib/Reference/lmTst_0.jpg"
-    ref_image_name_test = f'../src/assets/Reference/{id}.jpg'
+    ref_image_name_test = f'{path.reference_path}/{id}.jpg'
     # cur_image_path = "test_img_calib/Data/Mock"
-    cur_image_path = '../src/assets/Parking Lots/Sample lot'
-    destination = "../src/assets/Calibrated/"
+    cur_image_path = path.mock_path
+    destination = path.calibrated_path
     # parklot_name = "Mock"
 
-    calib_result = server_app.calibrate_image_multiple(
+    calib_result = image_calibration_app.calibrate_image_multiple(
         ref_image_name_test, cur_image_path, destination, title)
-    print(calib_result)
+    # print(calib_result)
 
     db['parkinglots'].update_one({'_id': ObjectId(id)}, {'$set': {
         'result': calib_result
