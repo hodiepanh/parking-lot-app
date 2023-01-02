@@ -52,7 +52,7 @@ function Home() {
   return (
     <div className="page-wrapper">
       <Typography variant="h1">WELCOME TO IMAGE CALIBRATION</Typography>
-      {/* <Button onClick={getData}>Get</Button> */}
+      {/* <Button onClick={testCalib}>Test Calibration</Button> */}
       {loading && <LoadingOverlay />}
       <div className="button-wrapper">
         <Stack spacing={5} direction="column">

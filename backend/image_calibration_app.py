@@ -66,20 +66,23 @@ reference_path = "test_img_calib/Reference"
 
 
 def transform_mock(image_name, max_angle, max_x, max_y, destination):
-    image = cv.imread(f'{reference_path}/{image_name}.jpg',)
+    for f in os.listdir(destination):
+        os.remove(os.path.join(destination, f))
+    image = cv.imread(f'{reference_path}/{image_name}.jpg')
     for i in range(-int(max_angle), int(max_angle)):
         img_rotate = rotate_image(image, i)
         cv.imwrite(f'{destination}/{image_name}_0_0_{i}.jpg', img_rotate)
-    for i in range(-int(max_x), int(max_x)):
-        for j in range(-int(max_y), int(max_y)):
+    for i in range(-int(max_x), int(max_x), 5):
+        for j in range(-int(max_y), int(max_y), 5):
             img_trans = translate_image(img, i, j)
             cv.imwrite(
                 f'{destination}/{image_name}_{i}_{j}_{0}.jpg', img_trans)
 
 
-# img_name = "lmTst_0"
-# dest = "test_img_calib/Data/Mock"
-# transform_mock(img_name, 10, 5, 5, dest)
+img_name = "lmTst_0"
+dest = "test_img_calib/Data/Mock"
+# transform_mock(img_name, 10, 15, 15, dest)
+
 
 def landmark_defintion_ref_image(image, landmark):
     small_image = []
@@ -151,16 +154,29 @@ def write_debug(data, debug_file):
     # data = ['Afghanistan', 652090, 'AF', 'AFG']
 
     # check if header already exist
-    exist = False
-    with open(debug_file, 'r', encoding='UTF8') as read_file:
-        csvreader = csv.reader(read_file, delimiter=',')
-        for line in csvreader:
-            # # print(line)
-            # print(type(data))
-            if (line == data):
-                exist = True
 
-    if not exist:
+    exist = False
+    if (os.path.exists(debug_file)):
+        with open(debug_file, 'r', encoding='UTF8') as read_file:
+            csvreader = csv.reader(read_file, delimiter=',')
+            for line in csvreader:
+                # # print(line)
+                # print(type(data))
+                if (line == data):
+                    exist = True
+
+        if not exist:
+            with open(debug_file, 'a', newline='', encoding='UTF8') as f:
+                writer = csv.writer(f)
+
+                # write the header
+                # writer.writerow(header)
+
+                # write the data
+                writer.writerow(data)
+                # close file
+                f.close()
+    else:
         with open(debug_file, 'a', newline='', encoding='UTF8') as f:
             writer = csv.writer(f)
 

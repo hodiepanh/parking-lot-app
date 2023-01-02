@@ -140,6 +140,10 @@ function CalibUlti({
     </ListItem>
   ));
 
+  const test = () => {
+    console.log(id);
+    console.log(image);
+  };
   const uploadImage = () => {
     const formData = new FormData();
     formData.append("image", image);
@@ -163,22 +167,52 @@ function CalibUlti({
         })
       );
     } else {
-      //save to database -> send success notification
-      dispatch(editLandmarkRex({ id, landmarkList }))
-        .unwrap()
-        .then(() => {
-          if (image != "") {
-            uploadImage();
-          }
-        })
-        .then(() => {
-          dispatch(
-            openNotification({
-              status: "success",
-              message: "Data saved successfully.",
-            })
-          );
-        });
+      if (image != "") {
+        const formData = new FormData();
+        formData.append("image", image);
+        dispatch(editImageRex({ id, formData }))
+          .unwrap()
+          .then(() => {
+            //save to database -> send success notification
+            dispatch(editLandmarkRex({ id, landmarkList }))
+              .unwrap()
+              .then(() => {
+                //uploadImage();
+                // if (image != "") {
+                //   uploadImage();
+                // }
+              })
+              .then(() => {
+                dispatch(
+                  openNotification({
+                    status: "success",
+                    message: "Data saved successfully.",
+                  })
+                );
+              });
+          });
+      } else {
+        //save to database -> send success notification
+        dispatch(editLandmarkRex({ id, landmarkList }))
+          .unwrap()
+          .then(() => {
+            //uploadImage();
+            // if (image != "") {
+            //   uploadImage();
+            // }
+          })
+          .then(() => {
+            dispatch(
+              openNotification({
+                status: "success",
+                message: "Data saved successfully.",
+              })
+            );
+          })
+          .then(() => {
+            window.location.reload();
+          });
+      }
       //dispatch(editSlotRex({ id, parkingslotList }));
       //uploadImage();
       //calibrateImage();

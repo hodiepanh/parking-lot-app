@@ -26,25 +26,38 @@ def api():
             title = data['title']
 
             try:
-                landmark = data['landmark']
                 image = data['image']
-                result = data['result']
-                dataDict = {
-                    "id": str(id),
-                    "title": title,
-                    'landmark': landmark,
-                    'image': image,
-                    'result': result,
-                    # 'slot':str(slot)
-                }
+                try:
+                    landmark = data['landmark']
+                    try:
+                        result = data['result']
+                        dataDict = {
+                            "id": str(id),
+                            "title": title,
+                            'landmark': landmark,
+                            'image': image,
+                            'result': result,
+                            # 'slot':str(slot)
+                        }
+                    except KeyError:
+                        dataDict = {
+                            "id": str(id),
+                            "title": title,
+                            'landmark': landmark,
+                            'image': image,
+                        }
+                except KeyError:
+                    dataDict = {
+                        "id": str(id),
+                        "title": title,
+                        'image': image,
+                    }
             except KeyError:
-                # slot=data['slot']
                 dataDict = {
                     "id": str(id),
                     "title": title,
-                    # 'landmark':str(landmark),
-                    # 'slot':str(slot)
                 }
+
             dataJson.append(dataDict)
             # import function from another python file
             # print_sth("import success")
@@ -77,24 +90,36 @@ def getUserbyId(id):
     title = data['title']
 
     try:
-        landmark = data['landmark']
         image = data['image']
-        result = data['result']
-        dataDict = {
-            "id": str(id),
-            "title": title,
-            'landmark': landmark,
-            'image': image,
-            'result': result,
-            # 'slot':str(slot)
-        }
+        try:
+            landmark = data['landmark']
+            try:
+                result = data['result']
+                dataDict = {
+                    "id": str(id),
+                    "title": title,
+                    'landmark': landmark,
+                    'image': image,
+                    'result': result,
+                    # 'slot':str(slot)
+                }
+            except KeyError:
+                dataDict = {
+                    "id": str(id),
+                    "title": title,
+                    'landmark': landmark,
+                    'image': image,
+                }
+        except KeyError:
+            dataDict = {
+                "id": str(id),
+                "title": title,
+                'image': image,
+            }
     except KeyError:
-        # slot=data['slot']
         dataDict = {
             "id": str(id),
             "title": title,
-            # 'landmark':str(landmark),
-            # 'slot':str(slot)
         }
 
     return jsonify(dataDict)
@@ -128,12 +153,12 @@ def updateLandmark(id):
                      "x": landmark_data[i][0], "y": landmark_data[i][1]}
         landmark_dict.append(data_dict)
 
-    # print(landmark_dict)
-
     db['parkinglots'].update_one({'_id': ObjectId(id)}, {'$set': {
         'landmark': landmark_dict
     }})
+    print(id, landmark_dict)
     return jsonify({
+        "landmark": landmark_dict,
         "msg": "landmark updated"
     })
     # return "success"
@@ -189,9 +214,15 @@ def calibrateImage(id):
 
     # ref_image_name_test = "test_img_calib/Reference/lmTst_0.jpg"
     ref_image_name_test = f'{path.reference_path}/{id}.jpg'
-    # cur_image_path = "test_img_calib/Data/Mock"
-    cur_image_path = path.mock_path
-    destination = path.calibrated_path
+    if (title == "Test Parking Lot"):
+        image_calibration_app.clear_file("debug/debug_log_Mock.csv")
+        cur_image_path = "test_img_calib/Data/Mock"
+        destination = "test_img_calib/Calibrated"
+        title = "Mock"
+    else:
+        image_calibration_app.clear_file(f"debug/debug_log_{title}.csv")
+        cur_image_path = path.mock_path
+        destination = path.calibrated_path
     # parklot_name = "Mock"
 
     calib_result = image_calibration_app.calibrate_image_multiple(

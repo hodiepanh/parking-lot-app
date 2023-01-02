@@ -390,7 +390,6 @@ def image_calibration(
         # f_debug.write("filename: {}\n".format(name))
         # f_debug.write("Working case: {}\n".format(case))
         debug_file = f"debug/debug_log_{parklot_name}.csv"
-        # header = [datetime.datetime.now(), case, ]
         header = ["Datetime", "Filename",
                   "Working case", "X", "Y", "Angle", "Note"]
         # data = [datetime.datetime.now()),case,translation_x,translation_y,angle,note]
@@ -409,6 +408,7 @@ def image_calibration(
         # f_debug.write("\n")
         data = [datetime.datetime.now(), name, case, translation_x,
                 translation_y, angle, note]
+
         image_calibration_app.write_debug(data, debug_file)
         print("")
 

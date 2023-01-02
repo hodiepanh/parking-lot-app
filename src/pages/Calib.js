@@ -193,76 +193,38 @@ function Calib() {
   };
   //draw rectangle with only one click
   const clickRect = ({ nativeEvent }) => {
-    if (refImage == default_image || mode == "") {
-      dispatch(
-        openNotification({
-          status: "error",
-          message: "Choose the reference image first",
-        })
-      );
-    } else {
-      if (mode == "") {
-        dispatch(
-          openNotification({
-            status: "error",
-            message: "Choose the drawing mode first",
-          })
-        );
-      } else {
-        const center_x = nativeEvent.clientX - canvasOffsetX.current;
-        const center_y = nativeEvent.clientY - canvasOffsetY.current;
-        //const newMouseX = nativeEvent.clientX - canvasOffsetX.current;
-        //const newMouseY = nativeEvent.clientY - canvasOffsetY.current;
+    const center_x = nativeEvent.clientX - canvasOffsetX.current;
+    const center_y = nativeEvent.clientY - canvasOffsetY.current;
 
-        //const rectWidth = newMouseX - startX.current;
-        //const rectHeight = newMouseY - startY.current;
-        const rectWidth = 30;
-        const rectHeight = 30;
+    const rectWidth = 30;
+    const rectHeight = 30;
 
-        const start_x = center_x - rectWidth / 2;
-        const start_y = center_y - rectHeight / 2;
+    const start_x = center_x - rectWidth / 2;
+    const start_y = center_y - rectHeight / 2;
 
-        const start_x_data = start_x * imageWidthRatio;
-        const start_y_data = start_y * imageHeightRatio;
+    const start_x_data = start_x * imageWidthRatio;
+    const start_y_data = start_y * imageHeightRatio;
 
-        //draw
-        if (mode == "landmark") {
-          contextRef.current.strokeStyle = "red";
-        } else {
-          contextRef.current.strokeStyle = "black";
-        }
-        contextRef.current.strokeRect(start_x, start_y, rectWidth, rectHeight);
+    //draw
+    contextRef.current.strokeStyle = "red";
 
-        //update data list
-        if (mode == "landmark") {
-          setLandmarkList((prevState) => [
-            ...prevState,
-            {
-              //id: landmarkList.length,
-              x1: Math.round(start_x * imageWidthRatio),
-              y1: Math.round(start_y * imageHeightRatio),
-              x2: Math.round((start_x + rectWidth) * imageWidthRatio),
-              y2: Math.round((start_y + rectHeight) * imageHeightRatio),
-            },
-          ]);
-          //console.log(landmarkList);
-        }
-        if (mode == "slot") {
-          setParkingSlotList((prevState) => [
-            ...prevState,
-            {
-              //id: parkingslotList.length,
-              x1: Math.round(start_x),
-              y1: Math.round(start_y),
-              x2: Math.round(start_x + rectWidth),
-              y2: Math.round(start_y + rectHeight),
-            },
-          ]);
-        }
+    contextRef.current.strokeRect(start_x, start_y, rectWidth, rectHeight);
 
-        setDrawing(false);
-      }
+    //update data list
+    if (mode == "landmark") {
+      setLandmarkList((prevState) => [
+        ...prevState,
+        {
+          //id: landmarkList.length,
+          x1: Math.round(start_x * imageWidthRatio),
+          y1: Math.round(start_y * imageHeightRatio),
+          x2: Math.round((start_x + rectWidth) * imageWidthRatio),
+          y2: Math.round((start_y + rectHeight) * imageHeightRatio),
+        },
+      ]);
+      //console.log(landmarkList);
     }
+    setDrawing(false);
   };
   //get coordinate start point of rectangle
   const startRect = ({ nativeEvent }) => {
@@ -311,6 +273,39 @@ function Calib() {
 
   //get coordinate end point of rectangle
   const endRect = ({ nativeEvent }) => {
+    const newMouseX = nativeEvent.clientX - canvasOffsetX.current;
+    const newMouseY = nativeEvent.clientY - canvasOffsetY.current;
+
+    const rectWidth = newMouseX - startX.current;
+    const rectHeight = newMouseY - startY.current;
+
+    //draw
+    contextRef.current.strokeStyle = "black";
+
+    contextRef.current.strokeRect(
+      startX.current,
+      startY.current,
+      rectWidth,
+      rectHeight
+    );
+
+    if (mode == "slot") {
+      setParkingSlotList((prevState) => [
+        ...prevState,
+        {
+          //id: parkingslotList.length,
+          x1: Math.round(startX.current),
+          y1: Math.round(startY.current),
+          x2: Math.round(startX.current + rectWidth),
+          y2: Math.round(startY.current + rectHeight),
+        },
+      ]);
+    }
+
+    setDrawing(false);
+  };
+
+  const drawRect = ({ nativeEvent }) => {
     if (refImage == default_image) {
       dispatch(
         openNotification({
@@ -327,63 +322,13 @@ function Calib() {
           })
         );
       } else {
-        const newMouseX = nativeEvent.clientX - canvasOffsetX.current;
-        const newMouseY = nativeEvent.clientY - canvasOffsetY.current;
-
-        const rectWidth = newMouseX - startX.current;
-        const rectHeight = newMouseY - startY.current;
-
-        //draw
         if (mode == "landmark") {
-          contextRef.current.strokeStyle = "red";
-        } else {
-          contextRef.current.strokeStyle = "black";
-        }
-        contextRef.current.strokeRect(
-          startX.current,
-          startY.current,
-          rectWidth,
-          rectHeight
-        );
-
-        //update data list
-        if (mode == "landmark") {
-          setLandmarkList((prevState) => [
-            ...prevState,
-            {
-              //id: landmarkList.length,
-              x1: Math.round(startX.current),
-              y1: Math.round(startY.current),
-              x2: Math.round(startX.current + rectWidth),
-              y2: Math.round(startY.current + rectHeight),
-            },
-          ]);
-          //console.log(landmarkList);
+          clickRect({ nativeEvent });
         }
         if (mode == "slot") {
-          setParkingSlotList((prevState) => [
-            ...prevState,
-            {
-              //id: parkingslotList.length,
-              x1: Math.round(startX.current),
-              y1: Math.round(startY.current),
-              x2: Math.round(startX.current + rectWidth),
-              y2: Math.round(startY.current + rectHeight),
-            },
-          ]);
+          endRect({ nativeEvent });
         }
-
-        setDrawing(false);
       }
-    }
-  };
-
-  const drawRect = ({ nativeEvent }) => {
-    if (mode == "landmark") {
-      clickRect({ nativeEvent });
-    }
-    if (mode == "slot") {
-      endRect({ nativeEvent });
     }
   };
 
@@ -454,17 +399,6 @@ function Calib() {
   };
 
   const test = () => {
-    //canvasOffsetX.current = canvasOffset.left;
-    //canvasOffsetY.current = canvasOffset.top;
-    // contextRef.current.beginPath();
-    // contextRef.current.moveTo(300, 0);
-    // contextRef.current.lineTo(300, 400);
-    // contextRef.current.stroke();
-
-    // contextRef.current.beginPath();
-    // contextRef.current.moveTo(0, 200);
-    // contextRef.current.lineTo(600, 200);
-    // contextRef.current.stroke();
     console.log(saveImage);
   };
   return (

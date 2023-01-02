@@ -29,6 +29,7 @@ function Result() {
   );
   const loading = useSelector((state) => state.parkingReducer.loading);
   const { id } = useParams();
+  const [title, setTitle] = useState("");
   const [refImage, setRefImage] = useState();
   const [calibImage, setCalibImage] = useState();
   const [capturedImage, setCapturedImage] = useState();
@@ -52,6 +53,7 @@ function Result() {
       .unwrap()
       .then((res) => {
         //console.log(res.result);
+        setTitle(res.title);
         setCalibImageList(res.result.map((data) => data.title));
         setCapturedImageList(
           res.result.map(
@@ -78,9 +80,15 @@ function Result() {
   //get captured image -> iterate through array
   const getCapturedImage = (image_name) => {
     try {
-      setCapturedImage(
-        require(`../assets/Parking Lots/Sample lot/${image_name}`)
-      );
+      if (title == "Test Parking Lot") {
+        setCapturedImage(
+          require(`../../backend/test_img_calib/Data/Mock/${image_name}`)
+        );
+      } else {
+        setCapturedImage(
+          require(`../assets/Parking Lots/Sample lot/${image_name}`)
+        );
+      }
       //setCalibImage(require(`../assets/Calibrated/${id}_rotated.jpg`));
     } catch (err) {
       setCapturedImage(default_image);
@@ -90,9 +98,16 @@ function Result() {
   //get calibrated image -> iterate through array
   const getCalibImage = (image_name) => {
     try {
-      setCalibImage(
-        require(`../assets/Calibrated/${parking_name}/${image_name}`)
-      );
+      if (title == "Test Parking Lot") {
+        setCalibImage(
+          require(`../../backend/test_img_calib/Calibrated/Mock/${image_name}`)
+        );
+      } else {
+        setCalibImage(
+          require(`../assets/Calibrated/${parking_name}/${image_name}`)
+        );
+      }
+
       //setCalibImage(require(`../assets/Calibrated/${id}_rotated.jpg`));
     } catch (err) {
       setCalibImage(default_image);
@@ -113,6 +128,7 @@ function Result() {
   };
 
   const test = () => {
+    console.log(title);
     console.log(capturedImageList);
     console.log(calibImageList);
   };
@@ -142,7 +158,6 @@ function Result() {
   return (
     <div className="layout">
       <Typography variant="h1">Result</Typography>
-      <Button onClick={test}>Test</Button>
       <div>
         <Grid
           container
