@@ -43,12 +43,6 @@ function Home() {
       });
   }, []);
 
-  const getData = () => {
-    axios.get("http://localhost:5000/parkinglots").then((res) => {
-      console.log(res.data);
-    });
-  };
-
   return (
     <div className="page-wrapper">
       <Typography variant="h1">WELCOME TO IMAGE CALIBRATION</Typography>

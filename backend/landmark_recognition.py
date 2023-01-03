@@ -3,7 +3,7 @@
 import cv2
 # Mathematical functions
 import numpy as np
-
+import utilities
 # Initiate threshold values, for image processing (contour recognition based on colors)
 im_lower = np.array([20, 110, 110], dtype='uint8')
 im_upper = np.array([35, 255, 255], dtype='uint8')

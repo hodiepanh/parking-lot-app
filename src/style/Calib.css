@@ -75,7 +75,7 @@ canvas {
     .ulti-wrapper{
         display: flex;
         flex-direction: row;
-        padding: 0px;
+        padding: 0px 10px;
     }
     .drawer {
         display: flex;

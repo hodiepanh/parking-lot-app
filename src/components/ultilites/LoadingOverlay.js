@@ -4,30 +4,28 @@ import Box from "@mui/material/Box";
 import Dialog from "@mui/material/Dialog";
 import Stack from "@mui/material/Stack";
 
-import { display } from "@mui/system";
-
 //import style
-// import { styled } from "@mui/system";
-// const StyleList = styled(List)(({ theme }) => ({
-//   width: "100%",
-//   "& .MuiIconButton-root": {
-//     color: "white",
-//   },
-// }));
+import { styled } from "@mui/system";
+const StyleBox = styled(Box)(({ theme }) => ({
+  zIndex: theme.zIndex.drawer + 1,
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "center",
+  top: 0,
+  height: "100vh",
+  backgroundColor: "transparent",
+  position: "fixed",
+}));
 
 function LoadingOverlay(open) {
   return (
     <div>
       <Dialog open={open}>
-        <Stack
-          gap={1}
-          justifyContent="center"
-          alignItems="center"
-          sx={{ backgroundColor: "transparent" }}
-        >
+        <StyleBox>
           <CircularProgress />
           <div>Please wait... </div>
-        </Stack>
+        </StyleBox>
       </Dialog>
     </div>
   );

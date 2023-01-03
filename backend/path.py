@@ -7,6 +7,7 @@ mock_path = "../src/assets/Parking Lots/Sample lot"
 
 # Test with mock data (backend)
 ref_image_name = "test_img_calib/Reference/lmTst_0.jpg"
+ref_image_path = "test_img_calib/Reference"
 cur_image_path = "test_img_calib/Data/Mock"
 calibrated_path_mock = "test_img_calib/Calibrated/"
 mock_parklot_name = "Mock"

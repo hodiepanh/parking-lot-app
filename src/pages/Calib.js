@@ -155,42 +155,6 @@ function Calib() {
     setRefImage(file.preview);
   };
 
-  //test image upload
-  //const [file, setFile] = useState();
-  //const [description, setDescription] = useState("");
-  //const [image, setImage] = useState();
-
-  // const uploadImage = async () => {
-  //   // event.preventDefault();
-
-  //   const formData = new FormData();
-  //   formData.append("image", saveImage);
-  //   //formData.append("description", description);
-
-  //   const result = await axios.post(
-  //     "http://localhost:5000/parkinglots/upload",
-  //     formData,
-  //     {
-  //       headers: {
-  //         "Access-Control-Allow-Origin": "*",
-  //         "Content-Type": "multipart/form-data",
-  //       },
-  //     }
-  //   );
-  //   //setImage(result.data.imagePath);
-  // };
-
-  const uploadImage = () => {
-    const formData = new FormData();
-    formData.append("image", saveImage);
-    dispatch(editImageRex({ id, formData }));
-  };
-
-  const calibrateImage = () => {
-    const formData = new FormData();
-    formData.append("image", saveImage);
-    dispatch(editCalibratedRex({ id, title }));
-  };
   //draw rectangle with only one click
   const clickRect = ({ nativeEvent }) => {
     const center_x = nativeEvent.clientX - canvasOffsetX.current;

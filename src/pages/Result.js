@@ -122,8 +122,7 @@ function Result() {
       getCalibImage(calibImageList[incre]);
       setIncre(incre + 1);
     } catch (err) {
-      //setCalibImage(default_image);
-      setIncre(0);
+      window.location.reload();
     }
   };
 

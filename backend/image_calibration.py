@@ -5,9 +5,8 @@ import cv2
 # import imutils
 import datetime
 import math
-import image_calibration_app
 import path
-
+import utilities
 # Import additional packages/file
 import landmark_recognition
 
@@ -195,7 +194,7 @@ def image_calibration(
         # change imutils function because cause errors in flask server (idky)
         # shift_image = imutils.translate(
         #     zoom, (1500 - 1920 / 2), (1500 - 1080 / 2))
-        shift_image = image_calibration_app.translate_image(
+        shift_image = utilities.translate_image(
             zoom, (1500 - 1920 / 2), (1500 - 1080 / 2))
         # Debug: Show enlarged & shifted image
         # cv2.imshow("Test image", shift_image)
@@ -227,7 +226,7 @@ def image_calibration(
             # shift_revert = imutils.translate(
             #     shift_copy, translation_x, translation_y)
 
-            shift_revert = image_calibration_app.translate_image(
+            shift_revert = utilities.translate_image(
                 shift_copy, translation_x, translation_y)
             # Return signal flag, determine that image has been translated
             translation_flag = True
@@ -383,33 +382,24 @@ def image_calibration(
         cv2.imwrite(
             f'{path}/{parklot_name}/{name}_({translation_x}_{translation_y}_{angle}).jpg', image_out)
         # Log debug information
-        # [filename, datetime, workingcase, ]
-        # f_debug = open(
-        #     path + "\\data_process\\{}\\debug.txt".format(parklot_name), 'a+')
-        # f_debug.write("{}\n".format(datetime.datetime.now()))
-        # f_debug.write("filename: {}\n".format(name))
-        # f_debug.write("Working case: {}\n".format(case))
+        # Replace the txt file with csv file
         debug_file = f"debug/debug_log_{parklot_name}.csv"
         header = ["Datetime", "Filename",
                   "Working case", "X", "Y", "Angle", "Note"]
-        # data = [datetime.datetime.now()),case,translation_x,translation_y,angle,note]
-        image_calibration_app.write_debug(header, debug_file)
+        utilities.write_debug(header, debug_file)
 
         if case != -1:
             print(filename, "recovered")
             note = filename + " recovered"
-            # f_debug.write(filename + " recovered\n")
+
         else:
             # cv2.imwrite(os.path.join(result_path, 'not_recov_{}.jpg'.format(name)), cut)
             print(filename, " not recovered, please check the camera/input")
-            # f_debug.write(
-            #     filename + " not recovered, please check the camera/input\n")
             note = filename + " not recovered, please check the camera/input"
-        # f_debug.write("\n")
         data = [datetime.datetime.now(), name, case, translation_x,
                 translation_y, angle, note]
 
-        image_calibration_app.write_debug(data, debug_file)
+        utilities.write_debug(data, debug_file)
         print("")
 
     # Initiate calibration flags
@@ -425,8 +415,9 @@ def image_calibration(
 
     # Zoom out image
     process_image = zoom_image(image_data)
-    # result_image
+    # result_image (for local storage)
     result_image = image_data
+    # result_name of result_image(for database)
     result_name = ""
     if mode == 0:
         # Perform image rotation calibration first

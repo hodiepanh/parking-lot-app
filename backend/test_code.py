@@ -5,12 +5,14 @@ import cv2 as cv
 import numpy as np
 import os
 import image_calibration_app
+import utilities
+import path
 # testing function from lamdmark calibration
 img_ref_test = cv.imread("../src/assets/TestData/lmTst_0.jpg")
 ref_status, ref_x, ref_y = landmark_recognition.find_landmark(img_ref_test)
 print(ref_status, ref_x, ref_y)
 for i in range(1, 5):
-    image_ref_dot = image_calibration_app.image_draw_dot(
+    image_ref_dot = utilities.image_draw_dot(
         img_ref_test, (ref_x[i], ref_y[i]))
 
 # app.show_image("image draw", image_ref_dot)
@@ -19,7 +21,7 @@ img_cur_test = cv.imread("../src/assets/TestData/lmTst_0_cur.jpg")
 cur_status, cur_x, cur_y = landmark_recognition.find_landmark(img_cur_test)
 print(cur_status, cur_x, cur_y)
 for i in range(1, 5):
-    image_cur_dot = image_calibration_app.image_draw_dot(
+    image_cur_dot = utilities.image_draw_dot(
         img_cur_test, (cur_x[i], cur_y[i]))
 
 # app.show_image("image draw", image_cur_dot)
@@ -156,14 +158,14 @@ ref_midpoint_x_test, ref_midpoint_y_test, cur_midpoint_x_test, cur_midpoint_y_te
 # print(ref_midpoint_x_test, ref_midpoint_y_test,
 #      cur_midpoint_x_test, cur_midpoint_y_test)
 
-image_ref_mid_point = image_calibration_app.image_draw_dot(
+image_ref_mid_point = utilities.image_draw_dot(
     img_ref_test, (ref_midpoint_x_test, ref_midpoint_y_test))
 # app.show_image("ref mid point", image_ref_mid_point)
 
-image_mid_point = image_calibration_app.image_draw_dot(
+image_mid_point = utilities.image_draw_dot(
     img_cur_test, (cur_midpoint_x_test, cur_midpoint_y_test))
 
-image_mid_point = image_calibration_app.image_draw_dot(
+image_mid_point = utilities.image_draw_dot(
     img_cur_test, (ref_midpoint_x_test, ref_midpoint_y_test))
 
 # app.show_image("mid point", image_mid_point)
@@ -255,7 +257,7 @@ def zoom_image(img):
     # shift_image = imutils.translate(
     #     zoom, (1500 - 1920 / 2), (1500 - 1080 / 2))
 
-    shift_image = image_calibration_app.translate_image(
+    shift_image = utilities.translate_image(
         zoom, (1500 - 1920 / 2), (1500 - 1080 / 2))
     # Debug: Show enlarged & shifted image
     # cv.imshow("Test image", shift_image)
@@ -291,7 +293,7 @@ def translation(shift_image, case, ref_midpoint_x, ref_midpoint_y, cur_midpoint_
         shift_copy = shift_image
         # shift_revert = imutils.translate(
         #     shift_copy, translation_x, translation_y)
-        shift_revert = image_calibration_app.translate_image(
+        shift_revert = utilities.translate_image(
             shift_copy, translation_x, translation_y)
         # Return signal flag, determine that image has been translated
         translation_flag = True
@@ -449,7 +451,7 @@ rotate_image_test, angle_final_test, rotation_flag_test = rotation(zoom_image_te
 
 # Cut out the region of interest, update landmark values
 rot_image_cutout = rotate_image_test[960:960 + 1080, 540:540 + 1920]
-rot_image_cutout_resize = image_calibration_app.resize_image(
+rot_image_cutout_resize = utilities.resize_image(
     rot_image_cutout, 30)
 # app.show_image("cutout", rot_image_cutout_resize)
 # Find all landmarks again, then perform image translation if necessary
@@ -469,21 +471,21 @@ translate_image_test, translation_x_test, translation_y_test, translation_flag_t
     rotate_image_test, r_case, ref_mid_x, ref_mid_y, cur_mid_x, cur_mid_y
 )
 trans_image_cutout = translate_image_test[960:960 + 1080, 540:540 + 1920]
-translate_image_test_resize = image_calibration_app.resize_image(
+translate_image_test_resize = utilities.resize_image(
     trans_image_cutout, 30)
 # app.show_image("translation", translate_image_test_resize)
 # print("translation level: ", translation_x_test,
 #       translation_y_test, "translated:", translation_flag_test)
 
 result_calib, result_name, calib_flag = image_calibration.image_calibration(
-    parent_path=image_calibration_app.output_path, image_data=img_cur_test, parklot_name="Parking Lot A",
+    parent_path=path.calibrated_path, image_data=img_cur_test, parklot_name="Parking Lot A",
     mode=0, filename="test.jpg", current_status=cur_status,
     ref_x=ref_x, ref_y=ref_y, cur_x=cur_x, cur_y=cur_y)
 
 result_image_cutout = result_calib[960:960 + 1080, 540:540 + 1920]
-result_image_cutout_resize = image_calibration_app.resize_image(
+result_image_cutout_resize = utilities.resize_image(
     result_image_cutout, 30)
-image_calibration_app.show_image("result", result_image_cutout_resize)
+utilities.show_image("result", result_image_cutout_resize)
 
 # [0, 502, 1172, 318, 1252] = landmark x-coord
 # [0, 612, 633, 861, 904] = landmark y-coord
@@ -495,6 +497,6 @@ small_image = landmark_recognition.image_get_data(
 landmark_x, landmark_y = landmark_recognition.landmark_definition(small_image)
 print(landmark_x, landmark_y)
 
-landmark_draw = image_calibration_app.resize_image(image_calibration_app.image_draw_dot(
+landmark_draw = utilities.resize_image(utilities.image_draw_dot(
     small_image, (landmark_x, landmark_y)), 200)
 # app.show_image("landmark", landmark_draw)

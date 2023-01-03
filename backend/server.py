@@ -7,7 +7,7 @@ import random
 import os
 import image_calibration_app
 import path
-
+import utilities
 app = Flask(__name__)
 
 client = MongoClient("mongodb://localhost:27017")
@@ -130,8 +130,8 @@ def deleteUser(id):
     # delete reference image from local file
     filename = str(id)+".jpg"
     # check is reference image exist (name exists) -> remove
-    if (os.path.exists(f'../src/assets/Reference/{filename}')):
-        os.remove(f'../src/assets/Reference/{filename}')
+    if (os.path.exists(f'{path.reference_path}/{filename}')):
+        os.remove(f'{path.reference_path}/{filename}')
 
     db['parkinglots'].delete_one({'_id': ObjectId(id)})
     return jsonify({"msg": "Lot deleted"})
@@ -215,12 +215,13 @@ def calibrateImage(id):
     # ref_image_name_test = "test_img_calib/Reference/lmTst_0.jpg"
     ref_image_name_test = f'{path.reference_path}/{id}.jpg'
     if (title == "Test Parking Lot"):
-        image_calibration_app.clear_file("debug/debug_log_Mock.csv")
-        cur_image_path = "test_img_calib/Data/Mock"
-        destination = "test_img_calib/Calibrated"
         title = "Mock"
+        utilities.clear_file(f"debug/debug_log_{title}.csv")
+        cur_image_path = path.cur_image_path
+        destination = path.calibrated_path_mock
+
     else:
-        image_calibration_app.clear_file(f"debug/debug_log_{title}.csv")
+        utilities.clear_file(f"debug/debug_log_{title}.csv")
         cur_image_path = path.mock_path
         destination = path.calibrated_path
     # parklot_name = "Mock"
