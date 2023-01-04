@@ -45,6 +45,7 @@ function Calib() {
   //landmark and parking slots list
   const [landmarkList, setLandmarkList] = useState([]);
   const [parkingslotList, setParkingSlotList] = useState([]);
+  const [roiList, setRoiList] = useState([]);
 
   //image in canvas;
   const standardImage = useSelector(
@@ -91,10 +92,12 @@ function Calib() {
     <CalibUlti
       landmarkList={landmarkList}
       parkingslotList={parkingslotList}
+      roiList={roiList}
       drawMode={mode}
       setDrawMode={setMode}
       removeLandmark={removeLandmarkData}
       removeSlot={removeSlotData}
+      removeRoI={removeRoIData}
       imageRef={refImage}
       image={saveImage}
       inputFile={inputFile}
@@ -244,7 +247,12 @@ function Calib() {
     const rectHeight = newMouseY - startY.current;
 
     //draw
-    contextRef.current.strokeStyle = "black";
+    if (mode == "slot") {
+      contextRef.current.strokeStyle = "black";
+    }
+    if (mode == "roi") {
+      contextRef.current.strokeStyle = "yellow";
+    }
 
     contextRef.current.strokeRect(
       startX.current,
@@ -258,10 +266,23 @@ function Calib() {
         ...prevState,
         {
           //id: parkingslotList.length,
-          x1: Math.round(startX.current),
-          y1: Math.round(startY.current),
-          x2: Math.round(startX.current + rectWidth),
-          y2: Math.round(startY.current + rectHeight),
+          x1: Math.round(startX.current * imageWidthRatio),
+          y1: Math.round(startY.current * imageHeightRatio),
+          x2: Math.round((startX.current + rectWidth) * imageWidthRatio),
+          y2: Math.round((startY.current + rectHeight) * imageHeightRatio),
+        },
+      ]);
+    }
+
+    if (mode == "roi") {
+      setRoiList((prevState) => [
+        ...prevState,
+        {
+          //id: parkingslotList.length,
+          x1: Math.round(startX.current * imageWidthRatio),
+          y1: Math.round(startY.current * imageHeightRatio),
+          x2: Math.round((startX.current + rectWidth) * imageWidthRatio),
+          y2: Math.round((startY.current + rectHeight) * imageHeightRatio),
         },
       ]);
     }
@@ -292,6 +313,9 @@ function Calib() {
         if (mode == "slot") {
           endRect({ nativeEvent });
         }
+        if (mode == "roi") {
+          endRect({ nativeEvent });
+        }
       }
     }
   };
@@ -313,10 +337,10 @@ function Calib() {
     }
     if (mode == "slot") {
       contextRef.current.clearRect(
-        removeRect[0].x1 - 1,
-        removeRect[0].y1 - 1,
-        removeRect[0].x2 - removeRect[0].x1 + 2,
-        removeRect[0].y2 - removeRect[0].y1 + 2
+        removeRect[0].x1 / imageWidthRatio - 1,
+        removeRect[0].y1 / imageHeightRatio - 1,
+        (removeRect[0].x2 - removeRect[0].x1) / imageWidthRatio + 2,
+        (removeRect[0].y2 - removeRect[0].y1) / imageHeightRatio + 2
       );
     }
   };
@@ -329,10 +353,25 @@ function Calib() {
 
     //erase in canvas
     contextRef.current.clearRect(
-      removeRect[0].x1 - 1,
-      removeRect[0].y1 - 1,
-      removeRect[0].x2 - removeRect[0].x1 + 2,
-      removeRect[0].y2 - removeRect[0].y1 + 2
+      removeRect[0].x1 / imageWidthRatio - 1,
+      removeRect[0].y1 / imageHeightRatio - 1,
+      (removeRect[0].x2 - removeRect[0].x1) / imageWidthRatio + 2,
+      (removeRect[0].y2 - removeRect[0].y1) / imageHeightRatio + 2
+    );
+  };
+
+  //remove parking slot in list -> erase parking slot in canvas
+  const removeRoIData = (data) => {
+    const removeRect = roiList.filter((item) => item == data);
+    const newList = roiList.filter((item) => item !== data);
+    setRoiList(newList);
+
+    //erase in canvas
+    contextRef.current.clearRect(
+      removeRect[0].x1 / imageWidthRatio - 1,
+      removeRect[0].y1 / imageHeightRatio - 1,
+      (removeRect[0].x2 - removeRect[0].x1) / imageWidthRatio + 2,
+      (removeRect[0].y2 - removeRect[0].y1) / imageHeightRatio + 2
     );
   };
 
@@ -363,7 +402,8 @@ function Calib() {
   };
 
   const test = () => {
-    console.log(saveImage);
+    //console.log(saveImage);
+    dispatch(editCalibratedRex({ id, title }));
   };
   return (
     <div className="view">
@@ -391,10 +431,12 @@ function Calib() {
             <CalibUlti
               landmarkList={landmarkList}
               parkingslotList={parkingslotList}
+              roiList={roiList}
               drawMode={mode}
               setDrawMode={setMode}
               removeLandmark={removeLandmarkData}
               removeSlot={removeSlotData}
+              removeRoI={removeRoIData}
               imageRef={refImage}
               image={saveImage}
               inputFile={inputFile}

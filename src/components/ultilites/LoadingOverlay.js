@@ -18,10 +18,10 @@ const StyleBox = styled(Box)(({ theme }) => ({
   position: "fixed",
 }));
 
-function LoadingOverlay(open) {
+function LoadingOverlay() {
   return (
     <div>
-      <Dialog open={open}>
+      <Dialog open={true}>
         <StyleBox>
           <CircularProgress />
           <div>Please wait... </div>

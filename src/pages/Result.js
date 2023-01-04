@@ -33,9 +33,9 @@ function Result() {
   const [refImage, setRefImage] = useState();
   const [calibImage, setCalibImage] = useState();
   const [capturedImage, setCapturedImage] = useState();
-  const [calibImageList, setCalibImageList] = useState([]);
-  const [capturedImageList, setCapturedImageList] = useState([]);
+  const [matchingRate, setMatchingRate] = useState();
   const [incre, setIncre] = useState(0);
+  const [result, setResult] = useState([]);
   //image data
   const gridData = [
     { title: "Standard Image", src: refImage },
@@ -54,12 +54,16 @@ function Result() {
       .then((res) => {
         //console.log(res.result);
         setTitle(res.title);
-        setCalibImageList(res.result.map((data) => data.title));
-        setCapturedImageList(
-          res.result.map(
-            (data) =>
-              `${data.title.substring(0, data.title.indexOf("(") - 1)}.jpg`
-          )
+        setResult(
+          res.result.map((data) => ({
+            id: data.id,
+            captured: `${data.title.substring(
+              0,
+              data.title.indexOf("(") - 1
+            )}.jpg`,
+            calibrated: data.title,
+            match: data.match,
+          }))
         );
       })
       .then(() => {
@@ -118,18 +122,40 @@ function Result() {
   //called -> iterate
   const nextResult = () => {
     try {
-      getCapturedImage(capturedImageList[incre]);
-      getCalibImage(calibImageList[incre]);
+      getCapturedImage(result[incre].captured);
+      getCalibImage(result[incre].calibrated);
+      setMatchingRate(result[incre].match);
       setIncre(incre + 1);
     } catch (err) {
       window.location.reload();
     }
   };
 
+  //compare with Reference: show binary image
+  const compareWithReference = (index) => {
+    var image_name = result[index].calibrated;
+    try {
+      if (title == "Test Parking Lot") {
+        setCalibImage(
+          require(`../../backend/test_img_calib/Binary/Mock/${image_name}`)
+        );
+      } else {
+        setCalibImage(
+          require(`../assets/Binary/${parking_name}/${image_name}`)
+        );
+      }
+
+      //setCalibImage(require(`../assets/Calibrated/${id}_rotated.jpg`));
+    } catch (err) {
+      setCalibImage(default_image);
+    }
+  };
+
   const test = () => {
-    console.log(title);
-    console.log(capturedImageList);
-    console.log(calibImageList);
+    //console.log(title);
+    //console.log(capturedImageList);
+    //console.log(calibImageList);
+    console.log(result);
   };
 
   //navigate to home screen
@@ -157,6 +183,7 @@ function Result() {
   return (
     <div className="layout">
       <Typography variant="h1">Result</Typography>
+      {/* <Button onClick={test}>Test</Button> */}
       <div>
         <Grid
           container
@@ -167,7 +194,7 @@ function Result() {
         >
           {gridItem}
           <Grid xs={12}>
-            <Typography variant="h2">Rating</Typography>
+            <Typography variant="h2">Rating: {matchingRate}</Typography>
           </Grid>
         </Grid>
       </div>
@@ -182,7 +209,14 @@ function Result() {
             </IconButton>
           </Tooltip>
           <Tooltip title="Compare to reference">
-            <Button variant="outlined">Compare</Button>
+            <Button
+              variant="outlined"
+              onClick={() => {
+                compareWithReference(incre);
+              }}
+            >
+              Compare
+            </Button>
           </Tooltip>
           <Tooltip title="Observe next result">
             <Button variant="outlined" onClick={nextResult}>

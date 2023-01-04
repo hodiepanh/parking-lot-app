@@ -50,6 +50,11 @@ export const parkingApi = {
       slot: data,
     });
   },
+  editRoi: (id, data) => {
+    return axiosClient.patch(`${url}/${id}/roi`, {
+      roi: data,
+    });
+  },
   editReferenceImage: (id, data) => {
     return axiosClient.post(`${url}/${id}/image`, data);
   },

@@ -19,6 +19,7 @@ def resize_image(image, scale_percent):
 
 
 def show_image(name, image):
+    image = resize_image(image, 50)
     cv.imshow(name, image)
     cv.waitKey(0)
 

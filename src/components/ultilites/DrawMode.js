@@ -45,6 +45,7 @@ function DrawMode({ mode, setMode }) {
               control={<Radio />}
               label="Parking Slot"
             />
+            <FormControlLabel value="roi" control={<Radio />} label="RoI" />
           </RadioGroup>
         </FormControl>
       </form>

@@ -30,15 +30,26 @@ def api():
                 try:
                     landmark = data['landmark']
                     try:
-                        result = data['result']
-                        dataDict = {
-                            "id": str(id),
-                            "title": title,
-                            'landmark': landmark,
-                            'image': image,
-                            'result': result,
-                            # 'slot':str(slot)
-                        }
+                        roi = data['roi']
+                        try:
+                            result = data['result']
+                            dataDict = {
+                                "id": str(id),
+                                "title": title,
+                                'landmark': landmark,
+                                'roi': roi,
+                                'image': image,
+                                'result': result,
+                                # 'slot':str(slot)
+                            }
+                        except KeyError:
+                            dataDict = {
+                                "id": str(id),
+                                "title": title,
+                                'landmark': landmark,
+                                'roi': roi,
+                                'image': image,
+                            }
                     except KeyError:
                         dataDict = {
                             "id": str(id),
@@ -94,15 +105,26 @@ def getUserbyId(id):
         try:
             landmark = data['landmark']
             try:
-                result = data['result']
-                dataDict = {
-                    "id": str(id),
-                    "title": title,
-                    'landmark': landmark,
-                    'image': image,
-                    'result': result,
-                    # 'slot':str(slot)
-                }
+                roi = data['roi']
+                try:
+                    result = data['result']
+                    dataDict = {
+                        "id": str(id),
+                        "title": title,
+                        'landmark': landmark,
+                        'roi': roi,
+                        'image': image,
+                        'result': result,
+                        # 'slot':str(slot)
+                    }
+                except KeyError:
+                    dataDict = {
+                        "id": str(id),
+                        "title": title,
+                        'landmark': landmark,
+                        'roi': roi,
+                        'image': image,
+                    }
             except KeyError:
                 dataDict = {
                     "id": str(id),
@@ -174,6 +196,16 @@ def updateSlot(id):
     })
 
 
+@app.route('/parkinglots/<id>/roi', methods=['PATCH'])
+def updateRoi(id):
+    db['parkinglots'].update_one({'_id': ObjectId(id)}, {'$set': {
+        'roi': request.json['roi']
+    }})
+    return jsonify({
+        "msg": "region of interest updated"
+    })
+
+
 @app.route('/parkinglots/<id>/image', methods=['POST'])
 def fileUpload(id):
     file = request.files.get('image')
@@ -200,8 +232,9 @@ def calibrateImage(id):
     data = db['parkinglots'].find_one({'_id': ObjectId(id)})
     landmark = data['landmark']
     title = data['title']
+    roi = data['roi'][0]
     # print(landmark)
-
+    # print(roi['x1'])
     # change landmark to ref_x, ref_y format
     ref_x = [0]
     ref_y = [0]
@@ -227,11 +260,11 @@ def calibrateImage(id):
     # parklot_name = "Mock"
 
     calib_result = image_calibration_app.calibrate_image_multiple(
-        ref_image_name_test, cur_image_path, destination, title)
+        ref_image_name_test, cur_image_path, destination, title, roi)
     # print(calib_result)
 
     db['parkinglots'].update_one({'_id': ObjectId(id)}, {'$set': {
-        'result': calib_result
+        'result': calib_result,
     }})
 
     return jsonify({

@@ -19,6 +19,7 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   editLandmarkRex,
   editSlotRex,
+  editRoiRex,
   editImageRex,
   editCalibratedRex,
   setReferenceImage,
@@ -51,10 +52,12 @@ const StyleList = styled(List)(({ theme }) => ({
 function CalibUlti({
   landmarkList,
   parkingslotList,
+  roiList,
   drawMode,
   setDrawMode,
   removeLandmark,
   removeSlot,
+  removeRoI,
   imageRef,
   image,
   inputFile,
@@ -140,9 +143,29 @@ function CalibUlti({
     </ListItem>
   ));
 
+  //render region of interest
+  const roiMap = roiList.map((data, index) => (
+    <ListItem key={index} disablePadding>
+      <ListItemButton>
+        <ListItemText
+          primary={`${data.x1}, ${data.y1}, ${data.x2}, ${data.y2}`}
+        />
+        <IconButton
+          aria-label="delete"
+          onClick={() => {
+            removeRoI(data);
+          }}
+        >
+          <CloseIcon color="white" />
+        </IconButton>
+      </ListItemButton>
+    </ListItem>
+  ));
+
   const test = () => {
-    console.log(id);
-    console.log(image);
+    //console.log(id);
+    //console.log(image);
+    //dispatch(editRoiRex({ id, roiList }));
   };
   const uploadImage = () => {
     const formData = new FormData();
@@ -166,7 +189,16 @@ function CalibUlti({
           message: "Only 4 landmarks.",
         })
       );
-    } else {
+    }
+    if (roiList.length !== 1) {
+      dispatch(
+        openNotification({
+          status: "error",
+          message: "Only 1 region of interest.",
+        })
+      );
+    }
+    if (landmarkList.length == 4 && roiList.length == 1) {
       if (image != "") {
         const formData = new FormData();
         formData.append("image", image);
@@ -196,10 +228,8 @@ function CalibUlti({
         dispatch(editLandmarkRex({ id, landmarkList }))
           .unwrap()
           .then(() => {
-            //uploadImage();
-            // if (image != "") {
-            //   uploadImage();
-            // }
+            dispatch(editRoiRex({ id, roiList }));
+            //upload RoI here
           })
           .then(() => {
             dispatch(
@@ -236,6 +266,7 @@ function CalibUlti({
         >
           Data store
         </Typography>
+        {/* <Button onClick={test}>Test</Button> */}
         <StyleList
           sx={{
             width: "100%",
@@ -251,6 +282,8 @@ function CalibUlti({
           {landmarkMap}
           <ListSubheader>Parking Slots</ListSubheader>
           {parkingslotMap}
+          <ListSubheader>Region of Interest</ListSubheader>
+          {roiMap}
         </StyleList>
         <DrawMode mode={drawMode} setMode={setDrawMode} />
         <div className="button-wrapper">

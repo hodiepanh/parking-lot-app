@@ -1,6 +1,7 @@
 
 import landmark_recognition
 import image_calibration
+import image_additional_function
 import cv2 as cv
 import numpy as np
 import os
@@ -26,7 +27,7 @@ def landmark_defintion_ref_image(image, landmark):
     return landmark_data
 
 
-def calibrate_image_multiple(ref_image_name, cur_img_path, destination, parklot_name):
+def calibrate_image_multiple(ref_image_name, cur_img_path, destination, parklot_name, roi):
     img_ref_test = cv.imread(ref_image_name)
     ref_status, ref_x, ref_y = landmark_recognition.find_landmark(img_ref_test)
     # print(ref_status, ref_x, ref_y)
@@ -57,7 +58,35 @@ def calibrate_image_multiple(ref_image_name, cur_img_path, destination, parklot_
                 # result_image_cutout_resize = app.resize_image(result_image_cutout, 30)
                 # app.show_image("result", result_image_cutout_resize)
 
-                result.append({"id": i, "title": result_name})
+                # image comparision
+                # calibrated_image = "test_img_calib/Reference/lmTst_1.jpg"
+                if (parklot_name == "Mock"):
+
+                    calibrated_path = path.calibrated_path_mock
+                    binary_path = path.binary_path_mock
+                    # binary_image, matching_rate = image_additional_function.image_difference(
+                    #     reference_image=ref_image_name,
+                    #     calibrated_image=f"test_img_calib/Calibrated/Mock/{result_name}",
+                    #     write_path=f"test_img_calib/Binary/Mock/{parklot_name}",
+                    #     start_roi_x=roi['x1'],
+                    #     start_roi_y=roi['y1'],
+                    #     end_roi_x=roi['x2'],
+                    #     end_roi_y=roi['y2'])
+                else:
+
+                    calibrated_path = path.calibrated_path
+                    binary_path = path.binary_path
+                binary_image, matching_rate = image_additional_function.image_difference(
+                    reference_image=ref_image_name,
+                    calibrated_image=f"{calibrated_path}/{parklot_name}/{result_name}",
+                    write_path=f"{binary_path}/{parklot_name}",
+                    start_roi_x=roi['x1'],
+                    start_roi_y=roi['y1'],
+                    end_roi_x=roi['x2'],
+                    end_roi_y=roi['y2'])
+
+                result.append(
+                    {"id": i, "title": result_name, "match": matching_rate})
                 i = i+1
     # return result filenames array
     return result

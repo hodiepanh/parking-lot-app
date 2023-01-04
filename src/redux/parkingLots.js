@@ -92,6 +92,19 @@ export const editSlotRex = createAsyncThunk(
   }
 );
 
+export const editRoiRex = createAsyncThunk(
+  "parkinglots/edit",
+  async (editData) => {
+    //console.log(editData);
+    const id = editData.id;
+    const edit_data = editData.roiList;
+    const resp = await parkingApi.editRoi(id, edit_data);
+    const data = resp.data;
+    //console.log(data);
+    return data;
+  }
+);
+
 export const editImageRex = createAsyncThunk(
   "parkinglots/edit",
   async (editData) => {
@@ -238,6 +251,18 @@ export const parkingSlice = createSlice({
       state.loading = false;
     },
     [editSlotRex.rejected]: (state) => {
+      state.loading = true;
+    },
+    [editRoiRex.pending]: (state) => {
+      state.loading = true;
+    },
+    [editRoiRex.fullfilled]: (state, action) => {
+      console.log(action.payload);
+      // let id = Number(action.payload.id);
+      // state.value[id].title = action.payload.title;
+      state.loading = false;
+    },
+    [editRoiRex.rejected]: (state) => {
       state.loading = true;
     },
     [editImageRex.pending]: (state) => {
