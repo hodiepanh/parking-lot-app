@@ -59,7 +59,6 @@ def image_difference(reference_image, calibrated_image, write_path, start_roi_x,
     difference = cv2.absdiff(reference_grayscale, calibrated_grayscale)
     _, binary_difference = cv2.threshold(
         difference, 35, 255, cv2.THRESH_BINARY)
-    # utilities.show_image("different", binary_difference)
 
     if end_roi_x == 0 and end_roi_y == 0:
         pixel_matching_number = cv2.countNonZero(binary_difference)
@@ -70,7 +69,6 @@ def image_difference(reference_image, calibrated_image, write_path, start_roi_x,
         matching_rate = (1 - pixel_matching_number /
                          (abs(end_roi_x-start_roi_x)*abs(end_roi_y-start_roi_y))) * 100
     # print("Image matching rate = ", round(matching_rate, 4))
-    # utilities.show_image("binary", binary_difference)
     if (os.path.isdir(write_path) is False):
         os.mkdir(write_path)
 

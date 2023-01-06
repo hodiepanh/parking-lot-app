@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from "react";
 import Drawer from "@mui/material/Drawer";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import CalibUlti from "../components/ultilites/CalibUlti";
 import default_image from "../assets/default_image.png";
 
 import "../style/Calib.css";
@@ -20,9 +19,9 @@ import {
 import { useHistory, useParams } from "react-router-dom";
 
 //import component
+import CalibUlti from "../components/ultilites/CalibUlti";
 import Notification from "../components/ultilites/Notification";
 import LoadingOverlay from "../components/ultilites/LoadingOverlay";
-import axios from "axios";
 
 function Calib() {
   const imageWidthRatio = 1920 / 600;
@@ -30,6 +29,7 @@ function Calib() {
   //canvasWidth = 600
   //canvasHeight = 400
 
+  //setup canvas
   const [drawing, setDrawing] = useState(false);
   const [mode, setMode] = useState("");
   const [saved, setSaved] = useState(false);
@@ -113,16 +113,7 @@ function Calib() {
 
     contextRef.current = context;
 
-    contextRef.current.beginPath();
-    contextRef.current.moveTo(300, 0);
-    contextRef.current.lineTo(300, 400);
-    contextRef.current.stroke();
-
-    contextRef.current.beginPath();
-    contextRef.current.moveTo(0, 300);
-    contextRef.current.lineTo(600, 300);
-    contextRef.current.stroke();
-
+    //Guideline for landmark position
     contextRef.current.fillStyle = "red";
     contextRef.current.font = "30px Arial";
     //landmark 1
@@ -174,7 +165,6 @@ function Calib() {
 
     //draw
     contextRef.current.strokeStyle = "red";
-
     contextRef.current.strokeRect(start_x, start_y, rectWidth, rectHeight);
 
     //update data list
@@ -193,6 +183,7 @@ function Calib() {
     }
     setDrawing(false);
   };
+
   //get coordinate start point of rectangle
   const startRect = ({ nativeEvent }) => {
     if (refImage == default_image) {
@@ -261,6 +252,7 @@ function Calib() {
       rectHeight
     );
 
+    //add to data list
     if (mode == "slot") {
       setParkingSlotList((prevState) => [
         ...prevState,
@@ -327,22 +319,12 @@ function Calib() {
     setLandmarkList(newList);
 
     //erase in canvas
-    if (mode == "landmark") {
-      contextRef.current.clearRect(
-        removeRect[0].x1 / imageWidthRatio - 1,
-        removeRect[0].y1 / imageHeightRatio - 1,
-        (removeRect[0].x2 - removeRect[0].x1) / imageWidthRatio + 2,
-        (removeRect[0].y2 - removeRect[0].y1) / imageHeightRatio + 2
-      );
-    }
-    if (mode == "slot") {
-      contextRef.current.clearRect(
-        removeRect[0].x1 / imageWidthRatio - 1,
-        removeRect[0].y1 / imageHeightRatio - 1,
-        (removeRect[0].x2 - removeRect[0].x1) / imageWidthRatio + 2,
-        (removeRect[0].y2 - removeRect[0].y1) / imageHeightRatio + 2
-      );
-    }
+    contextRef.current.clearRect(
+      removeRect[0].x1 / imageWidthRatio - 1,
+      removeRect[0].y1 / imageHeightRatio - 1,
+      (removeRect[0].x2 - removeRect[0].x1) / imageWidthRatio + 2,
+      (removeRect[0].y2 - removeRect[0].y1) / imageHeightRatio + 2
+    );
   };
 
   //remove parking slot in list -> erase parking slot in canvas
@@ -360,7 +342,7 @@ function Calib() {
     );
   };
 
-  //remove parking slot in list -> erase parking slot in canvas
+  //remove RoI in list -> erase RoI in canvas
   const removeRoIData = (data) => {
     const removeRect = roiList.filter((item) => item == data);
     const newList = roiList.filter((item) => item !== data);
@@ -388,10 +370,10 @@ function Calib() {
       );
     } else {
       //set image in Result Screen
-      dispatch(setReferenceImage(`${id}.jpg`));
+      //dispatch(setReferenceImage(`${id}.jpg`));
       //calibrate image
-      const formData = new FormData();
-      formData.append("image", saveImage);
+      //const formData = new FormData();
+      //formData.append("image", saveImage);
       dispatch(editCalibratedRex({ id, title }))
         .unwrap()
         .then(() => {

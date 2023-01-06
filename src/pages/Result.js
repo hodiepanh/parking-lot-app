@@ -8,6 +8,7 @@ import DebugDrawer from "../components/ultilites/DebugDrawer";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Tooltip from "@mui/material/Tooltip";
+import { IconButton } from "@mui/material";
 import default_image from "../assets/default_image.png";
 
 //import routing
@@ -20,7 +21,6 @@ import { getParkingLotByIdRex } from "../redux/parkingLots";
 //import style
 import "../style/Result.css";
 import { styled } from "@mui/system";
-import { IconButton } from "@mui/material";
 import { theme } from "../style/CustomTheme";
 
 function Result() {
@@ -35,7 +35,10 @@ function Result() {
   const [capturedImage, setCapturedImage] = useState();
   const [matchingRate, setMatchingRate] = useState();
   const [incre, setIncre] = useState(0);
+
+  //get full result list: id - image - matching rate
   const [result, setResult] = useState([]);
+
   //image data
   const gridData = [
     { title: "Standard Image", src: refImage },
@@ -44,9 +47,11 @@ function Result() {
   ];
 
   const history = useHistory();
+
   //get parking lot name
-  const parking_name = history.location.state;
+  //const parking_name = history.location.state;
   const dispatch = useDispatch();
+
   useEffect(() => {
     getStandardImage();
     dispatch(getParkingLotByIdRex(id))
@@ -107,9 +112,7 @@ function Result() {
           require(`../../backend/test_img_calib/Calibrated/Mock/${image_name}`)
         );
       } else {
-        setCalibImage(
-          require(`../assets/Calibrated/${parking_name}/${image_name}`)
-        );
+        setCalibImage(require(`../assets/Calibrated/${title}/${image_name}`));
       }
 
       //setCalibImage(require(`../assets/Calibrated/${id}_rotated.jpg`));
@@ -133,16 +136,14 @@ function Result() {
 
   //compare with Reference: show binary image
   const compareWithReference = (index) => {
-    var image_name = result[index].calibrated;
     try {
+      var image_name = result[index].calibrated;
       if (title == "Test Parking Lot") {
         setCalibImage(
           require(`../../backend/test_img_calib/Binary/Mock/${image_name}`)
         );
       } else {
-        setCalibImage(
-          require(`../assets/Binary/${parking_name}/${image_name}`)
-        );
+        setCalibImage(require(`../assets/Binary/${title}/${image_name}`));
       }
 
       //setCalibImage(require(`../assets/Calibrated/${id}_rotated.jpg`));
@@ -155,7 +156,7 @@ function Result() {
     //console.log(title);
     //console.log(capturedImageList);
     //console.log(calibImageList);
-    console.log(result);
+    console.log(result[0]);
   };
 
   //navigate to home screen

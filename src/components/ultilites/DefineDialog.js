@@ -7,7 +7,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { TextField } from "@mui/material";
 
-//import redux state management
+//import state management
 import { useSelector, useDispatch } from "react-redux";
 import { addParkingLotRex, openNotification } from "../../redux/parkingLots";
 
@@ -17,7 +17,7 @@ import Notification from "./Notification";
 export default function DefineDialog({ open, setOpen, lotsList, setLotsList }) {
   const [defineName, setDefineName] = useState("");
 
-  //redux state managemeent
+  //state managemeent
   const parkingList = useSelector((state) => state.parkingReducer.value);
   const dispatch = useDispatch();
 

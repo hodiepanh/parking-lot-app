@@ -15,9 +15,6 @@ import DefineDialog from "../components/ultilites/DefineDialog";
 import AvailableLotsList from "../components/ultilites/AvailableLotsList";
 import LoadingOverlay from "../components/ultilites/LoadingOverlay";
 
-//axios
-import axios from "axios";
-
 function Home() {
   const [openDefine, setOpenDefine] = React.useState(false);
   const [lotsList, setLotsList] = useState([]);

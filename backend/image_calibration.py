@@ -371,16 +371,19 @@ def image_calibration(
         # Avoid using static addresses, try using environment variable instead!
         # Image save path
         # result_path = path + "\\data_process\\{}\\calib".format(parklot_name)
+
+        # Create directory if not available
         if (os.path.isdir(f'{path}/{parklot_name}') is False):
             os.mkdir(os.path.join(path, parklot_name))
 
-        # Separate filename, remove the extension
+        # Separate filename, remove the extension -> write file
         name = os.path.splitext(filename)[0]
         # cv2.imwrite(os.path.join(
         #     result_path, 'recov_{}_({}_{}_{}).jpg'.format(name, translation_x, translation_y, angle)), image_out
         # )
         cv2.imwrite(
             f'{path}/{parklot_name}/{name}_({translation_x}_{translation_y}_{angle}).jpg', image_out)
+
         # Log debug information
         # Replace the txt file with csv file
         debug_file = f"debug/debug_log_{parklot_name}.csv"

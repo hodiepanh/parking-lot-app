@@ -10,7 +10,7 @@ import AutoModeRoundedIcon from "@mui/icons-material/AutoModeRounded";
 import TuneRoundedIcon from "@mui/icons-material/TuneRounded";
 import Tooltip from "@mui/material/Tooltip";
 
-//import redux state management
+//import state management
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteParkingLotRex,
@@ -41,7 +41,7 @@ function AvailableLotsList({ lotsList, setLotsList }) {
     (state) => state.parkingReducer.standardImage
   );
 
-  //redux state management
+  //state management
   const parkingList = useSelector((state) => state.parkingReducer.value);
   const dispatch = useDispatch();
 

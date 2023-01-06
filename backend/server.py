@@ -17,6 +17,7 @@ CORS(app)
 
 
 @app.route('/parkinglots', methods=['GET'])
+# Fetch all data
 def api():
     if request.method == "GET":
         allData = db['parkinglots'].find()
@@ -25,14 +26,17 @@ def api():
             id = data['_id']
             title = data['title']
 
+            # As not all field of data is always available
+            # We try to fetch each field in this order
+            # reference image -> landmark -> roi -> parking slot -> result
             try:
                 image = data['image']
                 try:
                     landmark = data['landmark']
                     try:
-                        roi = data['roi']
+                        result = data['result']
                         try:
-                            result = data['result']
+                            roi = data['roi']
                             dataDict = {
                                 "id": str(id),
                                 "title": title,
@@ -47,7 +51,7 @@ def api():
                                 "id": str(id),
                                 "title": title,
                                 'landmark': landmark,
-                                'roi': roi,
+                                'result': result,
                                 'image': image,
                             }
                     except KeyError:
@@ -70,12 +74,11 @@ def api():
                 }
 
             dataJson.append(dataDict)
-            # import function from another python file
-            # print_sth("import success")
         return jsonify(dataJson)
 
 
 @app.route('/parkinglots', methods=['POST'])
+# Add new parking lot by adding a title
 def add():
     if request.method == "POST":
         body = request.json
@@ -100,14 +103,17 @@ def getUserbyId(id):
     id = data['_id']
     title = data['title']
 
+    # As not all field of data is always available
+    # We try to fetch each field in this order
+    # reference image -> landmark -> roi -> parking slot -> result
     try:
         image = data['image']
         try:
             landmark = data['landmark']
             try:
-                roi = data['roi']
+                result = data['result']
                 try:
-                    result = data['result']
+                    roi = data['roi']
                     dataDict = {
                         "id": str(id),
                         "title": title,
@@ -122,7 +128,7 @@ def getUserbyId(id):
                         "id": str(id),
                         "title": title,
                         'landmark': landmark,
-                        'roi': roi,
+                        'result': result,
                         'image': image,
                     }
             except KeyError:
@@ -149,44 +155,68 @@ def getUserbyId(id):
 
 @app.route('/parkinglots/<id>', methods=['DELETE'])
 def deleteUser(id):
-    # delete reference image from local file
+    data = db['parkinglots'].find_one({'_id': ObjectId(id)})
+    title = data['title']
+
+    # Delete reference image from local file
     filename = str(id)+".jpg"
-    # check is reference image exist (name exists) -> remove
+    # Check is reference image exist (name exists) -> remove
     if (os.path.exists(f'{path.reference_path}/{filename}')):
         os.remove(f'{path.reference_path}/{filename}')
+
+    # Remove Binary/Title folder
+    if (title == "Test Parking Lot"):
+        # For Test parking lot, we don't need to remove the folder, just empty it
+
+        # Remove file in binary folder
+        utilities.remove_file(f'{path.binary_path_mock}/Mock')
+
+        # remove file in calibrated folder
+        utilities.remove_file(f'{path.calibrated_path_mock}/Mock')
+    else:
+        # Remove Binary/Title folder: Empty folder -> Remove
+        utilities.remove_file(f'{path.binary_path}/{title}')
+        os.rmdir(f'{path.binary_path}/{title}')
+
+        # Remove Calibrated/Title folder: Empty folder -> Remove
+        utilities.remove_file(f'{path.calibrated_path}/{title}')
+        os.rmdir(f'{path.calibrated_path}/{title}')
+
+        # Remove debug log
+        if (os.path.exists(f"debug/debug_log_{title}.csv")):
+            os.remove(f"debug/debug_log_{title}.csv")
 
     db['parkinglots'].delete_one({'_id': ObjectId(id)})
     return jsonify({"msg": "Lot deleted"})
 
 
 @app.route('/parkinglots/<id>/landmark', methods=['PATCH'])
+# Add landmark details to the database
 def updateLandmark(id):
-    # print(request.json['landmark'][0])
+    # Input is the array of coordinate of (x1,y1,x2,y2)
     landmark = request.json['landmark']
+
+    # Calculate the landmark points base on the coordinates
     image_path = f'{path.reference_path}/{id}.jpg'
     landmark_data = image_calibration_app.landmark_defintion_ref_image(
         image_path, landmark)
-    # turn into dictionary
-    # data =[(68, 37), (59, 42), (66, 55), (54, 40)]
 
-    landmark_dict = []
-    for i in range(int(len(landmark_data))):
-        data_dict = {"id": i,
-                     "x": landmark_data[i][0], "y": landmark_data[i][1]}
-        landmark_dict.append(data_dict)
-
+    # Update to the database
     db['parkinglots'].update_one({'_id': ObjectId(id)}, {'$set': {
-        'landmark': landmark_dict
+        'landmark': landmark_data
     }})
-    print(id, landmark_dict)
+
+    # Debug: check if the landmark data is returned correctly
+    # print(id, landmark_data)
     return jsonify({
-        "landmark": landmark_dict,
+        "landmark": landmark_data,
         "msg": "landmark updated"
     })
-    # return "success"
 
 
 @app.route('/parkinglots/<id>/slot', methods=['PATCH'])
+# Add parking slot details to the database
+# Currently not in use
 def updateSlot(id):
     db['parkinglots'].update_one({'_id': ObjectId(id)}, {'$set': {
         'slot': request.json['slot']
@@ -197,26 +227,30 @@ def updateSlot(id):
 
 
 @app.route('/parkinglots/<id>/roi', methods=['PATCH'])
+# Add Region of Interest details on the database
 def updateRoi(id):
+    roi = request.json['roi']
     db['parkinglots'].update_one({'_id': ObjectId(id)}, {'$set': {
-        'roi': request.json['roi']
+        'roi': roi
     }})
     return jsonify({
+        "roi": roi,
         "msg": "region of interest updated"
     })
 
 
 @app.route('/parkinglots/<id>/image', methods=['POST'])
+# Add reference image details to the database (reference image name)
 def fileUpload(id):
     file = request.files.get('image')
-    # filename is id (1 parking lot = 1 reference image)
 
+    # filename is id (1 parking lot = 1 reference image)
     filename = str(id)+".jpg"
 
-    # check is reference image exist (name exists) -> overwrite if exist
-
+    # Save the file with into the assets/Reference folder
     file.save(os.path.join(path.reference_path, filename))
 
+    # Update the database - add reference image name
     db['parkinglots'].update_one({'_id': ObjectId(id)}, {'$set': {
         'image': filename
     }})
@@ -228,41 +262,51 @@ def fileUpload(id):
 
 
 @app.route('/parkinglots/<id>/calibrate', methods=['POST'])
+# Calibrate image
 def calibrateImage(id):
+    # Get the parking lot details from the database
     data = db['parkinglots'].find_one({'_id': ObjectId(id)})
     landmark = data['landmark']
     title = data['title']
-    roi = data['roi'][0]
-    # print(landmark)
-    # print(roi['x1'])
-    # change landmark to ref_x, ref_y format
+
+    # For some reasons, details of region of interest are not updated sometimes
+    try:
+        roi = data['roi'][0]
+    except KeyError:
+        roi = {'x1': 0, 'y1': 0, 'x2': 0, 'y2': 0}
+
+    # Change landmark to ref_x, ref_y format
     ref_x = [0]
     ref_y = [0]
     for i in range(int(len(landmark))):
         ref_x.append(landmark[i]['x'])
         ref_y.append(landmark[i]['y'])
-    # print(ref_x, ref_y)
 
-    # calibrate image
-
-    # ref_image_name_test = "test_img_calib/Reference/lmTst_0.jpg"
+    # Get parameters of reference image (1 image)
     ref_image_name_test = f'{path.reference_path}/{id}.jpg'
+
     if (title == "Test Parking Lot"):
+        # Test parking lot has difference path
         title = "Mock"
+
+        # Clear debug log to write new information
         utilities.clear_file(f"debug/debug_log_{title}.csv")
         cur_image_path = path.cur_image_path
         destination = path.calibrated_path_mock
 
     else:
+        # Clear debug log to write new information
         utilities.clear_file(f"debug/debug_log_{title}.csv")
         cur_image_path = path.mock_path
         destination = path.calibrated_path
-    # parklot_name = "Mock"
 
+    # Calibrate image
     calib_result = image_calibration_app.calibrate_image_multiple(
         ref_image_name_test, cur_image_path, destination, title, roi)
+    # Debug
     # print(calib_result)
 
+    # Update to the database: result file name - matching rate
     db['parkinglots'].update_one({'_id': ObjectId(id)}, {'$set': {
         'result': calib_result,
     }})

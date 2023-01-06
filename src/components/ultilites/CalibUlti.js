@@ -15,6 +15,8 @@ import Select from "@mui/material/Select";
 import CloseIcon from "@mui/icons-material/Close";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
+
+//import state managament
 import { useSelector, useDispatch } from "react-redux";
 import {
   editLandmarkRex,
@@ -75,7 +77,9 @@ function CalibUlti({
     setAnchorEl(null);
   };
 
+  //state management
   const dispatch = useDispatch();
+
   //router
   const history = useHistory();
   const { id } = useParams();
@@ -85,6 +89,7 @@ function CalibUlti({
   //   //console.log(history.location.state);
   //   setTitle(history.location.state);
   // });
+
   //render landmark list item
   const landmarkMap = landmarkList.map((data, index) => (
     <ListItem key={index} disablePadding>
@@ -167,21 +172,22 @@ function CalibUlti({
     //console.log(image);
     //dispatch(editRoiRex({ id, roiList }));
   };
-  const uploadImage = () => {
-    const formData = new FormData();
-    formData.append("image", image);
-    dispatch(editImageRex({ id, formData }));
-  };
 
-  const calibrateImage = () => {
-    const formData = new FormData();
-    formData.append("image", image);
-    dispatch(editCalibratedRex({ id, title, formData }));
-  };
+  // const uploadImage = () => {
+  //   const formData = new FormData();
+  //   formData.append("image", image);
+  //   dispatch(editImageRex({ id, formData }));
+  // };
+
+  // const calibrateImage = () => {
+  //   const formData = new FormData();
+  //   formData.append("image", image);
+  //   dispatch(editCalibratedRex({ id, title, formData }));
+  // };
 
   //save data to the database
   const saveData = () => {
-    //only save data to database if there are 4 landmarks
+    //only save data to database if there are 4 landmarks and 1 RoI
     if (landmarkList.length !== 4) {
       dispatch(
         openNotification({
@@ -199,6 +205,7 @@ function CalibUlti({
       );
     }
     if (landmarkList.length == 4 && roiList.length == 1) {
+      //if image is changed -> upload new image
       if (image != "") {
         const formData = new FormData();
         formData.append("image", image);
@@ -209,10 +216,7 @@ function CalibUlti({
             dispatch(editLandmarkRex({ id, landmarkList }))
               .unwrap()
               .then(() => {
-                //uploadImage();
-                // if (image != "") {
-                //   uploadImage();
-                // }
+                dispatch(editRoiRex({ id, roiList }));
               })
               .then(() => {
                 dispatch(
@@ -229,7 +233,6 @@ function CalibUlti({
           .unwrap()
           .then(() => {
             dispatch(editRoiRex({ id, roiList }));
-            //upload RoI here
           })
           .then(() => {
             dispatch(
@@ -243,10 +246,6 @@ function CalibUlti({
             window.location.reload();
           });
       }
-      //dispatch(editSlotRex({ id, parkingslotList }));
-      //uploadImage();
-      //calibrateImage();
-
       //set saved status = true
       setSaved(true);
     }

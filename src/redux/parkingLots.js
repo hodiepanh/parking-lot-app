@@ -10,6 +10,7 @@ let initialState = {
   loading: false,
 };
 
+//get all parking lots data
 export const getParkingLotRex = createAsyncThunk(
   "parkinglots/get",
   async () => {
@@ -20,6 +21,7 @@ export const getParkingLotRex = createAsyncThunk(
   }
 );
 
+//get parking lot data by ID
 export const getParkingLotByIdRex = createAsyncThunk(
   "parkinglots/get",
   async (id) => {
@@ -30,6 +32,7 @@ export const getParkingLotByIdRex = createAsyncThunk(
   }
 );
 
+//add a new parking lot
 export const addParkingLotRex = createAsyncThunk(
   "parkinglots/add",
   async (newLot) => {
@@ -40,6 +43,7 @@ export const addParkingLotRex = createAsyncThunk(
   }
 );
 
+//delete a parking lot
 export const deleteParkingLotRex = createAsyncThunk(
   "parkinglots/delete",
   async (index) => {
@@ -49,6 +53,7 @@ export const deleteParkingLotRex = createAsyncThunk(
   }
 );
 
+//search a parking lot (not in use)
 export const searchParkingLotRex = createAsyncThunk(
   "parkinglots/search",
   async (searchValue) => {
@@ -59,6 +64,7 @@ export const searchParkingLotRex = createAsyncThunk(
   }
 );
 
+//edit landmarks detail
 export const editLandmarkRex = createAsyncThunk(
   "parkinglots/edit",
   async (editData) => {
@@ -79,6 +85,7 @@ export const editLandmarkRex = createAsyncThunk(
   }
 );
 
+//edit parking slots detail
 export const editSlotRex = createAsyncThunk(
   "parkinglots/edit",
   async (editData) => {
@@ -92,6 +99,7 @@ export const editSlotRex = createAsyncThunk(
   }
 );
 
+//edit Region of Interest details
 export const editRoiRex = createAsyncThunk(
   "parkinglots/edit",
   async (editData) => {
@@ -105,6 +113,7 @@ export const editRoiRex = createAsyncThunk(
   }
 );
 
+//upload image
 export const editImageRex = createAsyncThunk(
   "parkinglots/edit",
   async (editData) => {
@@ -117,6 +126,7 @@ export const editImageRex = createAsyncThunk(
   }
 );
 
+//calibrate image
 export const editCalibratedRex = createAsyncThunk(
   "parkinglots/edit",
   async (editData) => {
@@ -183,6 +193,7 @@ export const parkingSlice = createSlice({
     },
   },
   extraReducers: {
+    //get all parking lot data
     [getParkingLotRex.pending]: (state) => {
       state.loading = true;
     },
@@ -192,6 +203,8 @@ export const parkingSlice = createSlice({
     [getParkingLotRex.rejected]: (state) => {
       state.loading = true;
     },
+
+    //get parking lot data by ID
     [getParkingLotByIdRex.pending]: (state) => {
       state.loading = true;
     },
@@ -201,6 +214,8 @@ export const parkingSlice = createSlice({
     [getParkingLotByIdRex.rejected]: (state) => {
       state.loading = true;
     },
+
+    //add a new parking lot
     [addParkingLotRex.pending]: (state) => {
       state.loading = true;
     },
@@ -217,6 +232,8 @@ export const parkingSlice = createSlice({
     [addParkingLotRex.rejected]: (state) => {
       state.loading = true;
     },
+
+    //delete parking lot
     [deleteParkingLotRex.pending]: (state) => {
       state.loading = true;
     },
@@ -229,6 +246,8 @@ export const parkingSlice = createSlice({
     [deleteParkingLotRex.rejected]: (state) => {
       state.loading = true;
     },
+
+    //edit landmarks details
     [editLandmarkRex.pending]: (state) => {
       state.loading = true;
     },
@@ -241,6 +260,8 @@ export const parkingSlice = createSlice({
     [editLandmarkRex.rejected]: (state) => {
       state.loading = true;
     },
+
+    //edit parking slot details
     [editSlotRex.pending]: (state) => {
       state.loading = true;
     },
@@ -253,6 +274,8 @@ export const parkingSlice = createSlice({
     [editSlotRex.rejected]: (state) => {
       state.loading = true;
     },
+
+    //edit Region of Interest details
     [editRoiRex.pending]: (state) => {
       state.loading = true;
     },
@@ -265,6 +288,8 @@ export const parkingSlice = createSlice({
     [editRoiRex.rejected]: (state) => {
       state.loading = true;
     },
+
+    //upload reference image
     [editImageRex.pending]: (state) => {
       state.loading = true;
     },
@@ -275,6 +300,8 @@ export const parkingSlice = createSlice({
     [editImageRex.rejected]: (state) => {
       state.loading = true;
     },
+
+    //calibrate image
     [editCalibratedRex.pending]: (state) => {
       state.loading = true;
     },
@@ -285,6 +312,8 @@ export const parkingSlice = createSlice({
     [editCalibratedRex.rejected]: (state) => {
       state.loading = true;
     },
+
+    //search parking lot
     [searchParkingLotRex.fulfilled]: () => {},
   },
 });
