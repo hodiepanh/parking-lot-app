@@ -69,8 +69,7 @@ def image_difference(reference_image, calibrated_image, write_path, start_roi_x,
         matching_rate = (1 - pixel_matching_number /
                          (abs(end_roi_x-start_roi_x)*abs(end_roi_y-start_roi_y))) * 100
     # print("Image matching rate = ", round(matching_rate, 4))
-    if (os.path.isdir(write_path) is False):
-        os.mkdir(write_path)
+    utilities.create_path(write_path)
 
     binary_name = os.path.basename(calibrated_image)
     cv2.imwrite(os.path.join(write_path, binary_name),

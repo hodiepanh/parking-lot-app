@@ -161,30 +161,29 @@ def deleteUser(id):
     # Delete reference image from local file
     filename = str(id)+".jpg"
     # Check is reference image exist (name exists) -> remove
-    if (os.path.exists(f'{path.reference_path}/{filename}')):
-        os.remove(f'{path.reference_path}/{filename}')
+    utilities.remove_file(f'{path.reference_path}/{filename}')
 
     # Remove Binary/Title folder
     if (title == "Test Parking Lot"):
         # For Test parking lot, we don't need to remove the folder, just empty it
 
         # Remove file in binary folder
-        utilities.remove_file(f'{path.binary_path_mock}/Mock')
+        utilities.remove_files(f'{path.binary_path_mock}/Mock')
 
         # remove file in calibrated folder
-        utilities.remove_file(f'{path.calibrated_path_mock}/Mock')
+        utilities.remove_files(f'{path.calibrated_path_mock}/Mock')
+
     else:
         # Remove Binary/Title folder: Empty folder -> Remove
-        utilities.remove_file(f'{path.binary_path}/{title}')
-        os.rmdir(f'{path.binary_path}/{title}')
+        utilities.remove_files(f'{path.binary_path}/{title}')
+        utilities.remove_path(f'{path.binary_path}/{title}')
 
         # Remove Calibrated/Title folder: Empty folder -> Remove
-        utilities.remove_file(f'{path.calibrated_path}/{title}')
-        os.rmdir(f'{path.calibrated_path}/{title}')
+        utilities.remove_files(f'{path.calibrated_path}/{title}')
+        utilities.remove_path(f'{path.calibrated_path}/{title}')
 
         # Remove debug log
-        if (os.path.exists(f"debug/debug_log_{title}.csv")):
-            os.remove(f"debug/debug_log_{title}.csv")
+        utilities.remove_file(f"debug/debug_log_{title}.csv")
 
     db['parkinglots'].delete_one({'_id': ObjectId(id)})
     return jsonify({"msg": "Lot deleted"})
@@ -249,6 +248,7 @@ def fileUpload(id):
 
     # Save the file with into the assets/Reference folder
     file.save(os.path.join(path.reference_path, filename))
+    print(f"Saved {os.path.join(path.reference_path, filename)}")
 
     # Update the database - add reference image name
     db['parkinglots'].update_one({'_id': ObjectId(id)}, {'$set': {

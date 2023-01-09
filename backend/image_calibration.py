@@ -373,8 +373,7 @@ def image_calibration(
         # result_path = path + "\\data_process\\{}\\calib".format(parklot_name)
 
         # Create directory if not available
-        if (os.path.isdir(f'{path}/{parklot_name}') is False):
-            os.mkdir(os.path.join(path, parklot_name))
+        utilities.create_path(f'{path}/{parklot_name}')
 
         # Separate filename, remove the extension -> write file
         name = os.path.splitext(filename)[0]

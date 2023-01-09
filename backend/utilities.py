@@ -96,6 +96,7 @@ def write_debug(data, debug_file):
             writer = csv.writer(f)
             writer.writerow(data)
             f.close()
+    print(f'Logged debug {debug_file}')
 
 
 # data = ['Afghanistan', 652090, 'AF', 'AFG']
@@ -110,10 +111,28 @@ def clear_file(file):
 
 # clear_file("debug/debug_log_Mock.csv")
 
-def remove_file(directory):
+def remove_files(directory):
     if (os.path.exists(directory)):
         for f in os.listdir(directory):
             os.remove(os.path.join(directory, f))
+        print(f'Remove files in {directory}')
+
+
+def remove_file(filename):
+    if (os.path.exists(filename)):
+        os.remove(filename)
+        print(f"Removed {filename}")
 
 
 # remove_file(f'{path.calibrated_path_mock}/Mock')
+
+def create_path(path):
+    if (os.path.isdir(path) is False):
+        os.mkdir(path)
+        print(f"Created {path}")
+
+
+def remove_path(path):
+    if (os.path.exists(path)):
+        os.rmdir(path)
+        print(f"Removed {path}")
