@@ -188,22 +188,6 @@ function CalibUlti({
   //save data to the database
   const saveData = () => {
     //only save data to database if there are 4 landmarks and 1 RoI
-    if (landmarkList.length !== 4) {
-      dispatch(
-        openNotification({
-          status: "error",
-          message: "Only 4 landmarks.",
-        })
-      );
-    }
-    if (roiList.length !== 1) {
-      dispatch(
-        openNotification({
-          status: "error",
-          message: "Only 1 region of interest.",
-        })
-      );
-    }
     if (landmarkList.length == 4 && roiList.length == 1) {
       //if image is changed -> upload new image
       if (image != "") {
@@ -248,6 +232,22 @@ function CalibUlti({
       }
       //set saved status = true
       setSaved(true);
+    } else {
+      if (landmarkList.length !== 4) {
+        dispatch(
+          openNotification({
+            status: "error",
+            message: "Only 4 landmarks.",
+          })
+        );
+      } else {
+        dispatch(
+          openNotification({
+            status: "error",
+            message: "Only 1 region of interest.",
+          })
+        );
+      }
     }
   };
 

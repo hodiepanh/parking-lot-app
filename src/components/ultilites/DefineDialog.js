@@ -25,12 +25,20 @@ export default function DefineDialog({ open, setOpen, lotsList, setLotsList }) {
   const handleClose = () => {
     setOpen(false);
   };
+  //capitalize first letter of a string
+  const capitalizeFirstLowercaseRest = (str) => {
+    return str
+      .toLowerCase()
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
 
   //add new parking lot
-  const addParkingLot = (name) => {
+  const addParkingLot = (parking_lot_name) => {
     //get parking lots title from parking lots data (title, id, landmarks, slots)
     const titleList = lotsList.map((data) => data.title);
-
+    const name = capitalizeFirstLowercaseRest(parking_lot_name);
     //validator: title cannot be blank
     if (name != "") {
       //if name already exists -> show error notification
@@ -58,7 +66,6 @@ export default function DefineDialog({ open, setOpen, lotsList, setLotsList }) {
       );
     }
   };
-
   return (
     <div>
       <Dialog open={open} onClose={handleClose}>

@@ -13,6 +13,7 @@ import {
   editCalibratedRex,
   setReferenceImage,
   openNotification,
+  getParkingLotByIdRex,
 } from "../redux/parkingLots";
 
 //import router
@@ -59,6 +60,7 @@ function Calib() {
   const [refImage, setRefImage] = useState(standardImage);
 
   const [saveImage, setSaveImage] = useState("");
+  const [landmarkData, setLandmarkData] = useState();
   const dispatch = useDispatch();
 
   //router
@@ -108,6 +110,7 @@ function Calib() {
   );
 
   useEffect(() => {
+    getParkingLotData();
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
 
@@ -356,12 +359,19 @@ function Calib() {
       (removeRect[0].y2 - removeRect[0].y1) / imageHeightRatio + 2
     );
   };
-
+  const getParkingLotData = () => {
+    dispatch(getParkingLotByIdRex(id))
+      .unwrap()
+      .then((res) => {
+        console.log(res.landmark);
+        setLandmarkData(res.landmark);
+      });
+  };
   //navigate to result screen
   const toResult = () => {
     //only navigate if parking is already defined (data exist in db)
     //or only navigate if parking defined this time
-    if (refImage == default_image) {
+    if (landmarkData == undefined) {
       dispatch(
         openNotification({
           status: "error",
@@ -390,7 +400,7 @@ function Calib() {
   return (
     <div className="view">
       <Typography variant="h1">Define parking lot</Typography>
-      {/* <Button onClick={test}>Test</Button> */}
+      <Button onClick={getParkingLotData}>Test</Button>
       {loading && <LoadingOverlay />}
       <div className="layout">
         <div className="image-editor">
