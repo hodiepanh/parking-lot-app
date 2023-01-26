@@ -24,6 +24,9 @@ function Home() {
   const loading = useSelector((state) => state.parkingReducer.loading);
   const dispatch = useDispatch();
 
+  //router
+  const history = useHistory();
+
   //open Define Dialog
   const handleToggleDefine = () => {
     setOpenDefine(!openDefine);
@@ -40,10 +43,25 @@ function Home() {
       });
   }, []);
 
+  const errorHandler = () => {
+    if (lotsList == undefined) {
+      history.push("/error");
+    }
+  };
+
+  const test = () => {
+    dispatch(getParkingLotRex())
+      .unwrap()
+      .then((res) => {
+        //setLotsList(res);
+        console.log(lotsList);
+      });
+  };
+
   return (
     <div className="page-wrapper">
       <Typography variant="h1">WELCOME TO IMAGE CALIBRATION</Typography>
-      {/* <Button onClick={testCalib}>Test Calibration</Button> */}
+      {/* <Button onClick={test}>Test</Button> */}
       {loading && <LoadingOverlay />}
       <div className="button-wrapper">
         <Stack spacing={5} direction="column">

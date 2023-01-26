@@ -13,6 +13,8 @@ axiosClient.interceptors.response.use(
     return response;
   },
   (error) => {
+    //If request error -> redirect to error page
+    window.location.href = "/error";
     return Promise.reject(error);
   }
 );

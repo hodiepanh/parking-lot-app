@@ -400,7 +400,7 @@ function Calib() {
   return (
     <div className="view">
       <Typography variant="h1">Define parking lot</Typography>
-      <Button onClick={getParkingLotData}>Test</Button>
+      {/* <Button onClick={getParkingLotData}>Test</Button> */}
       {loading && <LoadingOverlay />}
       <div className="layout">
         <div className="image-editor">

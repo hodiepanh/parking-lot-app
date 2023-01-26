@@ -38,7 +38,7 @@ export const addParkingLotRex = createAsyncThunk(
   async (newLot) => {
     const response = await parkingApi.addParkingLot(newLot);
     const data = response.data;
-    //console.log(data);
+    console.log(data);
     return data;
   }
 );

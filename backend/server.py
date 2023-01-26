@@ -84,11 +84,13 @@ def add():
         body = request.json
         title = body['title']
 
+        # Add to database
         newData = db['parkinglots'].insert_one({
             # "_id":id,
             "title": title
         })
 
+        # Return response to Frontend
         return jsonify({
             "id": str(newData.inserted_id),
             "title": title,
