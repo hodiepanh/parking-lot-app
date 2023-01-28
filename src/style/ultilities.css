@@ -11,3 +11,21 @@
     flex-direction: column;
     margin: 15px 0;
 }
+.nav-bar {
+    color: red;
+    display: flex;
+    justify-content: flex-end;
+    
+}
+.stepper {
+    width: 50%;
+}
+@media (max-width:800px) {
+    .program-name {
+        display: none;
+    }
+    .stepper {
+        width: 80%;
+    }
+
+}

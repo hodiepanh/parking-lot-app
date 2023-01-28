@@ -8,7 +8,7 @@ import { useHistory } from "react-router-dom";
 
 //import state management
 import { useSelector, useDispatch } from "react-redux";
-import { getParkingLotRex } from "../redux/parkingLots";
+import { getParkingLotRex, setActiveStep } from "../redux/parkingLots";
 
 //import component
 import DefineDialog from "../components/ultilites/DefineDialog";
@@ -35,6 +35,7 @@ function Home() {
   //fetch data from database
   //set parking lots list as fetched data
   useEffect(() => {
+    dispatch(setActiveStep(0));
     dispatch(getParkingLotRex())
       .unwrap()
       .then((res) => {

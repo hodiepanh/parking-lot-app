@@ -13,6 +13,7 @@ import {
   editCalibratedRex,
   openNotification,
   getParkingLotByIdRex,
+  setActiveStep,
 } from "../redux/parkingLots";
 
 //import router
@@ -109,6 +110,7 @@ function Calib() {
   );
 
   useEffect(() => {
+    dispatch(setActiveStep(1));
     getParkingLotData();
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");

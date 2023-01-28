@@ -24,19 +24,19 @@ export const theme = createTheme({
       },
     },
     h3: {
-      fontSize: 20,
+      fontSize: 16,
       fontWeight: 500,
-      lineHeight: "30px",
-      letterSpacing: "0.1em",
+      lineHeight: "50px",
+      letterSpacing: "0.05em",
       textTransform: "capitalize",
       "@media (max-width:800px)": {
-        fontSize: "1.2rem",
+        fontSize: "1rem",
         letterSpacing: "0.05em",
       },
     },
     h4: {
       fontStyle: "italic",
-      fontSize: 20,
+      fontSize: 14,
       fontWeight: 400,
       lineHeight: "24px",
       letterSpacing: "0.05em",
@@ -46,7 +46,7 @@ export const theme = createTheme({
       },
     },
     body1: {
-      fontSize: 16,
+      fontSize: 14,
       fontWeight: 500,
       lineHeight: "30px",
       "@media (max-width:800px)": {
@@ -54,7 +54,7 @@ export const theme = createTheme({
       },
     },
     body2: {
-      fontSize: 14,
+      fontSize: 12,
       fontWeight: 400,
       lineHeight: "25px",
       // "@media (max-width:800px)": {

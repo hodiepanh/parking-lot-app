@@ -16,7 +16,7 @@ import { useHistory, useParams } from "react-router-dom";
 
 //import state management
 import { useSelector, useDispatch } from "react-redux";
-import { getParkingLotByIdRex } from "../redux/parkingLots";
+import { getParkingLotByIdRex, setActiveStep } from "../redux/parkingLots";
 
 //import style
 import "../style/Result.css";
@@ -53,6 +53,7 @@ function Result() {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch(setActiveStep(2));
     getStandardImage();
     dispatch(getParkingLotByIdRex(id))
       .unwrap()

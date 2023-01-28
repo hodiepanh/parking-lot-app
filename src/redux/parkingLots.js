@@ -8,6 +8,7 @@ let initialState = {
   notification: { open: false, status: "", message: "" },
   alert: { open: false, message: "", data: {} },
   loading: false,
+  activeStep: 0,
 };
 
 //get all parking lots data
@@ -165,6 +166,9 @@ export const parkingSlice = createSlice({
     closeAlert: (state) => {
       state.alert.open = false;
     },
+    setActiveStep: (state, action) => {
+      state.activeStep = action.payload;
+    },
   },
   extraReducers: {
     //get all parking lot data
@@ -298,6 +302,7 @@ export const {
   openNotification,
   openAlert,
   closeAlert,
+  setActiveStep,
 } = parkingSlice.actions;
 
 export default parkingSlice.reducer;
