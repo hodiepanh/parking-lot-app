@@ -6,46 +6,68 @@ export const theme = createTheme({
     h1: {
       fontSize: 32,
       fontWeight: 700,
-      lineHeight: "90px",
+      lineHeight: "80px",
       letterSpacing: "0.1em",
       textTransform: "uppercase",
+      "@media (max-width:800px)": {
+        fontSize: "1.5rem",
+      },
     },
     h2: {
       fontSize: 24,
       fontWeight: 600,
-      lineHeight: "60px",
+      lineHeight: "50px",
       letterSpacing: "0.1em",
       textTransform: "uppercase",
+      "@media (max-width:800px)": {
+        fontSize: "1.2rem",
+      },
     },
     h3: {
       fontSize: 20,
-      fontWeight: 600,
+      fontWeight: 500,
       lineHeight: "30px",
       letterSpacing: "0.1em",
       textTransform: "capitalize",
+      "@media (max-width:800px)": {
+        fontSize: "1.2rem",
+        letterSpacing: "0.05em",
+      },
     },
     h4: {
       fontStyle: "italic",
       fontSize: 20,
-      fontWeight: 200,
+      fontWeight: 400,
       lineHeight: "24px",
       letterSpacing: "0.05em",
       textTransform: "capitalize",
+      "@media (max-width:800px)": {
+        fontSize: "1.1rem",
+      },
     },
     body1: {
       fontSize: 16,
       fontWeight: 500,
       lineHeight: "30px",
+      "@media (max-width:800px)": {
+        fontSize: "0.9rem",
+      },
     },
     body2: {
       fontSize: 14,
       fontWeight: 400,
       lineHeight: "25px",
+      // "@media (max-width:800px)": {
+      //   fontSize: "1.5rem",
+      // },
     },
     button: {
       fontWeight: 500,
       fontSize: 16,
       lineHeight: "30px",
+      "@media (max-width:800px)": {
+        fontSize: "0.85rem",
+      },
     },
   },
   palette: {

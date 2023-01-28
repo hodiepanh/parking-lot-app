@@ -11,7 +11,6 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   editImageRex,
   editCalibratedRex,
-  setReferenceImage,
   openNotification,
   getParkingLotByIdRex,
 } from "../redux/parkingLots";
@@ -380,7 +379,6 @@ function Calib() {
       );
     } else {
       //set image in Result Screen
-      //dispatch(setReferenceImage(`${id}.jpg`));
       //calibrate image
       //const formData = new FormData();
       //formData.append("image", saveImage);
@@ -401,7 +399,8 @@ function Calib() {
     <div className="view">
       <Typography variant="h1">Define parking lot</Typography>
       {/* <Button onClick={getParkingLotData}>Test</Button> */}
-      {loading && <LoadingOverlay />}
+      {/* {loading && <LoadingOverlay />} */}
+      <LoadingOverlay open={loading} />
       <div className="layout">
         <div className="image-editor">
           <canvas

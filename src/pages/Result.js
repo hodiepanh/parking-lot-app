@@ -194,11 +194,12 @@ function Result() {
           columnSpacing={{ xs: 1, sm: 2, md: 3 }}
         >
           {gridItem}
-          <Grid xs={12}>
-            <Typography variant="h2">Rating: {matchingRate}</Typography>
-          </Grid>
         </Grid>
       </div>
+      <Typography variant="h2">Rating: {matchingRate}</Typography>
+      {/* <Grid xs={12}>
+        <Typography variant="h2">Rating: {matchingRate}</Typography>
+      </Grid> */}
       <div className="button-wrapper">
         <Stack spacing={2} direction="row">
           <Tooltip title="Back to Define mode">

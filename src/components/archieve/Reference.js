@@ -5,7 +5,7 @@ import Button from "@mui/material/Button";
 import "../style/Reference.css";
 import { useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { setReferenceImage } from "../../redux/parkingLots";
+//import { setReferenceImage } from "../../redux/parkingLots";
 import default_image from "../assets/default_image.png";
 
 function Reference() {
@@ -39,7 +39,7 @@ function Reference() {
     window.location.reload(false);
   };
   const toCalib = () => {
-    dispatch(setReferenceImage(refImage));
+    //dispatch(setReferenceImage(refImage));
     history.push("/calib");
     //window.location.reload(false);
   };

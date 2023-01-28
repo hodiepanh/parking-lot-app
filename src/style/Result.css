@@ -3,6 +3,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin-bottom: 50px;
 }
 .button-wrapper {
     display: flex;
@@ -12,3 +13,4 @@
 .debug-list {
     padding:0 20px;
 }
+

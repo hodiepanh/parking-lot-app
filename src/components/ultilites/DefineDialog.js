@@ -69,7 +69,7 @@ export default function DefineDialog({ open, setOpen, lotsList, setLotsList }) {
   return (
     <div>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>AVAILABLE PARKING LOTS</DialogTitle>
+        <DialogTitle>DEFINE NEW PARKING LOT</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus

@@ -62,13 +62,18 @@ function Home() {
     <div className="page-wrapper">
       <Typography variant="h1">WELCOME TO IMAGE CALIBRATION</Typography>
       {/* <Button onClick={test}>Test</Button> */}
-      {loading && <LoadingOverlay />}
+      {/* {loading && <LoadingOverlay />} */}
+      <LoadingOverlay open={loading} />
       <div className="button-wrapper">
         <Stack spacing={5} direction="column">
           <Button onClick={handleToggleDefine} variant="contained">
             Define New Parking Lot
           </Button>
-          <AvailableLotsList lotsList={lotsList} setLotsList={setLotsList} />
+          <AvailableLotsList
+            loading={loading}
+            lotsList={lotsList}
+            setLotsList={setLotsList}
+          />
         </Stack>
       </div>
       <DefineDialog

@@ -145,32 +145,6 @@ export const parkingSlice = createSlice({
   name: "parking",
   initialState,
   reducers: {
-    setParkingLot: (state, action) => {
-      state.value = action.payload;
-      console.log(state.value);
-    },
-    getParkingLot: (state) => {
-      console.log(state.value);
-    },
-    addParkingLot: (state, action) => {
-      const newLot = { id: 3, title: action.payload };
-      state.value = [...state.value, newLot];
-      console.log(state.value);
-    },
-    setReferenceImage: (state, action) => {
-      if (action.payload == "default") {
-        const newImage = default_image;
-        state.standardImage = newImage;
-      } else {
-        const newImage = require(`../assets/Reference/${action.payload}`);
-        state.standardImage = newImage;
-      }
-    },
-    setResultImage: (state, action) => {
-      console.log(typeof action.payload);
-      const newImage = action.payload;
-      state.standardImage = newImage;
-    },
     openNotification: (state, action) => {
       state.notification = {
         open: true,
@@ -320,11 +294,6 @@ export const parkingSlice = createSlice({
 
 // Action creators are generated for each case reducer functions
 export const {
-  addParkingLot,
-  setParkingLot,
-  getParkingLot,
-  setReferenceImage,
-  setResultImage,
   closeNotification,
   openNotification,
   openAlert,

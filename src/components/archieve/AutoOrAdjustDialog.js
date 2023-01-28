@@ -12,7 +12,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import axios from "axios";
-import { getParkingLotRex, setParkingLot } from "../../redux/parkingLots";
+import { getParkingLotRex } from "../../redux/parkingLots";
 import { parkingApi } from "../../api/parkingDataApi";
 
 export default function AutoOrAdjustDialog({ open, setOpen }) {
@@ -25,10 +25,6 @@ export default function AutoOrAdjustDialog({ open, setOpen }) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // parkingApi.getParkingLot().then((res) => {
-    //   setParkingListdb(res.data);
-    //   dispatch(setParkingLot(res.data));
-    // });
     dispatch(getParkingLotRex())
       .unwrap()
       .then((res) => {

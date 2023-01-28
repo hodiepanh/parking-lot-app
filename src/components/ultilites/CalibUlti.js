@@ -24,7 +24,6 @@ import {
   editRoiRex,
   editImageRex,
   editCalibratedRex,
-  setReferenceImage,
   openNotification,
 } from "../../redux/parkingLots";
 

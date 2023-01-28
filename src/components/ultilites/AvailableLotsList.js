@@ -14,7 +14,6 @@ import Tooltip from "@mui/material/Tooltip";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteParkingLotRex,
-  setReferenceImage,
   editCalibratedRex,
   openAlert,
   openNotification,
@@ -36,7 +35,7 @@ const StyleList = styled(List)(({ theme }) => ({
   },
 }));
 
-function AvailableLotsList({ lotsList, setLotsList }) {
+function AvailableLotsList({ loading, lotsList, setLotsList }) {
   const standardImage = useSelector(
     (state) => state.parkingReducer.standardImage
   );
