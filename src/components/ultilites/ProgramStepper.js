@@ -4,10 +4,15 @@ import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import StepButton from "@mui/material/StepButton";
+import { Tooltip } from "@mui/material";
 
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
+//import state management
 import { useSelector, useDispatch } from "react-redux";
+
+//import component
+import Instruction from "./Instruction";
+
+// define step label
 const steps = [
   "Choose parking lot",
   "Define parking lot",
@@ -16,67 +21,62 @@ const steps = [
 
 function ProgramStepper() {
   const step = useSelector((state) => state.parkingReducer.activeStep);
-  const [activeStep, setActiveStep] = React.useState(step);
-  const [completed, setCompleted] = React.useState({});
+  const [completed, setCompleted] = useState({});
+  const [openInstruct, setOpenInstruct] = useState(false);
+  const [chosenStage, setChosenStage] = useState(0);
 
-  const totalSteps = () => {
-    return steps.length;
+  const openInstruction = (stage) => {
+    setOpenInstruct(true);
+    setChosenStage(stage);
   };
 
-  const completedSteps = () => {
-    return Object.keys(completed).length;
-  };
-
-  const isLastStep = () => {
-    return activeStep === totalSteps() - 1;
-  };
-
-  const allStepsCompleted = () => {
-    return completedSteps() === totalSteps();
-  };
-
-  const handleNext = () => {
-    const newActiveStep =
-      isLastStep() && !allStepsCompleted()
-        ? // It's the last step, but not all steps have been completed,
-          // find the first step that has been completed
-          steps.findIndex((step, i) => !(i in completed))
-        : activeStep + 1;
-    setActiveStep(newActiveStep);
-  };
-
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const handleStep = (step) => () => {
-    setActiveStep(step);
-  };
-
-  const handleComplete = () => {
-    const newCompleted = completed;
-    newCompleted[activeStep] = true;
-    setCompleted(newCompleted);
-    handleNext();
-  };
-
-  const handleReset = () => {
-    setActiveStep(0);
-    setCompleted({});
+  const closeInstruction = () => {
+    setOpenInstruct(false);
   };
 
   return (
-    <Box className="stepper">
-      <Stepper nonLinear activeStep={step}>
-        {steps.map((label, index) => (
-          <Step key={label} completed={completed[index]}>
-            <StepButton color="inherit" onClick={handleStep(index)}>
-              {label}
-            </StepButton>
+    <div>
+      <Box className="stepper">
+        <Stepper nonLinear activeStep={step}>
+          {steps.map((label, index) => (
+            <Step key={label} completed={completed[index]}>
+              <Tooltip title="Click here for instruction">
+                <StepButton
+                  color="inherit"
+                  onClick={() => {
+                    openInstruction(index);
+                  }}
+                >
+                  {label}
+                </StepButton>
+              </Tooltip>
+            </Step>
+          ))}
+        </Stepper>
+      </Box>
+      <Box className="stepper-active">
+        <Stepper>
+          <Step>
+            <Tooltip title="Click here for instruction">
+              <StepButton
+                color="inherit"
+                icon={step + 1}
+                onClick={() => {
+                  openInstruction(step);
+                }}
+              >
+                {steps[step]}
+              </StepButton>
+            </Tooltip>
           </Step>
-        ))}
-      </Stepper>
-    </Box>
+        </Stepper>
+      </Box>
+      <Instruction
+        stage={chosenStage}
+        open={openInstruct}
+        handleClose={closeInstruction}
+      />
+    </div>
   );
 }
 

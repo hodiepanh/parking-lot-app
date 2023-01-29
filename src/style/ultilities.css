@@ -12,20 +12,25 @@
     margin: 15px 0;
 }
 .nav-bar {
-    color: red;
     display: flex;
     justify-content: flex-end;
     
 }
 .stepper {
-    width: 50%;
+    width: 100%;
+}
+.stepper-active {
+    display: none;
 }
 @media (max-width:800px) {
     .program-name {
         display: none;
     }
     .stepper {
-        width: 80%;
+        display: none;
+    }
+    .stepper-active {
+        display: flex;
     }
 
 }

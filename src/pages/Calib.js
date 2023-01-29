@@ -364,7 +364,7 @@ function Calib() {
     dispatch(getParkingLotByIdRex(id))
       .unwrap()
       .then((res) => {
-        console.log(res.landmark);
+        //console.log(res.landmark);
         setLandmarkData(res.landmark);
       });
   };

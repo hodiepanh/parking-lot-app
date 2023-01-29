@@ -39,7 +39,7 @@ export const addParkingLotRex = createAsyncThunk(
   async (newLot) => {
     const response = await parkingApi.addParkingLot(newLot);
     const data = response.data;
-    console.log(data);
+    //console.log(data);
     return data;
   }
 );
@@ -60,7 +60,7 @@ export const searchParkingLotRex = createAsyncThunk(
   async (searchValue) => {
     const resp = await parkingApi.searchParkingLot(searchValue);
     const data = resp.data;
-    console.log(data);
+    //console.log(data);
     return data;
   }
 );

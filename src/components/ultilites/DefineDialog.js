@@ -65,6 +65,9 @@ export default function DefineDialog({ open, setOpen, lotsList, setLotsList }) {
         })
       );
     }
+
+    //reset text field
+    setDefineName("");
   };
   return (
     <div>

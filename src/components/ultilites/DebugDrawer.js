@@ -7,6 +7,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+import { Tooltip } from "@mui/material";
 
 function DebugDrawer() {
   const [state, setState] = React.useState({
@@ -59,9 +60,11 @@ function DebugDrawer() {
   return (
     <div>
       <React.Fragment key={anchor}>
-        <Button variant="outlined" onClick={toggleDrawer(anchor, true)}>
-          Debug
-        </Button>
+        <Tooltip title="Debug Result">
+          <Button variant="outlined" onClick={toggleDrawer(anchor, true)}>
+            Debug
+          </Button>
+        </Tooltip>
         <Drawer
           anchor={anchor}
           open={state[anchor]}

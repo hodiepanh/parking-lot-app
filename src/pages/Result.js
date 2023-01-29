@@ -99,7 +99,6 @@ function Result() {
           require(`../assets/Parking Lots/Sample lot/${image_name}`)
         );
       }
-      //setCalibImage(require(`../assets/Calibrated/${id}_rotated.jpg`));
     } catch (err) {
       setCapturedImage(default_image);
     }
@@ -146,18 +145,9 @@ function Result() {
       } else {
         setCalibImage(require(`../assets/Binary/${title}/${image_name}`));
       }
-
-      //setCalibImage(require(`../assets/Calibrated/${id}_rotated.jpg`));
     } catch (err) {
       setCalibImage(default_image);
     }
-  };
-
-  const test = () => {
-    //console.log(title);
-    //console.log(capturedImageList);
-    //console.log(calibImageList);
-    console.log(result[0]);
   };
 
   //navigate to home screen
